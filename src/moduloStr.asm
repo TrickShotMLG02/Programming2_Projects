@@ -17,6 +17,8 @@ modulo_str:
 	move $s1 $a1
 	move $s2 $a2
 	
+	li $t1 0
+
 	b mod
 
 

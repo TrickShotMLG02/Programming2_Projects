@@ -63,15 +63,11 @@ knr2iban:
 	li $a1 24
 	li $a2 97
 	
-	
 	move $t7 $s0
 	move $t6 $s2
 	jal modulo_str
 	move $s0 $t7
 	move $s2 $t6
-	
-	# TODO: FIX THIS PIECE OF SHIT
-	
 	
 	
 	# store DE in IBAN Buffer
@@ -84,26 +80,19 @@ knr2iban:
 	sb $a1 ($a0)
 	addi $a0 $a0 1
 	
+	#store mod result in a0
+	move $a0 $v0
+	# calculate check digits by substracting result from 98
+	li $v0 98
+	sub $a0 $v0 $a0
+	# store address in a1 and add offset of 2 to skip DE part
+	move $a1 $s0
+	addi $a1 $a1 2
+	# set number of bytes to 2
+	li $a2 2
 	
-	#substract mod result (a6) from 98. Result of operation is checknum
-	li $a1 98
-	
-	# can be deleted
-	li $a1 120
-	
-	
-	sub $s6 $a1 $s6
-	sb $s6 ($a0)
-	addi $a0 $a0 1
-	
-	# can be deleted
-	sb $s6 ($a0)
-	
-	
-	#
-	# TODO
-	#
-	
+	# convert integer to ascii code
+	jal int_to_buf	
 	
 	
 	# copy blz to IBAN Buffer

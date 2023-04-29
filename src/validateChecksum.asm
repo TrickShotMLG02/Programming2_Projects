@@ -1,7 +1,5 @@
 	.data
 	.globl validate_checksum
-#ibanstr:
-#.asciiz "DE42413746471724057190"
 	.text
 
 # -- validate_checksum --
@@ -12,8 +10,7 @@
 validate_checksum:
 
 	move $t9 $ra
-
-	#la	$a0 ibanstr
+	
 	# store address in t7
 	move $t7 $a0
 	addi $a0 $a0 2

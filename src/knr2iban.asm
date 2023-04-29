@@ -65,9 +65,11 @@ knr2iban:
 	
 	move $t7 $s0
 	move $t6 $s2
+	move $t8 $s1
 	jal modulo_str
 	move $s0 $t7
 	move $s2 $t6
+	move $s1 $t8
 	
 	
 	# store DE in IBAN Buffer
@@ -98,7 +100,7 @@ knr2iban:
 	# copy blz to IBAN Buffer
 	move $a0 $s0
 	addi $a0 $a0 4
-	move $a1 $s2
+	move $a1 $s1
 	li $a2 8
 	
 	jal memcpy

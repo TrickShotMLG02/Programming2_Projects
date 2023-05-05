@@ -18,8 +18,14 @@ validate_checksum:
 	sw $s6 12($sp)
 	sw $s7 16($sp)
 
+
 	# Skip letters in IBAN
-	addi $a0 $a0 2
+	#addi $a0 $a0 2
+	lb $t5 ($a0)
+	addi $a0 $a0 1
+	lb $t6 ($a0)
+	addi $a0 $a0 1
+
 
 	# Store Checksum Digits
 	
@@ -38,13 +44,15 @@ validate_checksum:
 
 moveMem:
 
-	subi $sp $sp 24
+	subi $sp $sp 32
 	sw $a0 0($sp)
 	sw $a1 4($sp)
 	sw $a2 8($sp)
 	sw $t7 12($sp)
 	sw $t9 16($sp)
 	sw $ra 20($sp)
+	sw $t5 24($sp)
+	sw $t6 28($sp)
 	
 	# increment source address by offset of 4
 	subi $a0 $a0 4
@@ -61,35 +69,74 @@ moveMem:
 	lw $t7 12($sp)
 	lw $t9 16($sp)
 	lw $ra 20($sp)
-	addi $sp $sp 24
+	lw $t5 24($sp)
+	lw $t6 28($sp)
+	addi $sp $sp 32
 
 .done:
 
-	# substract offset 4 from a0
-	addi $a0 $a0 14
+	# substract offset 4 from a0 to get base address
+	subi $a0 $a0 4
+	
 
-	# store 1 as ascii at addr a0
-	li $s0 49
-	sb $s0 ($a0)
-	# increment a0 by 1
+
+	#	TODO: DYNAMIC CALCULATION BY DIVISION AND REMAINDER OF COUNTRY CODE
+	#	NOTE: USE S0 for storing country code and converting
+	#	NOTE: USE S1,S2 for calculation
+
+
+	# loaded first country code letter to t5
+
+	
+
+	
+	# substract 55 from letter to get A=10,B=11,C=12,...,Z=35
+	subi $s0 $t5 55
+
+	li $s1 10
+	rem $s2 $s0 $s1
+	div $s1 $s0 $s1
+
+	# s1 contains first digit of country code letter
+	# s2 contains second digit of country code letter
+
+	# convert to ascii
+	addi $s1 $s1 48
+	addi $s2 $s2 48
+	
+	# add 18 as offset since last 4 characters are country code as numbers
+	addi $a0 $a0 18
+
+	sb $s1 ($a0)
 	addi $a0 $a0 1
-	
-	# store 3 as ascii at addr a0
-	li $s0 51
-	sb $s0 ($a0)
-	# increment a0 by 1
+	sb $s2 ($a0)
 	addi $a0 $a0 1
+
+	# loaded second country code letter to s6
 	
-	# store 1 as ascii at addr a0
-	li $s0 49
-	sb $s0 ($a0)
-	# increment a0 by 1
+	# substract 55 from letter to get A=10,B=11,C=12,...,Z=35
+	subi $s0 $t6 55
+
+	li $s1 10
+	rem $s2 $s0 $s1
+	div $s1 $s0 $s1
+
+
+	# s1 contains first digit of country code letter
+	# s2 contains second digit of country code letter
+	
+	# convert to ascii
+	addi $s1 $s1 48
+	addi $s2 $s2 48
+	
+	sb $s1 ($a0)
 	addi $a0 $a0 1
+	sb $s2 ($a0)
+
+
 	
-	# store 4 as ascii at addr a0
-	li $s0 52
-	sb $s0 ($a0)
-	
+
+
 
 
 	# caller save
@@ -107,6 +154,8 @@ moveMem:
 	subi $a0 $a0 21
 	li $a1 22
 	li $a2 97
+	
+
 
 	jal modulo_str
 

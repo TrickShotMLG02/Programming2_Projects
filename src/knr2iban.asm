@@ -10,30 +10,64 @@
 # a1: BLZ buffer (8 bytes)
 # a2: KNR buffer (10 bytes)
 knr2iban:
-	# TODO
+
+	subi $sp $sp 12
+	sw $s0 0($sp)
+	sw $s1 4($sp)
+	sw $s2 8($sp)
+
+
+
+	subi $sp $sp 32
+	sw $a0 0($sp)
+	sw $a1 4($sp)
+	sw $a2 8($sp)
+	sw $t6 12($sp)
+	sw $t7 16($sp)
+	sw $t8 20($sp)
+	sw $t9 24($sp)
+	sw $ra 28($sp)
 	
-	move $s0 $a0
-	move $s1 $a1
-	move $s2 $a2
-	
-	# save ra address
-	move $t9 $ra
 	
 	# copy blz to ibanModBuf
 	la $a0 ibanModBuf
-	#move $a1 $a1
 	li $a2 8
 	
 	jal memcpy
 	
+
+	# restore stack registers
+	lw $a0 0($sp)
+	lw $a1 4($sp)
+	lw $a2 8($sp)
+	lw $t6 12($sp)
+	lw $t7 16($sp)
+	lw $t8 20($sp)
+	lw $t9 24($sp)
+	lw $ra 28($sp)
+
+	
 	
 	# copy ktr to ibanModBuf
 	la $a0 ibanModBuf
-	addi $a0 $a0 8	
-	move $a1 $s2
+	addi $a0 $a0 8
+	move $a1 $a2
 	li $a2 10
 	
 	jal memcpy
+
+
+
+	# restore stack registers
+	lw $a0 0($sp)
+	lw $a1 4($sp)
+	lw $a2 8($sp)
+	lw $t6 12($sp)
+	lw $t7 16($sp)
+	lw $t8 20($sp)
+	lw $t9 24($sp)
+	lw $ra 28($sp)
+
 	
 	# store country code to ibanModBuf
 	la $a0 ibanModBuf
@@ -57,6 +91,19 @@ knr2iban:
 	sb $a1 ($a0)
 	addi $a0 $a0 1
 	
+
+
+	# restore stack registers
+	lw $a0 0($sp)
+	lw $a1 4($sp)
+	lw $a2 8($sp)
+	lw $t6 12($sp)
+	lw $t7 16($sp)
+	lw $t8 20($sp)
+	lw $t9 24($sp)
+	lw $ra 28($sp)
+
+
 	
 	# calculate modulo of ibanModBuf
 	la $a0 ibanModBuf
@@ -70,10 +117,20 @@ knr2iban:
 	move $s0 $t7
 	move $s2 $t6
 	move $s1 $t8
-	
+
+
+
+	# restore stack registers
+	lw $a0 0($sp)
+	lw $a1 4($sp)
+	lw $a2 8($sp)
+	lw $t6 12($sp)
+	lw $t7 16($sp)
+	lw $t8 20($sp)
+	lw $t9 24($sp)
+	lw $ra 28($sp)
 	
 	# store DE in IBAN Buffer
-	move $a0 $s0
 	li $a1 68
 	sb $a1 ($a0)
 	addi $a0 $a0 1
@@ -81,41 +138,78 @@ knr2iban:
 	li $a1 69
 	sb $a1 ($a0)
 	addi $a0 $a0 1
-	
-	#store mod result in a0
-	move $a0 $v0
+
+
+
+	move $a1 $a0
 	# calculate check digits by substracting result from 98
-	li $v0 98
-	sub $a0 $v0 $a0
+	li $t7 98
+	sub $a0 $t7 $v0
 	# store address in a1 and add offset of 2 to skip DE part
-	move $a1 $s0
-	addi $a1 $a1 2
+	
+	#addi $a1 $a1 2
 	# set number of bytes to 2
 	li $a2 2
 	
 	# convert integer to ascii code
 	jal int_to_buf	
+
+
+
+	# restore stack registers
+	lw $a0 0($sp)
+	lw $a1 4($sp)
+	lw $a2 8($sp)
+	lw $t6 12($sp)
+	lw $t7 16($sp)
+	lw $t8 20($sp)
+	lw $t9 24($sp)
+	lw $ra 28($sp)
+
 	
 	
 	# copy blz to IBAN Buffer
-	move $a0 $s0
 	addi $a0 $a0 4
-	move $a1 $s1
 	li $a2 8
-	
 	jal memcpy
-	
+
+
+
+	# restore stack registers
+	lw $a0 0($sp)
+	lw $a1 4($sp)
+	lw $a2 8($sp)
+	lw $t6 12($sp)
+	lw $t7 16($sp)
+	lw $t8 20($sp)
+	lw $t9 24($sp)
+	lw $ra 28($sp)
+
+
 	
 	# copy ktr to IBAN Buffer
-	move $a0 $s0
 	addi $a0 $a0 12
-	move $a1 $s2
+	move $a1 $a2
 	li $a2 10
-	
 	jal memcpy
 	
+
+
+	# restore stack registers
+	lw $a0 0($sp)
+	lw $a1 4($sp)
+	lw $a2 8($sp)
+	lw $t6 12($sp)
+	lw $t7 16($sp)
+	lw $t8 20($sp)
+	lw $t9 24($sp)
+	lw $ra 28($sp)
+	addi $sp $sp 32
 	
-	
-	# Restore ra address
-	move $ra $t9
+
+	lw $s0 0($sp)
+	lw $s1 4($sp)
+	lw $s2 8($sp)
+	addi $sp $sp 12
+
 	jr	$ra

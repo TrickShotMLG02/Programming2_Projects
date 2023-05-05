@@ -7,48 +7,76 @@
 # a1: BLZ buffer (8 bytes)
 # a2: KNR buffer (10 bytes)
 iban2knr:
+
+	# Callee save
+	# store values of s0,s1,s2
+	subi $sp $sp 12
+	sw $s0 0($sp)
+	sw $s1 4($sp)
+	sw $s2 8($sp)
 	
-	# copy address from $a0 to $s0
-	move $s0 $a0
-	move $s1 $a1
-	move $s2 $a2
-	
+
+	# Caller Save
+	# store a0,a1,a2,a3,ra,t0 to stack
+	subi $sp $sp 24
+	sw $a0 0($sp)
+	sw $a1 4($sp)
+	sw $a2 8($sp)
+	sw $a3 12($sp)
+	sw $t0 16($sp)
+	sw $ra 20($sp)
+
+
 	# Grab BLZ
-	# Grab substring of a0 from a1 (4) by reading (a2) 8 characters
+	move $a3 $a1
 	li $a1 4
 	li $a2 8
-	move $a3 $s1
 	
-	
-	# save return address
-    	sw $ra, ($sp) 
-    	# Jump and link to substring function
-	jal substring
-	# restore return address		
-	lw $ra, ($sp)
-	
-	
-	# Grab KNR
-	# Grab substring of a0 from a1 (12) by reading (a2) 10 characters
-	move $a0 $s0
-	li $a1 12
-	li $a2 10
-	move $a3 $s2
-	
-	
-	# save return address
-    	sw $ra, ($sp)
 	# Jump to substring
 	jal substring
-	# restore return address		
-	lw $ra, ($sp)
+
+	# Caller Restore
+	# restore a0,a1,a2,a3,ra,t0 to stack
+	lw $a0 0($sp)
+	lw $a1 4($sp)
+	lw $a2 8($sp)
+	lw $a3 12($sp)
+	lw $t0 16($sp)
+	lw $ra 20($sp)
+
+	# leave stack untouched, since otherwise i would need to store registers again while
+	# not changing any values in them, thus skip # addi $sp $sp 24
+
+
+	# Grab KNR
+	move $a3 $a2
+	li $a1 12
+	li $a2 10
 	
+	# Jump to substring
+	jal substring
+
+
+	# Caller restore
+	# restore a0,a1,a2,a3,ra,t0 to stack
+	lw $a0 0($sp)
+	lw $a1 4($sp)
+	lw $a2 8($sp)
+	lw $a3 12($sp)
+	lw $t0 16($sp)
+	lw $ra 20($sp)
+	addi $sp $sp 24
+
+
+
+	# Callee Restore
+	# restore values of s0,s1,s2
+	lw $s0 0($sp)
+	lw $s1 4($sp)
+	lw $s2 8($sp)
+	addi $sp $sp 12	
+
 	
-	# restore original parameters from s1/s2 to a1/a2
-	move $a1 $s1
-	move $a2 $s2
-	
-	# not needed
 	jr	$ra
 	
 	
@@ -59,46 +87,38 @@ iban2knr:
 # a3: target address
 #
 # Returns: data address in k0
-# USING T0...T3 internally!
+# USING T0 internally!
 substring:
-
-	# Copy address to t0 to work on
-	move $t0 $a0
-	# Copy Index of starting character to t1
-	move $t1 $a1
-	# Copy amount of characters to read to t2
-	move $t2 $a2
-	
-	move $t3 $a3 
 	
 	# Add offset to start from to address
-	add $t0 $t0 $t1
+	add $a0 $a0 $a1
 	
 	j .loop
 	
 .loop:
 	# Jump to .done if characters left to read equals 0
-	beqz $t2 .done
+	beqz $a2 .done
 	
 	
 	# Else load character at addr from s0 into a0
-	lb $a0, ($t0)
+	lb $t0, ($a0)
 	
 	# Store byte (current char) at address of t3
-	sb $a0 ($t3)
+	sb $t0 ($a3)
 		
 	# Increment address by 1 for next character
-	addi $t0 $t0 1
+	addi $a0 $a0 1
 	# Decrease amount of characters left for reading by 1
-	addi $t2 $t2 -1
+	addi $a2 $a2 -1
 	
 	# Increment target address by 1
-	addi $t3 $t3 1
+	addi $a3 $a3 1
 	
 	# Jump to start of loop again
 	j .loop
 	
 .done:
+
 	jr $ra
 	
 

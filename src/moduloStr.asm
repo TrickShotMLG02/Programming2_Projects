@@ -12,6 +12,16 @@
 modulo_str:
 	# TODO
 
+	# Using s0,s1,s2,t0,t1,t3 internally, thus save and restore original values to stack
+	# Only save callee save registers (s0,s1,s2)
+	
+	subi $sp $sp 12
+	sw $s0 0($sp)
+	sw $s1 4($sp)
+	sw $s2 8($sp)
+	
+	
+
 	# Create backup to local variables s0..s2
 	move $s0 $a0
 	move $s1 $a1
@@ -56,6 +66,13 @@ mod:
 
 .done:
 
+	# restore values to s0,s1,s2 and reset sp
+	sw $s0 0($sp)
+	sw $s1 4($sp)
+	sw $s2 8($sp)
+	addi $sp $sp 12
+
+	
 	# Copy value (result of calculation) from t1 to v0 for return
 	move $v0 $t1
 	# Return to other function

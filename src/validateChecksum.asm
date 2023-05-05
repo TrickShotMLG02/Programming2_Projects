@@ -9,11 +9,19 @@
 # v0 : the checksum of the IBAN
 validate_checksum:
 
-	move $t9 $ra
-	
-	# store address in t7
-	move $t7 $a0
+	# Callee save
+	# store values of s0,s1,s2,s6,s7
+	subi $sp $sp 20
+	sw $s0 0($sp)
+	sw $s1 4($sp)
+	sw $s2 8($sp)
+	sw $s6 12($sp)
+	sw $s7 16($sp)
+
+	# Skip letters in IBAN
 	addi $a0 $a0 2
+
+	# Store Checksum Digits
 	
 	# Load second character at a0 to s6
 	lb $s6 ($a0)
@@ -21,34 +29,44 @@ validate_checksum:
 	# increment address by 1
 	addi $a0 $a0 1
 	
-	# Load second character at a0 to s7
+	# Load third character at a0 to s7
 	lb $s7 ($a0)
 	addi $s7 $s7 -48
 	# increment address by 1
 	addi $a0 $a0 1
 
 
-	# s0 and s1 now contains the two check digits
-	
-	
-	b moveMem
-
-
 moveMem:
 
-	# copy target address
-	move $a0 $t7
+	subi $sp $sp 24
+	sw $a0 0($sp)
+	sw $a1 4($sp)
+	sw $a2 8($sp)
+	sw $t7 12($sp)
+	sw $t9 16($sp)
+	sw $ra 20($sp)
+	
 	# increment source address by offset of 4
+	subi $a0 $a0 4
 	addi $a1 $a0 4
 	li $a2 18
 
 	jal memcpy
 
-	b .done
+
+	
+	lw $a0 0($sp)
+	lw $a1 4($sp)
+	lw $a2 8($sp)
+	lw $t7 12($sp)
+	lw $t9 16($sp)
+	lw $ra 20($sp)
+	addi $sp $sp 24
+
 .done:
 
-	move $a0 $t7
-	addi $a0 $a0 18
+	# substract offset 4 from a0
+	addi $a0 $a0 14
 
 	# store 1 as ascii at addr a0
 	li $s0 49
@@ -74,14 +92,32 @@ moveMem:
 	
 
 
+	# caller save
+	subi $sp $sp 24
+	sw $a0 0($sp)
+	sw $a1 4($sp)
+	sw $a2 8($sp)
+	sw $t7 12($sp)
+	sw $t9 16($sp)
+	sw $ra 20($sp)
+
 
 	# call modulo function with a0 as starting address of buffer, a1 with 22, a2 with 97
 	
-	move $a0 $t7
+	subi $a0 $a0 21
 	li $a1 22
 	li $a2 97
 
 	jal modulo_str
+
+	# caller restore
+	lw $a0 0($sp)
+	lw $a1 4($sp)
+	lw $a2 8($sp)
+	lw $t7 12($sp)
+	lw $t9 16($sp)
+	lw $ra 20($sp)
+	addi $sp $sp 24
 	
 	# v0 contains result of mod operation
 	
@@ -92,19 +128,26 @@ moveMem:
 	li $s1 10
 	li $a2 97
 
-
 	# calculate modulo manually of the last two numbers (check digits)
 	mul $s0 $v0 $s1
-	add $s0 $s0 $s6
-	rem $s0 $s0 $a2
+	add $v0 $s0 $s6
+	rem $v0 $v0 $a2
 	
 	# calculate modulo manually of the last two numbers (check digits)
-	mul $s0 $s0 $s1
-	add $s0 $s0 $s7
-	rem $s0 $s0 $a2
+	mul $v0 $v0 $s1
+	add $v0 $v0 $s7
+	rem $v0 $v0 $a2
+
+
+
+	# Callee restore
+	# restore values of s0,s1,s2,s6,s7
 	
-	move $v0 $s0
-	
-	move $ra $t9
+	lw $s0 0($sp)
+	lw $s1 4($sp)
+	lw $s2 8($sp)
+	lw $s6 12($sp)
+	lw $s7 16($sp)
+	addi $sp $sp 20
 	
 	jr	$ra

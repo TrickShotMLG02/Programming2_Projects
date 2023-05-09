@@ -113,9 +113,42 @@ void mirror_vertical(image_t *img) {
     }
 }
 
+
 void resize(image_t *img, int new_width, int new_height) {
-    NOT_IMPLEMENTED;
-    UNUSED(img);
-    UNUSED(new_width);
-    UNUSED(new_height);
+    int orig_width = img->w;
+    int orig_height = img->h;
+
+    // create black pixel
+    pixel_t black_pxl = {0, 0, 0};
+
+    // create new pixel array of new image size to store pixels there to make things a lot easier since arrays are static sized
+    pixel_t *resized_img = malloc(new_width * new_height * sizeof(pixel_t));
+
+    for (int row = 0; row < new_height; row++) {
+        for (int col = 0; col < new_width; col++) {
+            
+            // calculate current pos
+            int pos = row * new_width + col;
+            // copy pixel from original image to resized one if the col and row is not outside dimensions of original image
+            if (col < orig_width && row < orig_height) {
+                resized_img[pos] = img->img[col + row * orig_width];
+            }
+            else {
+                // copy black pixel to position which is outside dimensions of original image
+                resized_img[pos] = black_pxl;
+            }
+        }
+    }
+
+    // Replace width and height of image with new values
+    img->w = new_width;
+    img->h = new_height;
+
+    // deallocate old memory of image
+    free(img->img);
+
+    // set pointer to the resized image
+    img->img = resized_img;
 }
+
+

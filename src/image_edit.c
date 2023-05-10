@@ -16,18 +16,15 @@ void rotate_counterclockwise(image_t *img) {
 void rotate_clockwise(image_t *img) {
     int width = img->w;
     int height = img->h;
-    int iterations = width - 1;
 
     // switch width and height
     img->h = width;
     img->w = height;
 
-    // create new image to store rotated
+    // create new image to store rotated pixels
     pixel_t *rotated_img = malloc(width * height * sizeof(pixel_t));
 
-    // iterate over the rows
     for (int row = 0; row < height; row++) {
-        // iterate over the columns
         for (int column = 0; column < width; column++) {
             // calculate current pos from row and col
             int pos = column + width * row;

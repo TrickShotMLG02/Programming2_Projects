@@ -23,20 +23,25 @@ int image_read(image_t *img, FILE *fin) {
     else
     {
         // read second line and grab the two integer numbers for width and height
-        fscanf(fin, "%d %d\n", &width ,&height);
+        int res = fscanf(fin, "%d %d", &width ,&height);
+        if (res != 2 || width <= 0 || height <= 0)
+            return -1;
 
         // Store height and width in struct
         img->w = width;
         img->h = height;
 
-        // allocate space for (width * height) pixels
-        img->img = malloc(width * height * sizeof(pixel_t));
-
         int maxColorValue;
 
         // Store max color value from file in variable
-        fscanf(fin, "%d\n", &maxColorValue);
+        res = fscanf(fin, "%d\n", &maxColorValue);
+        if (res != 1)
+            return -1;
 
+        // allocate space for (width * height) pixels
+        img->img = malloc(width * height * sizeof(pixel_t));
+
+        
         // loop over all pixels
         for(int i = 0; i < width * height; i++)
         {    
@@ -49,11 +54,6 @@ int image_read(image_t *img, FILE *fin) {
 
         return 0;
     }
-
-    //NOT_IMPLEMENTED;
-    //UNUSED(img);
-    //UNUSED(fin);
-    //return -1;
 }
 
 void image_write(const image_t *img, FILE *fout) {

@@ -93,25 +93,27 @@ void mirror_horizontal(image_t *img) {
 }
 
 void mirror_vertical(image_t *img) {
-    // grab image width and divide it by 2 to get iterations needed to switch pixels per horizontal line
-    int iterations = img->h / 2;
-    int width = img->h;
+    // grab smaller value of height and width and divide it by 2 to get iterations needed to switch pixels per vertical line
+    int iterations = (img->w < img->h) ? img->w : img->h;
+    iterations /= 2;
+    int width = img->w;
 
     pixel_t tmp;
 
-    for (int column = 0; column < img->w; column++) {
-        for (int row = 0; row < iterations; row++)
+    for (int row = 0; row < iterations; row++) {
+        for (int column = 0; column < width; column++)
         {
             // store pixel in column to tmp, copy pixel from (width - column) to column and store tmp to (width - column)
             // store pixel of column to tmp
-            tmp = img->img[column + row * width ];
+            tmp = img->img[column + row * width];
             // copy pixel from width - column to column
-            img->img[row * width + column] = img->img[column + (width - 1 - row) * width];
+            img->img[column + row * width] = img->img[column + (img->h - 1 - row) * width];
             // store tmp to width - column
-            img->img[column + (width - 1 - row) * width] = tmp;
+            img->img[column + (img->h - 1 - row) * width] = tmp;
         }
     }
 }
+
 
 
 void resize(image_t *img, int new_width, int new_height) {

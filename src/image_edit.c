@@ -13,61 +13,43 @@ void rotate_counterclockwise(image_t *img) {
 }
 
 
-
 void rotate_clockwise(image_t *img) {
     int width = img->w;
+    int height = img->h;
     int iterations = width - 1;
 
-    pixel_t tmp;
+    // switch width and height
+    img->h = width;
+    img->w = height;
 
-    int row = 0;
-    int column = 0;
-    int ctr = 0;
+    // create new image to store rotated
+    pixel_t *rotated_img = malloc(width * height * sizeof(pixel_t));
 
-    for (row = row; row < img->h / 2; row++) {
-        for (column = ctr; column < iterations; column++) {
+    // iterate over the rows
+    for (int row = 0; row < height; row++) {
+        // iterate over the columns
+        for (int column = 0; column < width; column++) {
             // calculate current pos from row and col
-            int pos0 = column + width * row;
-            // store current element in tmp
-            tmp = img->img[pos0];
+            int pos = column + width * row;
 
-            // calculate next array index in pos1 to grab data from and store in current position
-            int c1 = width - 1 - row;
-            int r1 = column;
-            int pos1 = c1 + width * r1;
+            // calculate the new index based on the rotated coordinates
+            int new_row = column;
+            int new_column = height - 1 - row;
+            int new_pos = new_column + height * new_row;
 
-            // calculate next array index in pos2 to grab data from and store in current position
-            int c2 = width - 1 - r1;
-            int r2 = c1;
-            int pos2 = c2 + width * r2;
-
-            // calculate next array index in pos2 to grab data from and store in current position
-            int c3 = width - 1 - r2;
-            int r3 = c2;
-            int pos3 = c3 + width * r3;
-
-
-            // Now we need to copy pos0 to pos1, pos1 to pos2, pos2 to pos3, pos3 to pos0
-            // Thus save pos3 to tmp
-            tmp = img->img[pos3];
-
-            //store pos 2 to pos 3
-            img->img[pos3] = img->img[pos2];
-
-            //store pos 1 to pos 2
-            img->img[pos2] = img->img[pos1];
-
-            //store pos 0 to pos 1
-            img->img[pos1] = img->img[pos0];
-
-            //store tmp to pos 0
-            img->img[pos0] = tmp;
+            // copy the pixel to the new position
+            rotated_img[new_pos] = img->img[pos];
         }
-        ctr++;
-        iterations -= 1;
-        column = ctr;
     }
+
+    // deallocate old memory of image
+    free(img->img);
+
+    // set pointer to the rotated image
+    img->img = rotated_img;
+
 }
+
 
 
 void mirror_horizontal(image_t *img) {

@@ -37,8 +37,33 @@ PropFormula* mkUnaryFormula(FormulaKind kind, PropFormula* operand) {
 
 void freeFormula(PropFormula* pf) {
     // TODO Implement me!
-    NOT_IMPLEMENTED;
-    UNUSED(pf);
+
+    // maybe go into recursion and as soon as there is nothing more to do
+    // recursion on, begin to free everything except variables
+
+    // check if formula is a variable
+    if (pf->kind == VAR) {
+        return;
+    }
+
+    // otherwise check if unary or binary op exists
+
+    if (pf->data.single_op != NULL) {
+        // recursively check unary operator
+        freeFormula(pf->data.single_op);
+        // free unary operator
+        free(pf->data.single_op);
+    }
+
+    if (pf->data.operands[0] != NULL && pf->data.operands[1] != NULL) {
+        // recursively check binary operator
+        freeFormula(pf->data.operands[0]);
+        freeFormula(pf->data.operands[1]);
+
+        // free binary operands
+        free(pf->data.operands[0]);
+        free(pf->data.operands[1]);
+    }
 }
 
 void prettyPrintFormula_impl(FILE* f, VarTable* vt, PropFormula* pf) {

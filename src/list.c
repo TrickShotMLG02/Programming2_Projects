@@ -49,12 +49,14 @@ void push(List* s, void* data) {
 void* peek(List* s) { return (isEmpty(s)) ? NULL : s->head->data; }
 
 void pop(List* s) {
-    // create new pointer and set it to next element
-    ListItem* element = s->head->next;
-    // free head of list
-    free(s->head);
-    // set head of list to new top element
-    s->head = element;
+    if (!isEmpty(s)) {
+        // create new pointer and set it to next element
+        ListItem* element = s->head->next;
+        // free head of list
+        free(s->head);
+        // set head of list to new top element
+        s->head = element;
+    }
 }
 
 char isEmpty(List* s) {

@@ -38,8 +38,19 @@ void clearList(List* s) {
             while (it.current->next != NULL) {
                 next(&it);
             }
+
+            /*
+                TODO:
+                DON'T FREE SINCE DATA SHOULD NOT BE DELETED - JUST A TRY FOR THE DAILY TESTS
+                MAYBE DELETE 
+            */
+
             // free last element
-            free(it.current);
+            //free(it.current);
+
+
+
+
             // recreate iterator to start from beginning of list
             it = mkIterator(s);
             // decrement counter

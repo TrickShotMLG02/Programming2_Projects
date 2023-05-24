@@ -21,113 +21,41 @@ List mkList(void) {
 }
 
 void clearList(List* s) {
-    ListIterator it = mkIterator(s);
-    int elementCount = 1;
-
-    // check if list is not empty
-    if (!isEmpty(s)) {
-        // while there is a next element, grab it, increment counter and recheck
-        while (it.current->next != NULL) {
-            next(&it);
-            elementCount++;
-        }
-
-        // check if there are any elements left
-        while (elementCount > 0) {
-            // check if there is a next element, if so grab it and check again
-            while (it.current->next != NULL) {
-                next(&it);
-            }
-
-            /*
-                TODO:
-                DON'T FREE SINCE DATA SHOULD NOT BE DELETED - JUST A TRY FOR THE DAILY TESTS
-                MAYBE DELETE 
-            */
-
-            // free last element
-            //free(it.current);
-
-
-
-
-            // recreate iterator to start from beginning of list
-            it = mkIterator(s);
-            // decrement counter
-            elementCount--;
-        }
+    // create new pointer
+    ListItem* next;
+    // while list not empty
+    while (!isEmpty(s)) {
+        // store pointer to next element
+        next = s->head->next;
+        // free current element
+        free(s->head);
+        // set head to next element
+        s->head = next;
     }
 }
 
 void push(List* s, void* data) {
-    ListIterator it = mkIterator(s);
-
-    // check if there are any elements in list
-    if (!isEmpty(s)) {
-        // get last element
-        while (it.current->next != NULL) {
-            next(&it);
-        }
-
-        // allocate space for next element
-        next(&it);
-        it.current = malloc(sizeof(ListItem));
-        // store data and null for next element
-        it.current->next = NULL;
-        it.current->data = data;
-    } else {
-        // allocate space for element
+    if (isEmpty(s)) {
         s->head = malloc(sizeof(ListItem));
-        // store data and null to head
         s->head->next = NULL;
         s->head->data = data;
+    } else {
+        ListItem* elem = s->head->next;
+        s->head->data = data;
+        s->head->next = elem;
     }
 }
 
-void* peek(List* s) {
-    ListIterator it = mkIterator(s);
-    if (!isEmpty(s)) {
-        // get last element
-        while (it.current->next != NULL) {
-            next(&it);
-        }
-    }
-    // return content of last element
-    return getCurr(&it);
-}
+void* peek(List* s) { return (isEmpty(s)) ? NULL : s->head->data; }
 
 void pop(List* s) {
-    ListIterator it = mkIterator(s);
-    ListItem* sl_element = it.current;
-
-    if (!isEmpty(s)) {
-        // grab last element which has no next element
-        while (it.current->next != NULL) {
-            sl_element = it.current;
-            next(&it);
-        }
-
-        // check if there is only one element in list
-        if (sl_element == it.current) {
-            // free element and set head to NULL
-            free(sl_element);
-            s->head = NULL;
-        } else {
-            // free last element
-            free(it.current);
-
-            // reset iterator to beginning of list
-            it = mkIterator(s);
-
-            // grab last element which has no next element
-            while (it.current->next != NULL) {
-                next(&it);
-            }
-
-            // set next element to NULL
-            it.current->next = NULL;
-        }
-    }
+    // create new pointer and set it to next element
+    ListItem* element = malloc(sizeof(ListItem));
+    element = s->head->next;
+    // free head of list
+    free(s->head);
+    // set head of list to new top element
+    s->head = element;
 }
 
 char isEmpty(List* s) {

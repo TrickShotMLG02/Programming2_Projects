@@ -102,7 +102,7 @@ PropFormula* parseFormula(FILE* input, VarTable* vt) {
             pop(&fStack);
 
             if (l_op == NULL || r_op == NULL) {
-                // err("missing operand 1 or 2");
+                err("missing operand 1 or 2");
             }
 
             PropFormula* f = mkBinaryFormula(kind, l_op, r_op);

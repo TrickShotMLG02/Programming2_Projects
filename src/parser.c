@@ -114,9 +114,13 @@ PropFormula* parseFormula(FILE* input, VarTable* vt) {
         tokenName = nextToken(input);
     }
     PropFormula* res = (peek(&fStack));
-    clearList(&fStack);
+    pop(&fStack);
 
-    // prettyPrintFormula(vt, res);
+    if (!isEmpty(&fStack)) {
+        err("stack");
+    }
+
+    clearList(&fStack);
 
     return res;
 }

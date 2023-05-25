@@ -119,7 +119,5 @@ PropFormula* parseFormula(FILE* input, VarTable* vt) {
         err("stack");
     }
 
-    // clearList(&fStack);
-
     return res;
 }

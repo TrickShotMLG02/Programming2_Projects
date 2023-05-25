@@ -65,15 +65,13 @@ PropFormula* parseFormula(FILE* input, VarTable* vt) {
         if (kind == VAR) {
             // create variable formula
             PropFormula* i = mkVarFormula(vt, tokenName);
-            i->kind = kind;
-            // put variable formula on stack
+            //  put variable formula on stack
             push(&fStack, i);
 
         } else if (kind == NOT) {
             // kind is unary operator and uses last variable from stack?
             PropFormula* op = mkUnaryFormula(kind, peek(&fStack));
-            op->kind = kind;
-            // remove top most formula since it was processed
+            //  remove top most formula since it was processed
             pop(&fStack);
 
             if (op == NULL) {
@@ -102,8 +100,7 @@ PropFormula* parseFormula(FILE* input, VarTable* vt) {
 
             // create binary formula
             PropFormula* f = mkBinaryFormula(kind, l_op, r_op);
-            f->kind = kind;
-            // push formula to stack
+            //  push formula to stack
             push(&fStack, f);
         } else {
             err(tokenName);

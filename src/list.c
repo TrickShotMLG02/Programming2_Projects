@@ -35,15 +35,10 @@ void clearList(List* s) {
 }
 
 void push(List* s, void* data) {
-    if (isEmpty(s)) {
-        s->head = malloc(sizeof(ListItem));
-        s->head->next = NULL;
-        s->head->data = data;
-    } else {
-        ListItem* elem = s->head->next;
-        s->head->data = data;
-        s->head->next = elem;
-    }
+    ListItem* new = malloc(sizeof(ListItem));
+    new->next = s->head;
+    new->data = data;
+    s->head = new;
 }
 
 void* peek(List* s) { return (isEmpty(s)) ? NULL : s->head->data; }

@@ -56,7 +56,6 @@ PropFormula* parseFormula(FILE* input, VarTable* vt) {
     char* tokenName = nextToken(input);
 
     // create PropFormula to store result
-
     // loop over all tokens until NULL since NULL is end of formula
     while (tokenName != NULL) {
         FormulaKind kind = toKind(tokenName);
@@ -70,15 +69,18 @@ PropFormula* parseFormula(FILE* input, VarTable* vt) {
 
         } else if (kind == NOT) {
             // kind is unary operator and uses last variable from stack?
-            PropFormula* op = mkUnaryFormula(kind, peek(&fStack));
+            PropFormula* operand = peek(&fStack);
+
             //  remove top most formula since it was processed
             pop(&fStack);
 
-            if (op == NULL) {
+            if (operand == NULL) {
                 err("missing operand");
             }
 
-            // push formula stored in f to stack
+            PropFormula* op = mkUnaryFormula(kind, operand);
+
+            // push formula stored in op to stack
             push(&fStack, op);
 
         } else if (kind == AND || kind == OR || kind == IMPLIES ||
@@ -99,9 +101,9 @@ PropFormula* parseFormula(FILE* input, VarTable* vt) {
             }
 
             // create binary formula
-            PropFormula* f = mkBinaryFormula(kind, l_op, r_op);
+            PropFormula* binaryFormula = mkBinaryFormula(kind, l_op, r_op);
             //  push formula to stack
-            push(&fStack, f);
+            push(&fStack, binaryFormula);
         } else {
             err(tokenName);
         }
@@ -113,7 +115,7 @@ PropFormula* parseFormula(FILE* input, VarTable* vt) {
 
     // check if there is anything left on stack
     if (!isEmpty(&fStack)) {
-        err("stack");
+        err("stack not empty as expected");
     }
 
     return res;

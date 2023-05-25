@@ -49,25 +49,36 @@ PropFormula* parseFormula(FILE* input, VarTable* vt) {
     // TODO Implement me!
 
     // grab token string from formula
-    char* token = nextToken(input);
-    FormulaKind kind = toKind(token);
-    // index of last variable
-    VarIndex vi = getNextUndefinedVariable(vt);
-    // switch on kind
-    switch (kind) {
-        case VAR:
-            // create variable and store in vartable
-            mkVariable(vt, token);
-            break;
-        case NOT:
-            // kind is unary operator and uses last variable from stack?
-            mkUnaryFormula(kind, mkVarFormula(vt, getVariableName(vt, vi)));
-        default:
-            // kind is any other binary operand and uses last two variables from
-            // stack?
-            mkBinaryFormula(kind, mkVarFormula(vt, getVariableName(vt, vi)),
-                            mkVarFormula(vt, getVariableName(vt, vi - 1)));
-            break;
+    char* tokenName = nextToken(input);
+    VarIndex varCount = 0;
+    // loop over all tokens until NULL since NULL is end of formula
+    while (tokenName != NULL) {
+        FormulaKind kind = toKind(tokenName);
+        // index of last variable
+        // VarIndex vi = getNextUndefinedVariable(vt);
+        // switch on kind
+        switch (kind) {
+            case VAR:
+                // create variable and store in vartable
+                mkVariable(vt, tokenName);
+                varCount++;
+                break;
+            case NOT:
+                // kind is unary operator and uses last variable from stack?
+                PropFormula* f =
+                    mkVarFormula(vt, getVariableName(vt, varCount));
+                mkUnaryFormula(kind, f);
+
+            default:
+                // kind is any other binary operand and uses last two variables
+                // from stack?
+                mkBinaryFormula(
+                    kind, mkVarFormula(vt, getVariableName(vt, varCount)),
+                    mkVarFormula(vt, getVariableName(vt, varCount - 1)));
+                break;
+        }
+
+        tokenName = nextToken(input);
     }
 
     // NOT_IMPLEMENTED;

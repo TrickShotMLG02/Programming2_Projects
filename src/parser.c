@@ -49,8 +49,6 @@ FormulaKind toKind(const char* str) {
 }
 
 PropFormula* parseFormula(FILE* input, VarTable* vt) {
-    // TODO Implement me!
-
     // implement a stack for formula storing
     List fStack = mkList();
 
@@ -62,8 +60,6 @@ PropFormula* parseFormula(FILE* input, VarTable* vt) {
     // loop over all tokens until NULL since NULL is end of formula
     while (tokenName != NULL) {
         FormulaKind kind = toKind(tokenName);
-        // index of last variable
-        // VarIndex vi = getNextUndefinedVariable(vt);
 
         // switch on kind
         if (kind == VAR) {
@@ -72,8 +68,6 @@ PropFormula* parseFormula(FILE* input, VarTable* vt) {
             i->kind = kind;
             // put variable formula on stack
             push(&fStack, i);
-
-            // free(i);
 
         } else if (kind == NOT) {
             // kind is unary operator and uses last variable from stack?
@@ -101,26 +95,31 @@ PropFormula* parseFormula(FILE* input, VarTable* vt) {
             // remove last formula from stack
             pop(&fStack);
 
+            // check if both operands are valid
             if (l_op == NULL || r_op == NULL) {
                 err("missing operand 1 or 2");
             }
 
+            // create binary formula
             PropFormula* f = mkBinaryFormula(kind, l_op, r_op);
             f->kind = kind;
+            // push formula to stack
             push(&fStack, f);
         } else {
             err(tokenName);
         }
         tokenName = nextToken(input);
     }
+    // grab formula from stack
     PropFormula* res = (peek(&fStack));
     pop(&fStack);
 
+    // check if there is anything left on stack
     if (!isEmpty(&fStack)) {
         err("stack");
     }
 
-    clearList(&fStack);
+    // clearList(&fStack);
 
     return res;
 }

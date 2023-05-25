@@ -1,11 +1,14 @@
 #include "parser.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 #include "err.h"
 #include "lexer.h"
 #include "list.h"
+#include "propformula.h"
 #include "util.h"
+#include "variables.h"
 
 /**
  * Assigns symbols to strings.
@@ -22,10 +25,10 @@ FormulaKind toKind(const char* str) {
         return AND;
     else if (!strcmp(str, "||"))
         return OR;
-    else if (!strcmp(str, "->"))
-        return IMPLIES;
-    else if (!strcmp(str, "<->"))
+    else if (!strcmp(str, "<=>"))
         return EQUIV;
+    else if (!strcmp(str, "=>"))
+        return IMPLIES;
     else if (!strcmp(str, "!"))
         return NOT;
     else {
@@ -48,40 +51,72 @@ FormulaKind toKind(const char* str) {
 PropFormula* parseFormula(FILE* input, VarTable* vt) {
     // TODO Implement me!
 
+    // implement a stack for formula storing
+    List fStack = mkList();
+
     // grab token string from formula
     char* tokenName = nextToken(input);
-    VarIndex varCount = 0;
+
+    // create PropFormula to store result
+
     // loop over all tokens until NULL since NULL is end of formula
     while (tokenName != NULL) {
         FormulaKind kind = toKind(tokenName);
         // index of last variable
         // VarIndex vi = getNextUndefinedVariable(vt);
+
         // switch on kind
-        switch (kind) {
-            case VAR:
-                // create variable and store in vartable
-                mkVariable(vt, tokenName);
-                varCount++;
-                break;
-            case NOT:
-                // kind is unary operator and uses last variable from stack?
-                PropFormula* f =
-                    mkVarFormula(vt, getVariableName(vt, varCount));
-                mkUnaryFormula(kind, f);
+        if (kind == VAR) {
+            // create variable formula
+            PropFormula* i = mkVarFormula(vt, tokenName);
+            i->kind = kind;
+            // put variable formula on stack
+            push(&fStack, i);
 
-            default:
-                // kind is any other binary operand and uses last two variables
-                // from stack?
-                mkBinaryFormula(
-                    kind, mkVarFormula(vt, getVariableName(vt, varCount)),
-                    mkVarFormula(vt, getVariableName(vt, varCount - 1)));
-                break;
+            // free(i);
+
+        } else if (kind == NOT) {
+            // kind is unary operator and uses last variable from stack?
+            PropFormula* op = mkUnaryFormula(kind, peek(&fStack));
+            op->kind = kind;
+            // remove top most formula since it was processed
+            pop(&fStack);
+
+            if (op == NULL) {
+                err("missing operand");
+            }
+
+            // push formula stored in f to stack
+            push(&fStack, op);
+
+        } else if (kind == AND || kind == OR || kind == IMPLIES ||
+                   kind == EQUIV) {
+            // grab last formula from stack
+            PropFormula* r_op = peek(&fStack);
+            // remove last formula from stack
+            pop(&fStack);
+
+            // grab last formula from stack
+            PropFormula* l_op = peek(&fStack);
+            // remove last formula from stack
+            pop(&fStack);
+
+            if (l_op == NULL || r_op == NULL) {
+                // err("missing operand 1 or 2");
+            }
+
+            PropFormula* f = mkBinaryFormula(kind, l_op, r_op);
+            f->kind = kind;
+            push(&fStack, f);
+        } else {
+            err(tokenName);
         }
-
         tokenName = nextToken(input);
     }
+    PropFormula* res = (peek(&fStack));
+    clearList(&fStack);
 
-    // NOT_IMPLEMENTED;
-    // UNUSED(input);
-    // UNUSED(vt);
+    // prettyPrintFormula(vt, res);
+
+    return res;
 }

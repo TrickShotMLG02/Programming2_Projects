@@ -52,17 +52,17 @@ void freeFormula(PropFormula* pf) {
         // recursively check unary operator
         freeFormula(pf->data.single_op);
         // free unary operator
-        free(pf->data.single_op);
+        // free(pf->data.single_op);
     }
 
     if (pf->data.operands[0] != NULL && pf->data.operands[1] != NULL) {
         // recursively check binary operator
         freeFormula(pf->data.operands[0]);
         freeFormula(pf->data.operands[1]);
-
-        // free binary operands
-        free(pf->data.operands[0]);
-        free(pf->data.operands[1]);
+        //  free(pf);
+        //  free binary operands
+        //  free(pf->data.operands[0]);
+        //  free(pf->data.operands[1]);
     }
 }
 

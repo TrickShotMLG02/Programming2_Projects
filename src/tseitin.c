@@ -75,63 +75,91 @@ VarIndex addClauses(VarTable* vt, CNF* cnf, const PropFormula* pf) {
         // create a fresh variable to store clause in
         VarIndex newVar = mkFreshVariable(vt);
 
-        // make new clause with variable
+        //
+        // implement binary clauses for Transformation of NOT
+        // x1 <=> ¬a = (¬x1 v ¬a) ^ (a v x1)
+        //
+        addBinaryClause(vt, cnf, -op_index, -newVar);
         addBinaryClause(vt, cnf, op_index, newVar);
 
-        // negate the VarIndex since negation is represented by negative index
-        // of variable in vartable
-        addBinaryClause(vt, cnf, -op_index, -newVar);
-
-        // return varIndex of fresh variable
+        // return varIndex of new variable
         return newVar;
     } else if (pf->kind == AND) {
+        // recursively check sub formulas of AND and get VarIndexes
         VarIndex l_var = addClauses(vt, cnf, pf->data.operands[0]);
         VarIndex r_var = addClauses(vt, cnf, pf->data.operands[1]);
 
         // create new Variable
         VarIndex newVar = mkFreshVariable(vt);
 
+        //
+        // implement binary clauses for Transformation of AND
+        // x1 <=> (a ^ b) = (¬x1 v a) ^ (¬x1 v b) ^ (¬a v ¬b v x1)
+        //
         addBinaryClause(vt, cnf, -newVar, l_var);
         addBinaryClause(vt, cnf, -newVar, r_var);
         addTernaryClause(vt, cnf, -l_var, -r_var, newVar);
 
+        // return varIndex of new variable
         return newVar;
 
     } else if (pf->kind == OR) {
+        // recursively check sub formulas of OR and get VarIndexes
         VarIndex l_var = addClauses(vt, cnf, pf->data.operands[0]);
         VarIndex r_var = addClauses(vt, cnf, pf->data.operands[1]);
 
+        // create new Variable
         VarIndex newVar = mkFreshVariable(vt);
 
+        //
+        // implement binary clauses for Transformation of OR
+        // x1 <=> (a v b) = (¬x1 v a v b) ^ (¬a v x1) ^ (¬b v x1)
+        //
         addTernaryClause(vt, cnf, -newVar, l_var, r_var);
         addBinaryClause(vt, cnf, -l_var, newVar);
         addBinaryClause(vt, cnf, -r_var, newVar);
 
+        // return varIndex of new variable
         return newVar;
     } else if (pf->kind == EQUIV) {
+        // recursively check sub formulas of EQUIV and get VarIndexes
         VarIndex l_var = addClauses(vt, cnf, pf->data.operands[0]);
         VarIndex r_var = addClauses(vt, cnf, pf->data.operands[1]);
 
+        // create new Variable
         VarIndex newVar = mkFreshVariable(vt);
 
+        //
+        // implement binary clauses for Transformation of EQUIVALENT
+        // x1 <=> (a <=> b) = (¬x1 v ¬a v b) ^ (¬x1 v ¬b v a) ^ (x1 v ¬a v ¬b) ^
+        // (x1 v a v b)
+        //
         addTernaryClause(vt, cnf, -newVar, -l_var, r_var);
         addTernaryClause(vt, cnf, -newVar, -r_var, l_var);
         addTernaryClause(vt, cnf, newVar, -l_var, -r_var);
         addTernaryClause(vt, cnf, newVar, l_var, r_var);
 
+        // return varIndex of new variable
         return newVar;
     }
     // else if (pf->kind == IMPLIES) {
     else {
+        // recursively check sub formulas of IMPLIES and get VarIndexes
         VarIndex l_var = addClauses(vt, cnf, pf->data.operands[0]);
         VarIndex r_var = addClauses(vt, cnf, pf->data.operands[1]);
 
+        // create new Variable
         VarIndex newVar = mkFreshVariable(vt);
 
+        //
+        // implement binary clauses for Transformation of IMPLICATION
+        // x1 <=> (a => b) = (¬x1 v ¬a v  b) ^ (a v x1) ^ (¬b v x1)
+        //
         addTernaryClause(vt, cnf, -newVar, -l_var, r_var);
         addBinaryClause(vt, cnf, l_var, newVar);
         addBinaryClause(vt, cnf, -r_var, newVar);
 
+        // return varIndex of new variable
         return newVar;
     }
 }

@@ -137,6 +137,23 @@ int fulfillAllUnitClauses(VarTable* vt, List* stack, CNF* cnf) {
     return (Count == 0) ? 0 : 1;
 }
 
+int checkForAnyChosenValues(List* stack) {
+    ListIterator stackIterator = mkIterator(stack);
+
+    // set all unit clauses to IMPLIED
+    while (stackIterator.current != NULL) {
+        // check if current clause is a unit clause
+
+        Assignment* a = getCurr(&stackIterator);
+
+        if (a->reason == CHOSEN) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 /**
  * Check if there exists any clause which has truthvalue FALSE
  */
@@ -176,18 +193,16 @@ int existsClauseFalse(CNF* cnf) {
  *                -1 if the algorithm should terminate with UNSAT
  */
 int iterate(VarTable* vt, List* stack, CNF* cnf) {
-    // counts number of chosen values
-    int numberOfCHOSEN = 0;
+    // track if changes were made to variables
+    int isDirty = 1;
 
     // create VarIndex to hold next variable
     VarIndex nextVar = 0;
 
-    // create iterator to iterate over stack
-    ListIterator stackIterator = mkIterator(stack);
-
-    Assignment* curAssignment;
-
     while (1) {
+        // set flag to 0 since no changes were made yet
+        isDirty = 0;
+
         // check if all clauses are fulfilled
         if (allSatisfied(cnf)) {
             return 1;
@@ -196,49 +211,46 @@ int iterate(VarTable* vt, List* stack, CNF* cnf) {
         // check if one clause is false (NOT TRUE OR UNDEFINED)
         if (existsClauseFalse(cnf)) {
             // check if reset possible
-            //
-            //
-            //
-            // check if there is at least one value which was chosen
-            if (numberOfCHOSEN > 0) {
-                // get current assignment from iterator
-                curAssignment = getCurr(&stackIterator);
+            if (checkForAnyChosenValues(stack)) {
+                // reset
+                // loop until stack is empty
+                while (!isEmpty(stack)) {
+                    Assignment* temp = peek(stack);
 
-                // loop until a reason is CHOSEN
-                while (curAssignment->reason == IMPLIED) {
-                    // go back in stack
-                    next(&stackIterator);
-                    curAssignment = getCurr(&stackIterator);
+                    // check if variable is chosen
+                    if (temp->reason == CHOSEN) {
+                        TruthValue tv = getVariableValue(vt, temp->var);
+                        updateVariableValue(vt, temp->var,
+                                            negateTruthValue(tv));
+                        // maybe???
+                        temp->reason = IMPLIED;
 
-                    // set variable back to UNDEFINED
-                    updateVariableValue(vt, curAssignment->var, UNDEFINED);
+                        // changed some variable values in the current iteration
+                        isDirty = 1;
 
-                    // remove assignment from stack
-                    popAssignment(stack);
+                        // exit while loop
+                        break;
+                    } else {
+                        // Variable was IMPLIED, set it to UNDEFINED
+                        updateVariableValue(vt, temp->var, UNDEFINED);
 
-                    // end iteration
-                    // return 0;
-                }
+                        // remove variable from stack
+                        pop(stack);
 
-                // change reason from CHOSEN to IMPLIED in curAssignment
-                // negate truthValue of variable and store back
-                VarIndex index = curAssignment->var;
-                if (index != 0) {
-                    TruthValue val = getVariableValue(vt, curAssignment->var);
-                    curAssignment->reason = IMPLIED;
-                    updateVariableValue(vt, index, negateTruthValue(val));
-                    numberOfCHOSEN--;
+                        // changed some variable values in the current iteration
+                        isDirty = 1;
+                    }
                 }
             } else {
-                // abort with unsatisfied
-                return -1;
+                // exit while loop
+                break;
             }
         }
 
         // check if there are unit clauses and fulfill all
         if (fulfillAllUnitClauses(vt, stack, cnf)) {
-            //  return 0 to end current iteration
-            return 0;
+            // changed some variable values in the current iteration
+            isDirty = 1;
         } else {
             // select next free variable and set to true
             nextVar = getNextUndefinedVariable(vt);
@@ -246,11 +258,23 @@ int iterate(VarTable* vt, List* stack, CNF* cnf) {
                 updateVariableValue(vt, nextVar, TRUE);
                 // set variable as CHOSEN since it not a unit clause
                 pushAssignment(stack, nextVar, CHOSEN);
-                numberOfCHOSEN++;
+                // changed some variable values in the current iteration
+                isDirty = 1;
+            } else {
+                // exit while loop
+                break;
             }
         }
     }
-    return -1;
+
+    // check if some variables have changed since beginning of current iteration
+    if (isDirty == 0) {
+        // terminate since fomrula is UNSAT
+        return -1;
+    } else {
+        // end iteration
+        return 0;
+    }
 }
 
 char isSatisfiable(VarTable* vt, CNF* cnf) {

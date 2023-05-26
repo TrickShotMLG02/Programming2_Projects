@@ -102,55 +102,64 @@ int allSatisfied(CNF* cnf) {
 int fulfillAllUnitClauses(VarTable* vt, List* stack, CNF* cnf) {
     ListIterator clauseIterator = mkIterator(&cnf->clauses);
 
+    // create temporary literal storage
     Literal cVar;
+    // create counter to check if there was at least one change
     int Count = 0;
 
-    // set all unit clauses to IMPLIED
+    // loop over all clauses
     while (clauseIterator.current != NULL) {
-        // check if current clause is a unit clause
-
+        // get clause from current iteration
         Clause* c = getCurr(&clauseIterator);
 
+        // try to get UnitLiteral from clause
         cVar = getUnitLiteral(vt, c);
 
+        // check if literal existed
         if (cVar != 0) {
-            // set cVar variable to TRUE
-
+            // convert negated variable literal to positive varIndex
             cVar = abs(cVar);
 
+            // set variable to True
             updateVariableValue(vt, cVar, TRUE);
-            // check if clause is true else set cVAR to FALSE
+            // check if clause is now satisfied else set cVAR to FALSE
             if (c->val != TRUE) {
                 updateVariableValue(vt, cVar, FALSE);
             }
             // set Variable to IMPLIED
             pushAssignment(stack, cVar, IMPLIED);
 
-            // move clauseIterator
-
+            // increment counter since variable was changed
             Count++;
         }
+        // move clauseIterator
         next(&clauseIterator);
-        // err("sas");
     }
 
+    // return 0 if nothing was changed, else 1
     return (Count == 0) ? 0 : 1;
 }
 
+/**
+ * check if any values are marked as chosen in stack
+ */
 int checkForAnyChosenValues(List* stack) {
+    // create new iterator for stack
     ListIterator stackIterator = mkIterator(stack);
 
-    // set all unit clauses to IMPLIED
+    // check if current clause is a unit clause
     while (stackIterator.current != NULL) {
-        // check if current clause is a unit clause
-
+        // get data of current stack iterator position
         Assignment* a = getCurr(&stackIterator);
 
+        // check if variable is chosen
         if (a->reason == CHOSEN) {
+            // return 1 since at least one variable is marked as chosen
             return 1;
         }
     }
 
+    // return 0 since no variable is marked as chosen
     return 0;
 }
 
@@ -158,8 +167,10 @@ int checkForAnyChosenValues(List* stack) {
  * Check if there exists any clause which has truthvalue FALSE
  */
 int existsClauseFalse(CNF* cnf) {
+    // create iterator for all clauses
     ListIterator clauseIterator = mkIterator(&cnf->clauses);
 
+    // iterate over all clauses
     while (clauseIterator.current != NULL) {
         // check if current clause is FALSE and return 1
         if (((Clause*)clauseIterator.current)->val == FALSE) {
@@ -168,7 +179,7 @@ int existsClauseFalse(CNF* cnf) {
         // move clauseIterator
         next(&clauseIterator);
     }
-    // return 0 since there was no clause which was false
+    // return 0 since there was no clause which was FALSE
     return 0;
 }
 
@@ -199,6 +210,7 @@ int iterate(VarTable* vt, List* stack, CNF* cnf) {
     // create VarIndex to hold next variable
     VarIndex nextVar = 0;
 
+    // infinite loop to process whole formula
     while (1) {
         // set flag to 0 since no changes were made yet
         isDirty = 0;
@@ -222,7 +234,8 @@ int iterate(VarTable* vt, List* stack, CNF* cnf) {
                         TruthValue tv = getVariableValue(vt, temp->var);
                         updateVariableValue(vt, temp->var,
                                             negateTruthValue(tv));
-                        // maybe???
+                        // change reason to IMPLIED, since it didn't work with
+                        // previous variable
                         temp->reason = IMPLIED;
 
                         // changed some variable values in the current iteration
@@ -255,6 +268,7 @@ int iterate(VarTable* vt, List* stack, CNF* cnf) {
             // select next free variable and set to true
             nextVar = getNextUndefinedVariable(vt);
             if (nextVar != 0) {
+                // set variable to TRUE
                 updateVariableValue(vt, nextVar, TRUE);
                 // set variable as CHOSEN since it not a unit clause
                 pushAssignment(stack, nextVar, CHOSEN);
@@ -269,7 +283,7 @@ int iterate(VarTable* vt, List* stack, CNF* cnf) {
 
     // check if some variables have changed since beginning of current iteration
     if (isDirty == 0) {
-        // terminate since fomrula is UNSAT
+        // terminate since fomrula is unsatisfiable
         return -1;
     } else {
         // end iteration

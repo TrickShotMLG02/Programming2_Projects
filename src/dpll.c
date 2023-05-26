@@ -101,27 +101,39 @@ int allSatisfied(CNF* cnf) {
  */
 int fulfillAllUnitClauses(VarTable* vt, List* stack, CNF* cnf) {
     ListIterator clauseIterator = mkIterator(&cnf->clauses);
+
     Literal cVar;
     int Count = 0;
 
     // set all unit clauses to IMPLIED
     while (clauseIterator.current != NULL) {
         // check if current clause is a unit clause
-        if ((cVar = getUnitLiteral(vt, (Clause*)clauseIterator.current)) != 0) {
+
+        Clause* c = getCurr(&clauseIterator);
+
+        cVar = getUnitLiteral(vt, c);
+
+        if (cVar != 0) {
             // set cVar variable to TRUE
+
+            cVar = abs(cVar);
+
             updateVariableValue(vt, cVar, TRUE);
             // check if clause is true else set cVAR to FALSE
-            if (((Clause*)clauseIterator.current)->val != TRUE) {
+            if (c->val != TRUE) {
                 updateVariableValue(vt, cVar, FALSE);
             }
             // set Variable to IMPLIED
             pushAssignment(stack, cVar, IMPLIED);
 
             // move clauseIterator
-            next(&clauseIterator);
+
             Count++;
         }
+        next(&clauseIterator);
+        // err("sas");
     }
+
     return (Count == 0) ? 0 : 1;
 }
 
@@ -132,8 +144,8 @@ int existsClauseFalse(CNF* cnf) {
     ListIterator clauseIterator = mkIterator(&cnf->clauses);
 
     while (clauseIterator.current != NULL) {
-        // check if current clause is not TRUE and return 1
-        if (((Clause*)clauseIterator.current)->val != TRUE) {
+        // check if current clause is FALSE and return 1
+        if (((Clause*)clauseIterator.current)->val == FALSE) {
             return 1;
         }
         // move clauseIterator
@@ -166,7 +178,7 @@ int existsClauseFalse(CNF* cnf) {
 int iterate(VarTable* vt, List* stack, CNF* cnf) {
     // counts number of chosen values
     int numberOfCHOSEN = 0;
-    int firstRun = 1;
+
     // create VarIndex to hold next variable
     VarIndex nextVar = 0;
 
@@ -187,22 +199,53 @@ int iterate(VarTable* vt, List* stack, CNF* cnf) {
             //
             //
             //
-            if (0) {
-                // check if reset possible
-                return 0;
+            // check if there is at least one value which was chosen
+            if (numberOfCHOSEN > 0) {
+                // get current assignment from iterator
+                curAssignment = getCurr(&stackIterator);
+
+                // loop until a reason is CHOSEN
+                while (curAssignment->reason == IMPLIED) {
+                    // go back in stack
+                    next(&stackIterator);
+                    curAssignment = getCurr(&stackIterator);
+                    // remove assignment from stack
+                    popAssignment(stack);
+
+                    // end iteration
+                    // return 0;
+                }
+
+                // change reason from CHOSEN to IMPLIED in curAssignment
+                // negate truthValue of variable and store back
+                VarIndex index = curAssignment->var;
+                if (index != 0) {
+                    TruthValue val = getVariableValue(vt, curAssignment->var);
+                    curAssignment->reason = IMPLIED;
+                    updateVariableValue(vt, index, negateTruthValue(val));
+                    numberOfCHOSEN--;
+                }
+
             } else {
-                // unsatisfiable
+                // abort with unsatisfied
                 return -1;
             }
         }
 
         // check if there are unit clauses and fulfill all
         if (fulfillAllUnitClauses(vt, stack, cnf)) {
-            // return 0 to end current iteration
-            return 0;
+            //  return 0 to end current iteration
+            // return 0;
         }
 
-        // select next free variable and set it to true
+        // select next free variable and set to true
+        nextVar = getNextUndefinedVariable(vt);
+        if (nextVar != 0) {
+            updateVariableValue(vt, nextVar, TRUE);
+            // set variable as CHOSEN since it not a unit clause
+            pushAssignment(stack, nextVar, CHOSEN);
+            numberOfCHOSEN++;
+        }
     }
     return -1;
 }

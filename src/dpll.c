@@ -80,7 +80,7 @@ int allSatisfied(CNF* cnf) {
         Clause* c = getCurr(&clauseIterator);
 
         // check if clause is false
-        if (c->val == FALSE) {
+        if (c->val != TRUE) {
             // unsatisfied
             return 0;
         }

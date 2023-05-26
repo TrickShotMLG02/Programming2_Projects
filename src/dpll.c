@@ -209,6 +209,10 @@ int iterate(VarTable* vt, List* stack, CNF* cnf) {
                     // go back in stack
                     next(&stackIterator);
                     curAssignment = getCurr(&stackIterator);
+
+                    // set variable back to UNDEFINED
+                    updateVariableValue(vt, curAssignment->var, UNDEFINED);
+
                     // remove assignment from stack
                     popAssignment(stack);
 
@@ -225,7 +229,6 @@ int iterate(VarTable* vt, List* stack, CNF* cnf) {
                     updateVariableValue(vt, index, negateTruthValue(val));
                     numberOfCHOSEN--;
                 }
-
             } else {
                 // abort with unsatisfied
                 return -1;
@@ -236,15 +239,15 @@ int iterate(VarTable* vt, List* stack, CNF* cnf) {
         if (fulfillAllUnitClauses(vt, stack, cnf)) {
             //  return 0 to end current iteration
             return 0;
-        }
-
-        // select next free variable and set to true
-        nextVar = getNextUndefinedVariable(vt);
-        if (nextVar != 0) {
-            updateVariableValue(vt, nextVar, TRUE);
-            // set variable as CHOSEN since it not a unit clause
-            pushAssignment(stack, nextVar, CHOSEN);
-            numberOfCHOSEN++;
+        } else {
+            // select next free variable and set to true
+            nextVar = getNextUndefinedVariable(vt);
+            if (nextVar != 0) {
+                updateVariableValue(vt, nextVar, TRUE);
+                // set variable as CHOSEN since it not a unit clause
+                pushAssignment(stack, nextVar, CHOSEN);
+                numberOfCHOSEN++;
+            }
         }
     }
     return -1;

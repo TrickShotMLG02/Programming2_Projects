@@ -130,5 +130,9 @@ PropFormula* parseFormula(FILE* input, VarTable* vt) {
         err("stack not empty as expected");
     }
 
+    if (res == NULL) {
+        err("formula is null");
+    }
+
     return res;
 }

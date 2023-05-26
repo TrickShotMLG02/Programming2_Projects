@@ -49,6 +49,11 @@ FormulaKind toKind(const char* str) {
 }
 
 PropFormula* parseFormula(FILE* input, VarTable* vt) {
+    // check if file input is null
+    if (input == NULL) {
+        err("File input invalid");
+    }
+
     // implement a stack for formula storing
     List fStack = mkList();
 

@@ -107,6 +107,13 @@ PropFormula* parseFormula(FILE* input, VarTable* vt) {
         } else {
             err(tokenName);
         }
+
+        // check if kind is not a variable
+        if (kind != VAR) {
+            // free tokenName, since it isn't needed for operands
+            free(tokenName);
+        }
+
         tokenName = nextToken(input);
     }
     // grab formula from stack

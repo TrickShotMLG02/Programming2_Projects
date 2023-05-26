@@ -96,6 +96,54 @@ int allSatisfied(CNF* cnf) {
 }
 
 /**
+ * Check if there are any unit clauses and fill them with the corresponding
+ * values
+ */
+int fulfillAllUnitClauses(VarTable* vt, List* stack, CNF* cnf) {
+    ListIterator clauseIterator = mkIterator(&cnf->clauses);
+    Literal cVar;
+    int Count = 0;
+
+    // set all unit clauses to IMPLIED
+    while (clauseIterator.current != NULL) {
+        // check if current clause is a unit clause
+        if ((cVar = getUnitLiteral(vt, (Clause*)clauseIterator.current)) != 0) {
+            // set cVar variable to TRUE
+            updateVariableValue(vt, cVar, TRUE);
+            // check if clause is true else set cVAR to FALSE
+            if (((Clause*)clauseIterator.current)->val != TRUE) {
+                updateVariableValue(vt, cVar, FALSE);
+            }
+            // set Variable to IMPLIED
+            pushAssignment(stack, cVar, IMPLIED);
+
+            // move clauseIterator
+            next(&clauseIterator);
+            Count++;
+        }
+    }
+    return (Count == 0) ? 0 : 1;
+}
+
+/**
+ * Check if there exists any clause which has truthvalue FALSE
+ */
+int existsClauseFalse(CNF* cnf) {
+    ListIterator clauseIterator = mkIterator(&cnf->clauses);
+
+    while (clauseIterator.current != NULL) {
+        // check if current clause is not TRUE and return 1
+        if (((Clause*)clauseIterator.current)->val != TRUE) {
+            return 1;
+        }
+        // move clauseIterator
+        next(&clauseIterator);
+    }
+    // return 0 since there was no clause which was false
+    return 0;
+}
+
+/**
  * Führt eine Iteration des DPLL Algorithmus aus.
  *
  * @param vt       die zugrunde liegende Variablentabelle
@@ -116,11 +164,9 @@ int allSatisfied(CNF* cnf) {
  *                -1 if the algorithm should terminate with UNSAT
  */
 int iterate(VarTable* vt, List* stack, CNF* cnf) {
-    int terminationCode = 0;
-
     // counts number of chosen values
     int numberOfCHOSEN = 0;
-
+    int firstRun = 1;
     // create VarIndex to hold next variable
     VarIndex nextVar = 0;
 
@@ -129,58 +175,36 @@ int iterate(VarTable* vt, List* stack, CNF* cnf) {
 
     Assignment* curAssignment;
 
-    while (terminationCode == 0) {
-        // check if all clauses are satisfied:
+    while (1) {
+        // check if all clauses are fulfilled
         if (allSatisfied(cnf)) {
-            // abort with Satisfied
             return 1;
         }
-        // if one clause is not satisfied
-        else if (!allSatisfied(cnf)) {
-            // check if there is at least one value which was chosen
-            if (numberOfCHOSEN > 0) {
-                // get current assignment from iterator
-                curAssignment = getCurr(&stackIterator);
 
-                // loop until a reason is CHOSEN
-                while (curAssignment->reason == IMPLIED) {
-                    // go back in stack
-                    next(&stackIterator);
-
-                    // remove assignment from stack
-                    popAssignment(stack);
-                    numberOfCHOSEN--;
-                }
-
-                // change reason from CHOSEN to IMPLIED in curAssignment
-                // negate truthValue of variable and store back
-                VarIndex index = curAssignment->var;
-                TruthValue val = getVariableValue(vt, curAssignment->var);
-                curAssignment->reason = IMPLIED;
-                updateVariableValue(vt, index, negateTruthValue(val));
-                numberOfCHOSEN--;
+        // check if one clause is false (NOT TRUE OR UNDEFINED)
+        if (existsClauseFalse(cnf)) {
+            // check if reset possible
+            //
+            //
+            //
+            if (0) {
+                // check if reset possible
+                return 0;
             } else {
-                // abort with unsatisfied
+                // unsatisfiable
                 return -1;
             }
         }
 
-        // if unit clause exists
-        else if (getNextUndefinedVariable(vt) != 0) {
-            // fulfill next clause by setting its value to true and to implied
-            updateVariableValue(vt, nextVar, TRUE);
-            pushAssignment(stack, nextVar, IMPLIED);
-            numberOfCHOSEN--;
+        // check if there are unit clauses and fulfill all
+        if (fulfillAllUnitClauses(vt, stack, cnf)) {
+            // return 0 to end current iteration
+            return 0;
         }
 
-        // select next free variable and set to true
-        nextVar = getNextUndefinedVariable(vt);
-        updateVariableValue(vt, nextVar, TRUE);
-        // set variable as CHOSEN since it not a unit clause
-        pushAssignment(stack, nextVar, CHOSEN);
-        numberOfCHOSEN++;
+        // select next free variable and set it to true
     }
-    return terminationCode;
+    return -1;
 }
 
 char isSatisfiable(VarTable* vt, CNF* cnf) {

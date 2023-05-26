@@ -235,7 +235,7 @@ int iterate(VarTable* vt, List* stack, CNF* cnf) {
         // check if there are unit clauses and fulfill all
         if (fulfillAllUnitClauses(vt, stack, cnf)) {
             //  return 0 to end current iteration
-            // return 0;
+            return 0;
         }
 
         // select next free variable and set to true

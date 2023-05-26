@@ -85,10 +85,11 @@ VarIndex addClauses(VarTable* vt, CNF* cnf, const PropFormula* pf) {
         // return varIndex of fresh variable
         return newVar;
     } else if (pf->kind == AND) {
-        VarIndex newVar = mkFreshVariable(vt);
-
         VarIndex l_var = addClauses(vt, cnf, pf->data.operands[0]);
         VarIndex r_var = addClauses(vt, cnf, pf->data.operands[1]);
+
+        // create new Variable
+        VarIndex newVar = mkFreshVariable(vt);
 
         addBinaryClause(vt, cnf, -newVar, l_var);
         addBinaryClause(vt, cnf, -newVar, r_var);
@@ -97,10 +98,10 @@ VarIndex addClauses(VarTable* vt, CNF* cnf, const PropFormula* pf) {
         return newVar;
 
     } else if (pf->kind == OR) {
-        VarIndex newVar = mkFreshVariable(vt);
-
         VarIndex l_var = addClauses(vt, cnf, pf->data.operands[0]);
         VarIndex r_var = addClauses(vt, cnf, pf->data.operands[1]);
+
+        VarIndex newVar = mkFreshVariable(vt);
 
         addTernaryClause(vt, cnf, -newVar, l_var, r_var);
         addBinaryClause(vt, cnf, -l_var, newVar);
@@ -108,10 +109,10 @@ VarIndex addClauses(VarTable* vt, CNF* cnf, const PropFormula* pf) {
 
         return newVar;
     } else if (pf->kind == EQUIV) {
-        VarIndex newVar = mkFreshVariable(vt);
-
         VarIndex l_var = addClauses(vt, cnf, pf->data.operands[0]);
         VarIndex r_var = addClauses(vt, cnf, pf->data.operands[1]);
+
+        VarIndex newVar = mkFreshVariable(vt);
 
         addTernaryClause(vt, cnf, -newVar, -l_var, r_var);
         addTernaryClause(vt, cnf, -newVar, -r_var, l_var);
@@ -122,10 +123,10 @@ VarIndex addClauses(VarTable* vt, CNF* cnf, const PropFormula* pf) {
     }
     // else if (pf->kind == IMPLIES) {
     else {
-        VarIndex newVar = mkFreshVariable(vt);
-
         VarIndex l_var = addClauses(vt, cnf, pf->data.operands[0]);
         VarIndex r_var = addClauses(vt, cnf, pf->data.operands[1]);
+
+        VarIndex newVar = mkFreshVariable(vt);
 
         addTernaryClause(vt, cnf, -newVar, -l_var, r_var);
         addBinaryClause(vt, cnf, l_var, newVar);

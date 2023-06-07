@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import javax.lang.model.util.ElementScanner14;
-
 import uttt.utils.Symbol;
 
 public class Board implements BoardInterface {

@@ -71,10 +71,10 @@ public class Board implements BoardInterface {
         // check if all marks are not empty or if there is a winner
         for (int i = 0; i < marks.length; i++) {
             if (isMovePossible(i)) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     @Override
@@ -126,7 +126,7 @@ public class Board implements BoardInterface {
         Symbol winner;
 
         // iterate over all rows
-        for (int i = 0; i < 3; i += 3) {
+        for (int i = 0; i < 9; i += 3) {
             winner = checkForEquality(i, i + 1, i + 2);
             if (winner != Symbol.EMPTY) {
                 return winner;
@@ -142,7 +142,7 @@ public class Board implements BoardInterface {
         }
 
         // check diagonals
-        for (int i = 0; i < 2; i += 2) {
+        for (int i = 0; i < 3; i += 2) {
             winner = checkForEquality(i, 4, 8 - i);
             if (winner != Symbol.EMPTY) {
                 return winner;

@@ -20,17 +20,19 @@ public class MarkInterfaceTest {
 	public void setUp() throws Exception {
 		markCross = UTTTFactory.createMark(Symbol.CROSS, 0);
 		markCircle = UTTTFactory.createMark(Symbol.CIRCLE, 1);
-		markEmpty = UTTTFactory.createMark(Symbol.EMPTY, -1);
 		markInvalid = UTTTFactory.createMark(Symbol.EMPTY, 0);
-
 	}
 
 	@Test
 	public void simpleSetPieceTest() {
+
+		assertThrows(IllegalArgumentException.class, () -> {
+			markEmpty = UTTTFactory.createMark(Symbol.EMPTY, -1);
+		});
+
 		// check if marks are not null
 		assertNotNull(markCross);
 		assertNotNull(markCircle);
-		assertNotNull(markEmpty);
 
 		// check if markInvalid throws an exception on setSymbol with null
 		assertThrows(IllegalArgumentException.class, () -> {

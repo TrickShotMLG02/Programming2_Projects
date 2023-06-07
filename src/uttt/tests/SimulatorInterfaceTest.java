@@ -9,7 +9,7 @@ import uttt.UTTTFactory;
 import uttt.game.BoardInterface;
 import uttt.game.MarkInterface;
 
-public class BoardInterfaceTest {
+public class SimulatorInterfaceTest {
 
 	BoardInterface board;
 	BoardInterface boardAmount9;

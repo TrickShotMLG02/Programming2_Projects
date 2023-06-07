@@ -1,5 +1,6 @@
 package uttt.game;
 
+import uttt.utils.Move;
 import uttt.utils.Symbol;
 
 public class Simulator implements SimulatorInterface {
@@ -26,8 +27,42 @@ public class Simulator implements SimulatorInterface {
     @Override
     public void run(PlayerInterface playerOne, PlayerInterface playerTwo, UserInterface ui)
             throws IllegalArgumentException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'run'");
+
+        // set currentPlayerSymbol to playerOne's symbol
+        currentPlayerSymbol = playerOne.getSymbol();
+
+        // define currentPlayer
+        PlayerInterface currentPlayer = playerOne;
+
+        // run game while game is not over
+        while (!isGameOver()) {
+            // get current player move
+            Move move = currentPlayer.getPlayerMove(this, ui);
+
+            // check if move is possible
+            if (isMovePossible(move.getBoardIndex(), move.getMarkIndex())) {
+                // set current player mark at move
+                setMarkAt(currentPlayerSymbol, move.getBoardIndex(), move.getMarkIndex());
+
+                // flip current player symbol
+                currentPlayerSymbol = currentPlayerSymbol.flip();
+
+                // switch players
+                currentPlayer = flipPlayers(playerOne, playerTwo, currentPlayer);
+
+                // update screen
+                ui.updateScreen(this);
+            } else {
+                System.out.println("Move not possible");
+            }
+
+        }
+
+    }
+
+    private PlayerInterface flipPlayers(PlayerInterface playerOne, PlayerInterface playerTwo, PlayerInterface current) {
+        // return playerTwo if current player is playerOne
+        return current == playerOne ? playerTwo : playerOne;
     }
 
     @Override
@@ -67,8 +102,14 @@ public class Simulator implements SimulatorInterface {
     @Override
     public boolean setMarkAt(Symbol symbol, int boardIndex, int markIndex) throws IllegalArgumentException {
         try {
-            boards[boardIndex].setMarkAt(symbol, markIndex);
-            return true;
+            if ((getIndexNextBoard() == -1 || getIndexNextBoard() == boardIndex) && symbol == currentPlayerSymbol) {
+                boards[boardIndex].setMarkAt(symbol, markIndex);
+                setIndexNextBoard(boardIndex);
+                return true;
+            } else {
+                return false;
+            }
+
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid mark");
         }
@@ -121,7 +162,11 @@ public class Simulator implements SimulatorInterface {
 
     @Override
     public boolean isMovePossible(int boardIndex, int markIndex) throws IllegalArgumentException {
-        return boards[boardIndex].isMovePossible(markIndex);
+        if (getIndexNextBoard() == -1 || boardIndex == getIndexNextBoard()) {
+            return boards[boardIndex].isMovePossible(markIndex);
+        } else {
+            return false;
+        }
     }
 
     @Override

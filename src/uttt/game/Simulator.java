@@ -44,6 +44,8 @@ public class Simulator implements SimulatorInterface {
                 // set current player mark at move
                 setMarkAt(currentPlayerSymbol, move.getBoardIndex(), move.getMarkIndex());
 
+                setIndexNextBoard(move.getMarkIndex());
+
                 // flip current player symbol
                 currentPlayerSymbol = currentPlayerSymbol.flip();
 
@@ -165,7 +167,17 @@ public class Simulator implements SimulatorInterface {
 
     @Override
     public boolean isMovePossible(int boardIndex, int markIndex) throws IllegalArgumentException {
-        if (getIndexNextBoard() == -1 || boardIndex == getIndexNextBoard()) {
+
+        // check if the nextBoardIndex is -1
+        if (getIndexNextBoard() == -1) {
+            // check if move is possible on boardIndex and markIndex
+            return boards[boardIndex].isMovePossible(markIndex);
+        }
+
+        // check if board at nextBoardIndex is not closed and if nextBoardIndex is equal
+        // to boardIndex to prevent placing outside current board
+        if (!boards[getIndexNextBoard()].isClosed() && getIndexNextBoard() == boardIndex) {
+            // then check if move is possible there and return result
             return boards[boardIndex].isMovePossible(markIndex);
         } else {
             return false;

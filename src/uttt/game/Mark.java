@@ -26,7 +26,7 @@ public class Mark implements MarkInterface {
     public void setSymbol(Symbol symbol) throws IllegalArgumentException {
         // check if symbol is null -> set it to Empty, otherwise apply symbol
         if (symbol == null)
-            symbol = Symbol.EMPTY;
+            this.symbol = Symbol.EMPTY;
         else
             this.symbol = symbol;
     }

@@ -5,6 +5,7 @@ import uttt.game.BoardInterface;
 import uttt.game.Mark;
 import uttt.game.MarkInterface;
 import uttt.game.PlayerInterface;
+import uttt.game.Simulator;
 import uttt.game.SimulatorInterface;
 import uttt.game.UserInterface;
 import uttt.ui.GUI;
@@ -41,7 +42,8 @@ public class UTTTFactory {
 	 * @return A Ultimate TicTacToe simulator.
 	 */
 	public static SimulatorInterface createSimulator() {
-		throw new UnsupportedOperationException("Not yet implemented");
+		Simulator sim = new Simulator();
+		return sim;
 	}
 
 	/**

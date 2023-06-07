@@ -4,6 +4,7 @@ import uttt.game.Board;
 import uttt.game.BoardInterface;
 import uttt.game.Mark;
 import uttt.game.MarkInterface;
+import uttt.game.Player;
 import uttt.game.PlayerInterface;
 import uttt.game.Simulator;
 import uttt.game.SimulatorInterface;
@@ -67,7 +68,8 @@ public class UTTTFactory {
 	 *         communicate with the human player to select moves.
 	 */
 	public static PlayerInterface createHumanPlayer(Symbol symbol) {
-		throw new UnsupportedOperationException("Not yet implemented");
+		PlayerInterface player = new Player(symbol);
+		return player;
 	}
 
 	/**

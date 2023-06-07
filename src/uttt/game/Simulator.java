@@ -35,7 +35,7 @@ public class Simulator implements SimulatorInterface {
         PlayerInterface currentPlayer = playerOne;
 
         // run game while game is not over
-        while (!isGameOver()) {
+        while (!isGameOver() && getWinner() == Symbol.EMPTY) {
             // get current player move
             Move move = currentPlayer.getPlayerMove(this, ui);
 
@@ -57,6 +57,9 @@ public class Simulator implements SimulatorInterface {
             }
 
         }
+
+        // print winner
+        ui.showGameOverScreen(getWinner());
 
     }
 

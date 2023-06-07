@@ -34,6 +34,9 @@ public class Board implements BoardInterface {
 
     @Override
     public void setMarks(MarkInterface[] marks) throws IllegalArgumentException {
+        if (marks == null)
+            throw new IllegalArgumentException("Marks array is null");
+
         if (marks.length != 9)
             throw new IllegalArgumentException("There must be 9 marks");
 

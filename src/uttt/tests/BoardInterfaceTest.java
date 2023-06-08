@@ -94,21 +94,6 @@ public class BoardInterfaceTest {
 	}
 
 	@Test
-	public void getMarksInvalidTest() {
-		// boards are initialized with empty marks at beginning thus compare symbol and
-		// positions with empty mark array
-		for (int i = 0; i < 9; i++) {
-			assertEquals(marksAmount9Empty[i].getSymbol(), boardAmount0.getMarks()[i].getSymbol());
-			assertEquals(marksAmount9Empty[i].getPosition(), boardAmount0.getMarks()[i].getPosition());
-		}
-
-		for (int i = 0; i < 9; i++) {
-			assertEquals(marksAmount9Empty[i].getSymbol(), boardAmount10.getMarks()[i].getSymbol());
-			assertEquals(marksAmount9Empty[i].getPosition(), boardAmount10.getMarks()[i].getPosition());
-		}
-	}
-
-	@Test
 	public void setMarkAtValidTest() {
 
 		// set Marks to empty

@@ -18,6 +18,7 @@ public class MarkInterfaceTest {
 
 	@Before
 	public void setUp() throws Exception {
+		// create marks with valid symbols and positions
 		markCross = UTTTFactory.createMark(Symbol.CROSS, 0);
 		markCircle = UTTTFactory.createMark(Symbol.CIRCLE, 1);
 		markEmpty = UTTTFactory.createMark(Symbol.EMPTY, 4);

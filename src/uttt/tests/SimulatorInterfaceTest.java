@@ -7,65 +7,332 @@ import org.junit.Test;
 
 import uttt.UTTTFactory;
 import uttt.game.BoardInterface;
-import uttt.game.MarkInterface;
+import uttt.game.SimulatorInterface;
+import uttt.utils.Symbol;
 
 public class SimulatorInterfaceTest {
 
-	BoardInterface board;
-	BoardInterface boardAmount9;
-	BoardInterface boardAmount0;
-	BoardInterface boardAmount10;
+	SimulatorInterface simulator0;
+	SimulatorInterface simulator9;
+	SimulatorInterface simulator10;
 
-	MarkInterface[] marks;
+	BoardInterface[] boardAmount0;
+	BoardInterface[] boardAmount9;
+	BoardInterface[] boardAmount10;
 
 	@Before
 	public void setUp() throws Exception {
-		// create boardInterface
-		board = UTTTFactory.createBoard();
-		boardAmount9 = UTTTFactory.createBoard();
-		boardAmount0 = UTTTFactory.createBoard();
-		boardAmount10 = UTTTFactory.createBoard();
+		// create simulator
+		simulator0 = UTTTFactory.createSimulator();
+		simulator9 = UTTTFactory.createSimulator();
+		simulator10 = UTTTFactory.createSimulator();
 
-		// get marks from board which should be empty by default
-		marks = board.getMarks();
+		// create boards
+		boardAmount0 = util.createBoardInterface(0);
+		boardAmount9 = util.createBoardInterface(9);
+		boardAmount10 = util.createBoardInterface(10);
+	}
 
-		// set marks on board with 9 marks array
+	@Test
+	public void simulatorNotNullTest() {
+		// test if simulator objects are not null
+		assertNotNull(simulator0);
+		assertNotNull(simulator9);
+		assertNotNull(simulator10);
+	}
 
-		MarkInterface[] marksAmount9 = new MarkInterface[9];
-		for (int i = 0; i < 9; i++) {
-			marksAmount9[i] = UTTTFactory.createMark(uttt.utils.Symbol.CROSS, i);
+	@Test
+	public void setBoardsValidTest() {
+		// test for valid board arrays
+		simulator9.setBoards(boardAmount9);
+	}
+
+	@Test
+	public void setBoardsInvalidTest() {
+		// test for invalid boardArray size exception
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator0.setBoards(boardAmount0);
+		});
+
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator0.setBoards(boardAmount0);
+		});
+
+	}
+
+	@Test
+	public void getBoardsValidTest() {
+		setBoardsValidTest();
+
+		assertArrayEquals(boardAmount9, simulator9.getBoards());
+	}
+
+	@Test
+	public void setCurrentPlayerSymbolValidTest() {
+		simulator0.setCurrentPlayerSymbol(Symbol.CROSS);
+		simulator9.setCurrentPlayerSymbol(Symbol.CIRCLE);
+		simulator10.setCurrentPlayerSymbol(Symbol.EMPTY);
+	}
+
+	@Test
+	public void setCurrentPlayerSymbolInvalidTest() {
+		// check for symbol null exception
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator0.setCurrentPlayerSymbol(null);
+		});
+	}
+
+	@Test
+	public void getCurrentPlayerSymbolValidTest() {
+		setCurrentPlayerSymbolValidTest();
+
+		assertEquals(Symbol.CROSS, simulator0.getCurrentPlayerSymbol());
+		assertEquals(Symbol.CIRCLE, simulator9.getCurrentPlayerSymbol());
+		assertEquals(Symbol.EMPTY, simulator10.getCurrentPlayerSymbol());
+	}
+
+	@Test
+	public void setMarkAtValidTest() {
+		// test setMarkAt every index on every board with empty at beginning
+		simulator9.setBoards(util.createBoardInterface(Symbol.EMPTY, 9));
+		for (int board = 0; board < 9; board++) {
+			for (int mark = 0; mark < 9; mark++) {
+				simulator9.setIndexNextBoard(-1);
+				simulator9.setCurrentPlayerSymbol(Symbol.CROSS);
+				assertTrue(simulator9.setMarkAt(Symbol.CROSS, board, mark));
+			}
 		}
-		boardAmount9.setMarks(marksAmount9);
 
-		// set marks on board with 0 marks array
-		MarkInterface[] marksAmount0 = new MarkInterface[0];
-		for (int i = 0; i < 0; i++) {
-			marksAmount0[i] = UTTTFactory.createMark(uttt.utils.Symbol.CROSS, i);
+		simulator9.setBoards(util.createBoardInterface(Symbol.EMPTY, 9));
+		for (int board = 0; board < 9; board++) {
+			for (int mark = 0; mark < 9; mark++) {
+				simulator9.setIndexNextBoard(-1);
+				simulator9.setCurrentPlayerSymbol(Symbol.CIRCLE);
+				assertTrue(simulator9.setMarkAt(Symbol.CIRCLE, board, mark));
+			}
 		}
 
-		// set marks on board with 10 marks array
-		MarkInterface[] marksAmount10 = new MarkInterface[10];
-		for (int i = 0; i < 10; i++) {
-			marksAmount10[i] = UTTTFactory.createMark(uttt.utils.Symbol.CROSS, i);
+		simulator9.setBoards(util.createBoardInterface(Symbol.EMPTY, 9));
+		for (int board = 0; board < 9; board++) {
+			for (int mark = 0; mark < 9; mark++) {
+				simulator9.setIndexNextBoard(-1);
+				simulator9.setCurrentPlayerSymbol(Symbol.EMPTY);
+				assertTrue(simulator9.setMarkAt(Symbol.EMPTY, board, mark));
+			}
 		}
 	}
 
 	@Test
-	public void simpleSetPieceTest() {
+	public void setMarkAtInvalidTest() {
+		// test setMarkAt every index on every board with other symbol at beginning
+		simulator9.setBoards(util.createBoardInterface(Symbol.CIRCLE, 9));
+		for (int board = 0; board < 9; board++) {
+			for (int mark = 0; mark < 9; mark++) {
+				simulator9.setIndexNextBoard(-1);
+				simulator9.setCurrentPlayerSymbol(Symbol.CROSS);
+				assertFalse(simulator9.setMarkAt(Symbol.CROSS, board, mark));
+			}
+		}
 
-		// test if objects are not null
-		assertNotNull(board);
-		assertNotNull(marks);
-		assertNotNull(boardAmount9);
-		assertNotNull(boardAmount0);
-		assertNotNull(boardAmount10);
+		simulator9.setBoards(util.createBoardInterface(Symbol.CROSS, 9));
+		for (int board = 0; board < 9; board++) {
+			for (int mark = 0; mark < 9; mark++) {
+				simulator9.setIndexNextBoard(-1);
+				simulator9.setCurrentPlayerSymbol(Symbol.CIRCLE);
+				assertFalse(simulator9.setMarkAt(Symbol.CIRCLE, board, mark));
+			}
+		}
 
-		// test for set mark at index null
+		simulator9.setBoards(util.createBoardInterface(Symbol.CROSS, 9));
+		for (int board = 0; board < 9; board++) {
+			for (int mark = 0; mark < 9; mark++) {
+				simulator9.setIndexNextBoard(-1);
+				simulator9.setCurrentPlayerSymbol(Symbol.EMPTY);
+				assertFalse(simulator9.setMarkAt(Symbol.EMPTY, board, mark));
+			}
+		}
+
+		simulator9.setBoards(util.createBoardInterface(Symbol.CIRCLE, 9));
+		for (int board = 0; board < 9; board++) {
+			for (int mark = 0; mark < 9; mark++) {
+				simulator9.setIndexNextBoard(-1);
+				simulator9.setCurrentPlayerSymbol(Symbol.CROSS);
+				assertFalse(simulator9.setMarkAt(Symbol.CROSS, board, mark));
+			}
+		}
+
 		assertThrows(IllegalArgumentException.class, () -> {
-			board.setMarkAt(null, 0);
+			simulator9.setMarkAt(null, 0, 0);
+		});
+
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator9.setMarkAt(Symbol.CIRCLE, -1, 0);
+		});
+
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator9.setMarkAt(Symbol.CIRCLE, 0, -1);
+		});
+
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator9.setMarkAt(Symbol.CIRCLE, -1, -1);
+		});
+
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator9.setMarkAt(Symbol.CIRCLE, 9, 8);
+		});
+
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator9.setMarkAt(Symbol.CIRCLE, 8, 9);
+		});
+
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator9.setMarkAt(Symbol.CIRCLE, 9, 9);
 		});
 	}
 
-	// TODO: all other tests
+	@Test
+	public void setIndexNextBoardValidTest() {
+		simulator9.setIndexNextBoard(-1);
+		simulator9.setIndexNextBoard(0);
+		simulator9.setIndexNextBoard(8);
+	}
 
+	@Test
+	public void setIndexNextBoardInvalidTest() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator9.setIndexNextBoard(-2);
+		});
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator9.setIndexNextBoard(9);
+		});
+	}
+
+	@Test
+	public void getIndexNextBoardValidTest() {
+		// check on empty board
+		simulator9.setBoards(util.createBoardInterface(Symbol.EMPTY, 9));
+		simulator9.setIndexNextBoard(-1);
+		assertEquals(-1, simulator9.getIndexNextBoard());
+
+		// check on closed board
+		simulator9.setBoards(util.createBoardInterface(Symbol.CROSS, 9));
+		simulator9.setIndexNextBoard(2);
+		assertEquals(-1, simulator9.getIndexNextBoard());
+
+	}
+
+	@Test
+	public void isGameOverValidTest() {
+		// check if all boards are closed
+		simulator9.setBoards(util.createBoardInterface(Symbol.EMPTY, 9));
+		assertFalse(simulator9.isGameOver());
+
+		simulator9.setBoards(util.createBoardInterface(Symbol.CROSS, 9));
+		assertTrue(simulator9.isGameOver());
+
+		simulator9.setBoards(util.createBoardInterface(Symbol.CIRCLE, 9));
+		assertTrue(simulator9.isGameOver());
+	}
+
+	@Test
+	public void isMovePossibleSimpleValidTest() {
+		// test isMovePossible(int boardIndex) function
+		simulator9.setBoards(util.createBoardInterface(Symbol.CROSS, 9));
+		assertFalse(simulator9.isMovePossible(0));
+
+		// not possible since winner exists
+		simulator9.getBoards()[8].getMarks()[8].setSymbol(Symbol.EMPTY);
+		assertFalse(simulator9.isMovePossible(8));
+
+		// possible since no winner exists and empty marks
+		simulator9.getBoards()[8].getMarks()[0].setSymbol(Symbol.EMPTY);
+		simulator9.getBoards()[8].getMarks()[2].setSymbol(Symbol.EMPTY);
+		simulator9.getBoards()[8].getMarks()[4].setSymbol(Symbol.EMPTY);
+		simulator9.getBoards()[8].getMarks()[5].setSymbol(Symbol.EMPTY);
+		simulator9.getBoards()[8].getMarks()[8].setSymbol(Symbol.EMPTY);
+		assertTrue(simulator9.isMovePossible(8));
+	}
+
+	@Test
+	public void isMovePossibleSimpleInvalidTest() {
+		// test isMovePossible(int boardIndex) function
+		simulator9.setBoards(util.createBoardInterface(Symbol.CROSS, 9));
+
+		// check lower bound
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator9.isMovePossible(-1);
+		});
+
+		// check upper bound
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator9.isMovePossible(9);
+		});
+	}
+
+	@Test
+	public void isMovePossibleAdvancedValidTest() {
+		// test isMovePossible(int boardIndex, int markIndex) function
+		simulator9.setBoards(util.createBoardInterface(Symbol.CROSS, 9));
+		assertFalse(simulator9.isMovePossible(0, 0));
+
+		// not possible since winner exists
+		simulator9.getBoards()[8].getMarks()[8].setSymbol(Symbol.EMPTY);
+		assertFalse(simulator9.isMovePossible(8, 8));
+
+		// possible since no winner exists and empty marks
+		simulator9.getBoards()[8].getMarks()[0].setSymbol(Symbol.EMPTY);
+		simulator9.getBoards()[8].getMarks()[2].setSymbol(Symbol.EMPTY);
+		simulator9.getBoards()[8].getMarks()[4].setSymbol(Symbol.EMPTY);
+		simulator9.getBoards()[8].getMarks()[5].setSymbol(Symbol.EMPTY);
+		simulator9.getBoards()[8].getMarks()[8].setSymbol(Symbol.EMPTY);
+		assertTrue(simulator9.isMovePossible(8, 8));
+
+	}
+
+	@Test
+	public void isMovePossibleAdvancedInvalidTest() {
+		// test isMovePossible(int boardIndex) function
+		simulator9.setBoards(util.createBoardInterface(Symbol.CROSS, 9));
+
+		// check lower bound
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator9.isMovePossible(0, -1);
+		});
+
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator9.isMovePossible(-1, 0);
+		});
+
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator9.isMovePossible(-1, -1);
+		});
+
+		// check upper bound
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator9.isMovePossible(8, 9);
+		});
+
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator9.isMovePossible(9, 8);
+		});
+
+		assertThrows(IllegalArgumentException.class, () -> {
+			simulator9.isMovePossible(9, 9);
+		});
+	}
+
+	@Test
+	public void getWinnerValidTest() {
+		simulator9.setBoards(util.createBoardInterface(Symbol.EMPTY, 9));
+		assertEquals(Symbol.EMPTY, simulator9.getWinner());
+
+		simulator9.setBoards(util.createBoardInterface(Symbol.CROSS, 9));
+		assertEquals(Symbol.CROSS, simulator9.getWinner());
+
+		simulator9.setBoards(util.createBoardInterface(Symbol.CIRCLE, 9));
+		assertEquals(Symbol.CIRCLE, simulator9.getWinner());
+	}
 }
+
+// TODO: check in isMovePossibleTests for boardIndex not equal to
+// getIndexNextBoard

@@ -3,6 +3,7 @@ package uttt.tests;
 import java.util.Random;
 
 import uttt.UTTTFactory;
+import uttt.game.BoardInterface;
 import uttt.game.MarkInterface;
 import uttt.utils.Symbol;
 
@@ -21,7 +22,7 @@ public class util {
     public static MarkInterface[] createMarkInterface(Symbol symbol, int size) {
         MarkInterface[] marks = new MarkInterface[9];
         for (int i = 0; i < 9; i++) {
-            marks[i] = UTTTFactory.createMark(Symbol.EMPTY, i);
+            marks[i] = UTTTFactory.createMark(symbol, i);
         }
 
         return marks;
@@ -92,4 +93,26 @@ public class util {
 
         return marks;
     }
+
+    public static BoardInterface[] createBoardInterface(int size) {
+        BoardInterface[] board = new BoardInterface[size];
+
+        for (int i = 0; i < size; i++) {
+            board[i] = UTTTFactory.createBoard();
+        }
+
+        return board;
+    }
+
+    public static BoardInterface[] createBoardInterface(Symbol symbol, int size) {
+        BoardInterface[] board = new BoardInterface[size];
+
+        for (int i = 0; i < size; i++) {
+            board[i] = UTTTFactory.createBoard();
+            board[i].setMarks(createMarkInterface(symbol, size));
+        }
+
+        return board;
+    }
+
 }

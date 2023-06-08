@@ -26,16 +26,7 @@ public class MarkInterfaceTest {
 	}
 
 	@Test
-	public void checkForMarksNotNull() {
-		// check if marks are not null
-		assertNotNull(markCross);
-		assertNotNull(markCircle);
-		assertNotNull(markInvalid);
-		assertNotNull(markEmpty);
-	}
-
-	@Test
-	public void invalidIndexOnCreation() {
+	public void invalidIndexOnCreationTest() {
 		// check for index below bounds
 		assertThrows(Exception.class, () -> {
 			markInvalid = UTTTFactory.createMark(Symbol.EMPTY, -1);
@@ -60,7 +51,14 @@ public class MarkInterfaceTest {
 	}
 
 	@Test
-	public void testGetPositions() {
+	public void validSetSymbolTest() {
+		markCross.setSymbol(Symbol.CROSS);
+		markCircle.setSymbol(Symbol.CIRCLE);
+		markEmpty.setSymbol(Symbol.EMPTY);
+	}
+
+	@Test
+	public void getPositionsTest() {
 		// Check if positions are equal to the ones set in setUp()
 		assertEquals(0, markCross.getPosition());
 		assertEquals(1, markCircle.getPosition());
@@ -69,12 +67,21 @@ public class MarkInterfaceTest {
 	}
 
 	@Test
-	public void testGetSymbols() {
+	public void getSymbolsToStringTest() {
 		// check if symbol names are correct
 		assertEquals("X", markCross.getSymbol().toString());
 		assertEquals("O", markCircle.getSymbol().toString());
 		assertEquals(" ", markEmpty.getSymbol().toString());
 		assertEquals(" ", markInvalid.getSymbol().toString());
+	}
+
+	@Test
+	public void getSymbolsTest() {
+		// check if symbol names are correct
+		assertEquals(Symbol.CROSS, markCross.getSymbol());
+		assertEquals(Symbol.CIRCLE, markCircle.getSymbol());
+		assertEquals(Symbol.EMPTY, markEmpty.getSymbol());
+		assertEquals(Symbol.EMPTY, markInvalid.getSymbol());
 	}
 
 }

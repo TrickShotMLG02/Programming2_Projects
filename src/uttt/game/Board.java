@@ -63,6 +63,13 @@ public class Board implements BoardInterface {
 
     @Override
     public boolean setMarkAt(Symbol symbol, int markIndex) throws IllegalArgumentException {
+
+        if (markIndex < 0 || markIndex > 8)
+            throw new IllegalArgumentException("Index out of bounds");
+
+        if (symbol == null)
+            throw new IllegalArgumentException("Symbol is null");
+
         // check if there is an empty mark at index markIndex
         if (marks[markIndex].getSymbol() == Symbol.EMPTY) {
             marks[markIndex].setSymbol(symbol);

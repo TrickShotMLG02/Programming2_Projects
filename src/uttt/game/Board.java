@@ -99,6 +99,9 @@ public class Board implements BoardInterface {
             return false;
         }
 
+        if (markIndex < 0 || markIndex > 8)
+            throw new IllegalArgumentException("index out of bounds");
+
         // check if current index is empty symbol
         if (marks[markIndex].getSymbol() == Symbol.EMPTY) {
             // move possible since current symbol is empty

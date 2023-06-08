@@ -29,7 +29,7 @@ public class Simulator implements SimulatorInterface {
             throws IllegalArgumentException {
 
         // set currentPlayerSymbol to playerOne's symbol
-        currentPlayerSymbol = playerOne.getSymbol();
+        setCurrentPlayerSymbol(playerOne.getSymbol());
 
         // define currentPlayer
         PlayerInterface currentPlayer = playerOne;
@@ -99,7 +99,7 @@ public class Simulator implements SimulatorInterface {
     public void setCurrentPlayerSymbol(Symbol symbol) throws IllegalArgumentException {
         // check if symbol is null -> set it to Empty, otherwise apply symbol
         if (symbol == null)
-            currentPlayerSymbol = Symbol.EMPTY;
+            throw new IllegalArgumentException("symbol is null");
         else
             currentPlayerSymbol = symbol;
     }

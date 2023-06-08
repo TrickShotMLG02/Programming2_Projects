@@ -102,17 +102,22 @@ public class Simulator implements SimulatorInterface {
 
     @Override
     public boolean setMarkAt(Symbol symbol, int boardIndex, int markIndex) throws IllegalArgumentException {
-        try {
-            if ((getIndexNextBoard() == -1 || getIndexNextBoard() == boardIndex) && symbol == currentPlayerSymbol) {
-                boards[boardIndex].setMarkAt(symbol, markIndex);
+
+        if (symbol == null)
+            throw new IllegalArgumentException("Symbol is null");
+
+        if (boardIndex < 0 || boardIndex > 8 || markIndex < 0 || markIndex > 8)
+            throw new IllegalArgumentException("Index out of bounds");
+
+        if ((getIndexNextBoard() == -1 || getIndexNextBoard() == boardIndex) && symbol == currentPlayerSymbol) {
+            if (boards[boardIndex].setMarkAt(symbol, markIndex)) {
                 setIndexNextBoard(boardIndex);
                 return true;
-            } else {
-                return false;
             }
+            return false;
 
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid mark");
+        } else {
+            return false;
         }
     }
 
@@ -158,11 +163,16 @@ public class Simulator implements SimulatorInterface {
 
     @Override
     public boolean isMovePossible(int boardIndex) throws IllegalArgumentException {
+        if (boardIndex < 0 || boardIndex > 8)
+            throw new IllegalArgumentException("Index out of bounds");
         return !boards[boardIndex].isClosed();
     }
 
     @Override
     public boolean isMovePossible(int boardIndex, int markIndex) throws IllegalArgumentException {
+
+        if (boardIndex < 0 || boardIndex > 8 || markIndex < 0 || markIndex > 8)
+            throw new IllegalArgumentException("index out of bounds");
 
         // check if the nextBoardIndex is -1
         if (getIndexNextBoard() == -1) {

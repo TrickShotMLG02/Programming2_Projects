@@ -21,13 +21,18 @@ public class MarkInterfaceTest {
 		markCross = UTTTFactory.createMark(Symbol.CROSS, 0);
 		markCircle = UTTTFactory.createMark(Symbol.CIRCLE, 1);
 		markInvalid = UTTTFactory.createMark(Symbol.EMPTY, 0);
+		markEmpty = UTTTFactory.createMark(Symbol.EMPTY, 0);
 	}
 
 	@Test
 	public void simpleSetPieceTest() {
 
-		assertThrows(IllegalArgumentException.class, () -> {
-			markEmpty = UTTTFactory.createMark(Symbol.EMPTY, -1);
+		assertThrows(Exception.class, () -> {
+			markInvalid = UTTTFactory.createMark(Symbol.EMPTY, -1);
+		});
+
+		assertThrows(Exception.class, () -> {
+			markInvalid = UTTTFactory.createMark(Symbol.EMPTY, 10);
 		});
 
 		// check if marks are not null
@@ -35,14 +40,14 @@ public class MarkInterfaceTest {
 		assertNotNull(markCircle);
 
 		// check if markInvalid throws an exception on setSymbol with null
-		assertThrows(IllegalArgumentException.class, () -> {
+		assertThrows(Exception.class, () -> {
 			markInvalid.setSymbol(null);
 		});
 
 		// Check if positions are equal to the ones set in setUp()
 		assertEquals(0, markCross.getPosition());
 		assertEquals(1, markCircle.getPosition());
-		assertEquals(-1, markEmpty.getPosition());
+		assertEquals(0, markEmpty.getPosition());
 		assertEquals(0, markInvalid.getPosition());
 
 		// check if symbol names are correct

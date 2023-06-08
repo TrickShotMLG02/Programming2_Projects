@@ -63,6 +63,21 @@ public class util {
         return marks;
     }
 
+    public static MarkInterface[] createMarkInterfaceWin(Symbol winner) {
+
+        Symbol looser = winner.flip();
+
+        MarkInterface[] marks = createMarkInterface(Symbol.EMPTY, 9);
+        marks[0] = UTTTFactory.createMark(looser, 0);
+        marks[1] = UTTTFactory.createMark(looser, 1);
+        marks[2] = UTTTFactory.createMark(winner, 2);
+        marks[3] = UTTTFactory.createMark(looser, 3);
+        marks[4] = UTTTFactory.createMark(winner, 4);
+        marks[6] = UTTTFactory.createMark(winner, 6);
+
+        return marks;
+    }
+
     public static MarkInterface[] createMarkInterfaceTie() {
         MarkInterface[] marks = createMarkInterface(Symbol.EMPTY, 9);
         marks[0] = UTTTFactory.createMark(Symbol.CROSS, 0);

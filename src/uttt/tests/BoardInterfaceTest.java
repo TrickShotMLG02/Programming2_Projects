@@ -201,11 +201,24 @@ public class BoardInterfaceTest {
 
 	@Test
 	public void getWinnerValidTest() {
+		// check if empty board getWinner
+		boardAmount9.setMarks(marksAmount9Empty);
+		assertEquals(Symbol.EMPTY, boardAmount9.getWinner());
+
+		// check for getWinner on tie
+		boardAmount9.setMarks(marksAmount9Tie);
+		assertEquals(Symbol.EMPTY, boardAmount9.getWinner());
+
+		// check for getWinner on win CROSS
+		marksAmount9Win = util.createMarkInterfaceWin(Symbol.CROSS);
+		boardAmount9.setMarks(marksAmount9Win);
+		assertEquals(Symbol.CROSS, boardAmount9.getWinner());
+
+		// check for getWinner on win CIRCLE
+		marksAmount9Win = util.createMarkInterfaceWin(Symbol.CIRCLE);
+		boardAmount9.setMarks(marksAmount9Win);
+		assertEquals(Symbol.CIRCLE, boardAmount9.getWinner());
 
 	}
 
-	@Test
-	public void getWinnerInvalidTest() {
-
-	}
 }

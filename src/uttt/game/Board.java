@@ -1,8 +1,7 @@
 package uttt.game;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Comparator;
 
 import uttt.utils.Symbol;
 
@@ -50,9 +49,16 @@ public class Board implements BoardInterface {
         }
 
         // sort marks by position so that mark with pos 0 is at index 0 and so on
-        ArrayList<MarkInterface> marksList = new ArrayList<MarkInterface>(Arrays.asList(marks));
-        Collections.sort(marksList, (o1, o2) -> Integer.compare(o1.getPosition(), o2.getPosition()));
-        this.marks = marksList.toArray(new MarkInterface[marksList.size()]);
+
+        Comparator<MarkInterface> cmp = new Comparator<MarkInterface>() {
+            @Override
+            public int compare(MarkInterface m1, MarkInterface m2) {
+                return Integer.compare(m1.getPosition(), m2.getPosition());
+            }
+        };
+
+        Arrays.sort(marks, cmp);
+        this.marks = marks;
     }
 
     @Override

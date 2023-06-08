@@ -54,12 +54,8 @@ public class Simulator implements SimulatorInterface {
 
                 // update screen
                 ui.updateScreen(this);
-            } else {
-                System.out.println("Move not possible");
             }
-
         }
-
         // print winner
         ui.showGameOverScreen(getWinner());
 

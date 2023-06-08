@@ -50,4 +50,31 @@ public class util {
                 return null;
         }
     }
+
+    public static MarkInterface[] createMarkInterfaceWin() {
+        MarkInterface[] marks = createMarkInterface(Symbol.EMPTY, 9);
+        marks[0] = UTTTFactory.createMark(Symbol.CROSS, 0);
+        marks[1] = UTTTFactory.createMark(Symbol.CROSS, 1);
+        marks[2] = UTTTFactory.createMark(Symbol.CIRCLE, 2);
+        marks[3] = UTTTFactory.createMark(Symbol.CROSS, 3);
+        marks[4] = UTTTFactory.createMark(Symbol.CIRCLE, 4);
+        marks[6] = UTTTFactory.createMark(Symbol.CIRCLE, 6);
+
+        return marks;
+    }
+
+    public static MarkInterface[] createMarkInterfaceTie() {
+        MarkInterface[] marks = createMarkInterface(Symbol.EMPTY, 9);
+        marks[0] = UTTTFactory.createMark(Symbol.CROSS, 0);
+        marks[1] = UTTTFactory.createMark(Symbol.CIRCLE, 1);
+        marks[2] = UTTTFactory.createMark(Symbol.CROSS, 2);
+        marks[3] = UTTTFactory.createMark(Symbol.CROSS, 3);
+        marks[4] = UTTTFactory.createMark(Symbol.CIRCLE, 4);
+        marks[5] = UTTTFactory.createMark(Symbol.CROSS, 5);
+        marks[6] = UTTTFactory.createMark(Symbol.CIRCLE, 6);
+        marks[7] = UTTTFactory.createMark(Symbol.CROSS, 7);
+        marks[8] = UTTTFactory.createMark(Symbol.CIRCLE, 8);
+
+        return marks;
+    }
 }

@@ -23,6 +23,9 @@ public class BoardInterfaceTest {
 	MarkInterface[] marksAmount9Empty;
 	MarkInterface[] marksAmount10;
 
+	MarkInterface[] marksAmount9Win;
+	MarkInterface[] marksAmount9Tie;
+
 	@Before
 	public void setUp() throws Exception {
 		// create boardInterface
@@ -36,6 +39,12 @@ public class BoardInterfaceTest {
 		marksAmount9 = util.createMarkInterface(9);
 		marksAmount9Empty = util.createMarkInterface(Symbol.EMPTY, 9);
 		marksAmount10 = util.createMarkInterface(10);
+
+		// create winner marks
+		marksAmount9Win = util.createMarkInterfaceWin();
+
+		// create tie marks
+		marksAmount9Tie = util.createMarkInterfaceTie();
 	}
 
 	@Test
@@ -145,4 +154,58 @@ public class BoardInterfaceTest {
 		});
 	}
 
+	@Test
+	public void isClosedValidTest() {
+		// check if empty board isClosed
+		boardAmount9.setMarks(marksAmount9Empty);
+		assertEquals(false, boardAmount9.isClosed());
+
+		// check for closed on tie
+		boardAmount9.setMarks(marksAmount9Tie);
+		assertEquals(true, boardAmount9.isClosed());
+
+		// check for closed on win
+		boardAmount9.setMarks(marksAmount9Win);
+		assertEquals(true, boardAmount9.isClosed());
+	}
+
+	@Test
+	public void isMovePossibleValidTest() {
+		// check if empty board movePossible
+		boardAmount9.setMarks(marksAmount9Empty);
+		assertEquals(true, boardAmount9.isMovePossible(0));
+
+		// check for movePossible on tie
+		boardAmount9.setMarks(marksAmount9Tie);
+		assertEquals(false, boardAmount9.isMovePossible(4));
+
+		// check for movePossible on win
+		boardAmount9.setMarks(marksAmount9Win);
+		assertEquals(false, boardAmount9.isMovePossible(6));
+	}
+
+	@Test
+	public void isMovePossibleInvalidTest() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			boardAmount9.setMarks(marksAmount9Empty);
+			// check for isMovePossible below bounds
+			assertEquals(true, boardAmount9.isMovePossible(-1));
+		});
+
+		assertThrows(IllegalArgumentException.class, () -> {
+			boardAmount9.setMarks(marksAmount9Empty);
+			// check for isMovePossible above bounds
+			assertEquals(true, boardAmount9.isMovePossible(9));
+		});
+	}
+
+	@Test
+	public void getWinnerValidTest() {
+
+	}
+
+	@Test
+	public void getWinnerInvalidTest() {
+
+	}
 }

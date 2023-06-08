@@ -80,7 +80,7 @@ public class Simulator implements SimulatorInterface {
 
         // check if boards has length 9
         if (boards.length != 9) {
-            throw new IllegalArgumentException("There must be 9 marks");
+            throw new IllegalArgumentException("There must be 9 boards");
         }
 
         this.boards = boards;

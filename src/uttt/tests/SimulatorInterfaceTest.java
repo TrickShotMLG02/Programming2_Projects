@@ -237,13 +237,16 @@ public class SimulatorInterfaceTest {
 	@Test
 	public void isMovePossibleSimpleValidTest() {
 		// test isMovePossible(int boardIndex) function
+		simulator9.setIndexNextBoard(0);
 		simulator9.setBoards(util.createBoardInterface(Symbol.CROSS, 9));
 		assertFalse(simulator9.isMovePossible(0));
 
+		simulator9.setIndexNextBoard(8);
 		// not possible since winner exists
 		simulator9.getBoards()[8].getMarks()[8].setSymbol(Symbol.EMPTY);
 		assertFalse(simulator9.isMovePossible(8));
 
+		simulator9.setIndexNextBoard(8);
 		// possible since no winner exists and empty marks
 		simulator9.getBoards()[8].getMarks()[0].setSymbol(Symbol.EMPTY);
 		simulator9.getBoards()[8].getMarks()[2].setSymbol(Symbol.EMPTY);

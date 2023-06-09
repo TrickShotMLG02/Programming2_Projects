@@ -9,6 +9,7 @@ import uttt.game.PlayerInterface;
 import uttt.game.Simulator;
 import uttt.game.SimulatorInterface;
 import uttt.game.UserInterface;
+import uttt.game.ai.AIPlayer;
 import uttt.ui.GUI;
 import uttt.utils.Symbol;
 
@@ -83,6 +84,7 @@ public class UTTTFactory {
 	 * @return A Ultimate TicTacToe player that will play automatically.
 	 */
 	public static PlayerInterface createBonusPlayer(Symbol symbol) {
-		throw new UnsupportedOperationException("Not yet implemented");
+		PlayerInterface aiPlayer = new AIPlayer(symbol);
+		return aiPlayer;
 	}
 }

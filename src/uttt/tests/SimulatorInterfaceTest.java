@@ -337,5 +337,5 @@ public class SimulatorInterfaceTest {
 	}
 }
 
-// TODO: check in isMovePossibleTests for boardIndex not equal to
-// getIndexNextBoard
+// TODO:
+// check in isMovePossibleTests for boardIndex not equal to getIndexNextBoard

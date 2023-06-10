@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uttt.UTTTFactory;
+import uttt.game.Board;
 import uttt.game.BoardInterface;
 import uttt.game.SimulatorInterface;
 import uttt.utils.Symbol;
@@ -94,11 +95,21 @@ public class SimulatorInterfaceTest {
 	@Test
 	public void setMarkAtValidTest() {
 		// test setMarkAt every index on every board with empty at beginning
-		simulator9.setBoards(util.createBoardInterface(Symbol.EMPTY, 9));
+		BoardInterface[] boards = util.createBoardInterface(Symbol.EMPTY, 9);
+		simulator9.setBoards(boards);
+
 		for (int board = 0; board < 9; board++) {
 			for (int mark = 0; mark < 9; mark++) {
 				simulator9.setIndexNextBoard(-1);
 				simulator9.setCurrentPlayerSymbol(Symbol.CROSS);
+				// check that simulator is not null
+				assertNotNull(simulator9);
+				// check that board is not null
+				assertNotNull(board);
+				// check that mark is not null
+				assertNotNull(mark);
+				// should be valid since setmark within valid indexes with nextBoardIndex -1 may
+				// return true
 				assertTrue(simulator9.setMarkAt(Symbol.CROSS, board, mark));
 			}
 		}

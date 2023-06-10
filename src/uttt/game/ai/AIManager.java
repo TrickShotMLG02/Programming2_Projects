@@ -62,6 +62,23 @@ public class AIManager {
 
         if (model == null) {
             System.out.println("model null");
+
+            // create new model and save it
+            loadExistingModel = false;
+
+            setupModel();
+
+            // save model to disk
+            NeuralNetwork.SaveModel(model, MODEL_TO_USE, false);
+
+            // enable load model from disk
+            loadExistingModel = true;
+
+            // restart function main
+
+            main(args);
+            return;
+
         } else {
             // set up test cases here for training
             Symbol aiSymbol = Symbol.CIRCLE;
@@ -90,7 +107,7 @@ public class AIManager {
 
                 // afterwards save model to disk
                 if (saveModel) {
-                    NeuralNetwork.SaveModel(model, "src/uttt/game/ai/models/model");
+                    NeuralNetwork.SaveModel(model, "src/uttt/game/ai/models/model", true);
                 } else if (updateModel) {
                     NeuralNetwork.UpdateModel(model);
                 }

@@ -90,13 +90,16 @@ public class NeuralNetwork implements Serializable {
         // convert nextBoardIndex to a matrix to filter out all boards which can not be
         // chosen in this move
         Matrix allowedMovesFilter = Matrix.convertNextBoardIndexToMatrix(sim);
-        // to filter out invalid moves, multiply the filter with the hidden layer
-        hiddenLayer.elementWiseMultiplication(allowedMovesFilter);
 
         // multiply output from hidden layer with corresponding weights
         Matrix outputLayer = Matrix.multiplyMatrices(weight_output_hidden, hiddenLayer);
         // add bias to the calculated output layer
         outputLayer.elementWiseAddition(bias_output);
+
+        // to filter out any invalid moves, multiply the filter with the output layer
+        // before applying softMaxDistribution
+        outputLayer.elementWiseMultiplication(allowedMovesFilter);
+
         // apply softmax activation function to outputLayer
         outputLayer.softMaxFunction();
 
@@ -207,7 +210,7 @@ public class NeuralNetwork implements Serializable {
         bias_hidden.elementWiseAddition(hiddenDerivation);
 
         // predict next move just for analysis how good it worked
-        predictNextMove(state);
+        // predictNextMove(state);
     }
 
     /**
@@ -236,11 +239,17 @@ public class NeuralNetwork implements Serializable {
      * @param fileName the relative path of the location to save file to
      * 
      */
-    public static void SaveModel(NeuralNetwork model, String fileName) {
+    public static void SaveModel(NeuralNetwork model, String fileName, boolean appendTimestamp) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
         try {
-            File file = new File(fileName + " (" + timestamp + ").dat");
+            File file;
+            if (appendTimestamp) {
+                file = new File(fileName + " (" + timestamp + ").dat");
+            } else {
+                file = new File(fileName);
+            }
+
             file.createNewFile();
             System.out.println("File created at " + file.getAbsolutePath());
             FileOutputStream fileOutput = new FileOutputStream(file);

@@ -31,19 +31,20 @@ public class AIManager {
 
     // Save model / update model
     private static boolean saveModel = false;
-    public static boolean updateModel = false;
+    public static boolean updateModel = true;
 
     // Training
     private static boolean iterativeTraining = false;
     private static int iterations = 100;
-    private static boolean trainAIOnGame = true;
+    private static boolean trainAIOnGame = false;
 
     // Test trained scenarios
-    private static boolean testGameStateAI = false;
+    private static boolean testGameStateAI = true;
 
     // Play real game against ai
     private static boolean playGameVsAI = false;
     private static boolean playAIVsAI = false;
+    private static boolean playAIVsRandom = false;
 
     /**
      * Function to create a new neural network
@@ -117,6 +118,8 @@ public class AIManager {
 
             if (testGameStateAI) {
 
+                NeuralNetwork.verbose = true;
+
                 // printing expected output, actual predicted output as well as if it was
                 // correctly
                 Prediction pTest = createPredictionBoard2ToWin(aiSymbol);
@@ -136,12 +139,17 @@ public class AIManager {
                 // create new prediction of the current game state
                 // and train model on state before move with new move as expected output
 
+                NeuralNetwork.verbose = true;
+
                 // start game with player 1 human and player 2 AI
                 AIPlayer.timeoutInMs = 1000;
                 LaunchGame(true, false);
             } else if (playAIVsAI) {
-                AIPlayer.timeoutInMs = 2000;
+                AIPlayer.timeoutInMs = 500;
                 LaunchGame(false, false);
+            } else if (playAIVsRandom) {
+                // create random player
+
             }
 
         }

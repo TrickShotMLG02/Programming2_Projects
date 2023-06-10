@@ -97,21 +97,26 @@ public class SimulatorInterfaceTest {
 		BoardInterface[] boards = util.createBoardInterface(Symbol.EMPTY, 9);
 		simulator9.setBoards(boards);
 
-		for (int board = 0; board < 9; board++) {
-			for (int mark = 0; mark < 9; mark++) {
-				simulator9.setIndexNextBoard(-1);
-				simulator9.setCurrentPlayerSymbol(Symbol.CROSS);
-				// check that simulator is not null
-				assertNotNull(simulator9);
-				// check that board is not null
-				assertNotNull(board);
-				// check that mark is not null
-				assertNotNull(mark);
-				// should be valid since setmark within valid indexes with nextBoardIndex -1 may
-				// return true
-				assertTrue(simulator9.setMarkAt(simulator9.getCurrentPlayerSymbol(), board, mark));
-			}
-		}
+		simulator9.setIndexNextBoard(-1);
+		simulator9.setCurrentPlayerSymbol(Symbol.CROSS);
+
+		// check that simulator is not null
+		assertNotNull(simulator9);
+
+		// should be valid since setmark within valid indexes with nextBoardIndex -1 may
+		// return true
+		assertTrue(simulator9.setMarkAt(simulator9.getCurrentPlayerSymbol(), 0, 1));
+
+		// check if it really was set correct
+		assertEquals(simulator9.getCurrentPlayerSymbol(), simulator9.getBoards()[0].getMarks()[1].getSymbol());
+
+		// flip player symbol, set mark at new board index which should be mark index
+		// from before (e.g. 1)
+		simulator9.setCurrentPlayerSymbol(simulator9.getCurrentPlayerSymbol().flip());
+		assertEquals(1, simulator9.getIndexNextBoard());
+		assertTrue(simulator9.setMarkAt(simulator9.getCurrentPlayerSymbol(), simulator9.getIndexNextBoard(), 2));
+		assertEquals(2, simulator9.getIndexNextBoard());
+		assertEquals(simulator9.getCurrentPlayerSymbol(), simulator9.getBoards()[1].getMarks()[2].getSymbol());
 
 		simulator9.setBoards(util.createBoardInterface(Symbol.EMPTY, 9));
 		for (int board = 0; board < 9; board++) {

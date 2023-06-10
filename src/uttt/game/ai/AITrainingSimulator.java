@@ -47,25 +47,20 @@ public class AITrainingSimulator implements SimulatorInterface, Cloneable {
             // increase current iteration
             iteration = iteration + 1;
 
-            // for ai training
+            System.out.println("Current iteration: " + iteration);
+
+            // create simulator object to hold current state as clone
             SimulatorInterface sim = null;
+
+            // Clone current game state for ai learning
             try {
                 sim = (SimulatorInterface) this.clone();
             } catch (CloneNotSupportedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
-            /*
-             * Just for explicit debugging in later stage
-             * System.out.println("Predict move for player " +
-             * currentPlayer.getSymbol().toString());
-             * AIManager.model.predictNextMove(this);
-             */
-            System.out.println("Predicting next move for Player " + currentPlayer.getSymbol().toString());
-            AIManager.model.predictNextMove(sim);
-
-            // get current player move (might be from ai or not)
+            // get current player move
+            // if currentPLayer is ai, predict next move
             Move move = currentPlayer.getPlayerMove(this, ui);
 
             // check if move is possible
@@ -77,17 +72,17 @@ public class AITrainingSimulator implements SimulatorInterface, Cloneable {
                  */
 
                 // train model on grabbed result if simulator is not null
-                if (sim != null) {
-                    System.out.println("Training model on current state");
-                    // System.out.println("Predicting next move for Player " +
-                    // currentPlayer.getSymbol().toString());
+                if (sim != null && currentPlayer.getClass() != AIPlayer.class) {
+                    System.out.println("Training model on move to current state");
 
-                    // get current state as prediction
-                    // convert gameStateToMatrixSmall doesnt set everything to 0 and only change to
-                    // 1
-                    // IMPLEMENT
-                    Prediction expected = new Prediction(this, Matrix.convertGameStateToMatrixSmall(this));
+                    // create matrix containing expected values by comparing sim from state before
+                    // move with sim from state after move
+                    Prediction expected = new Prediction(this, Matrix.calculateDifferences(sim, this));
+
+                    // train model on sim state before move with the expected result of after the
+                    // move
                     AIManager.model.trainModel(sim, expected);
+
                 }
 
                 // set current player mark at move
@@ -115,7 +110,11 @@ public class AITrainingSimulator implements SimulatorInterface, Cloneable {
                      * to generate a random valid Move
                      */
 
-                    System.out.println("Generating  random move, since ai failed");
+                    System.out.println("Generating  random move, since ai failed\n");
+
+                    // increment failed predictions of ai player
+                    // ((AIPlayer) playerOne).failedPredictions += 1;
+
                     move = Util.generateRandomValidMove(this);
 
                     /*
@@ -148,10 +147,23 @@ public class AITrainingSimulator implements SimulatorInterface, Cloneable {
                 // TODO: implement saving
             }
 
+            System.out.println("\n\n");
+
         }
         // print winner
         // ui.showGameOverScreen(getWinner());
         System.out.println("\n\nWinner is " + getWinner().toString() + "\n\n");
+
+        if (playerOne.getClass() == AIPlayer.class) {
+            // System.out.println("Player One AI failed " + ((AIPlayer)
+            // playerOne).failedPredictions + " times");
+        }
+
+        if (playerTwo.getClass() == AIPlayer.class) {
+            // System.out.println("PLayer Two AI failed " + ((AIPlayer)
+            // playerTwo).failedPredictions + " times");
+        }
+
         try {
             Thread.sleep(2000);
         } catch (Exception e) {

@@ -341,6 +341,10 @@ public class Matrix implements Serializable {
         Symbol cross = Symbol.CROSS;
         Symbol circle = Symbol.CIRCLE;
 
+        double ownMarkValue = 1;
+        double opponentMarkValue = -1;
+        double neutralValue = 0;
+
         // store current player symbol
         Symbol player = sim.getCurrentPlayerSymbol();
 
@@ -356,33 +360,86 @@ public class Matrix implements Serializable {
                     // check if player is cross or circle
                     if (player == cross) {
                         // set node in first 81 nodes to 1 if ai is cross
-                        gameState.data[b * boardCount + m][0] = 0.1;
+                        gameState.data[b * boardCount + m][0] = ownMarkValue;
                         // set node in second 81 nodes to 0 since we are circle
-                        gameState.data[boardCount * markCount + (b * boardCount + m)][0] = 0.0;
+                        gameState.data[boardCount * markCount + (b * boardCount + m)][0] = neutralValue;
                     } else if (player == circle) {
                         // set node in first 81 nodes to -1 since circle is from opponent
-                        gameState.data[b * boardCount + m][0] = -0.1;
+                        gameState.data[b * boardCount + m][0] = neutralValue;
                         // set node in second 81 nodes to 0 since circles are stored in second 81 nodes
-                        gameState.data[boardCount * markCount + (b * boardCount + m)][0] = 0.0;
+                        gameState.data[boardCount * markCount + (b * boardCount + m)][0] = opponentMarkValue;
                     }
 
                 } else if (sim.getBoards()[b].getMarks()[m].getSymbol() == circle) {
                     // check if player is cross or circle
                     if (player == cross) {
                         // set node in first 81 nodes to 0 since crosses are stored in first 81 nodes
-                        gameState.data[b * boardCount + m][0] = 0.0;
+                        gameState.data[b * boardCount + m][0] = neutralValue;
                         // set node in second 81 nodes to -1 since circle is from opponent
-                        gameState.data[boardCount * markCount + (b * boardCount + m)][0] = -0.1;
+                        gameState.data[boardCount * markCount + (b * boardCount + m)][0] = opponentMarkValue;
                     } else if (player == circle) {
                         // set node in first 81 nodes to 0 since circles are stored in second 81 nodes
-                        gameState.data[b * boardCount + m][0] = 0.0;
+                        gameState.data[b * boardCount + m][0] = ownMarkValue;
                         // set node in second 81 nodes to 0 since we are circle
-                        gameState.data[boardCount * markCount + (b * boardCount + m)][0] = 0.1;
+                        gameState.data[boardCount * markCount + (b * boardCount + m)][0] = neutralValue;
                     }
                 } else {
                     // field was empty, so set it to 0.5 in the matrix to recognize it later
-                    gameState.data[b * boardCount + m][0] = 1;
-                    gameState.data[boardCount * markCount + (b * boardCount + m)][0] = 1;
+                    gameState.data[b * boardCount + m][0] = neutralValue;
+                    gameState.data[boardCount * markCount + (b * boardCount + m)][0] = neutralValue;
+                }
+            }
+        }
+
+        return gameState;
+    }
+
+    public static Matrix convertGameStateToMatrixSmall(SimulatorInterface sim) {
+
+        int boardCount = sim.getBoards().length;
+        int markCount = sim.getBoards()[0].getMarks().length;
+
+        // Define symbols for cross and circle
+        Symbol cross = Symbol.CROSS;
+        Symbol circle = Symbol.CIRCLE;
+
+        double ownMarkValue = 1;
+        double opponentMarkValue = -1;
+        double neutralValue = 0;
+
+        // store current player symbol
+        Symbol currPlayer = sim.getCurrentPlayerSymbol();
+
+        // create matrix of size 81x1 which contains in the first 81 rows the states of
+        // cross and circle
+        // where the symbol of the current player is always represented as 1 and the
+        // opponent as -1. Empty cells are 0
+        Matrix gameState = new Matrix(boardCount * markCount, 1);
+
+        for (int b = 0; b < boardCount; b++) {
+            for (int m = 0; m < markCount; m++) {
+                if (sim.getBoards()[b].getMarks()[m].getSymbol() == cross) {
+                    // check if player is cross or circle
+                    if (currPlayer == cross) {
+                        // set node in first 81 nodes to 1 if ai is cross
+                        gameState.data[b * boardCount + m][0] = ownMarkValue;
+                    } else if (currPlayer == circle) {
+                        // set node in first 81 nodes to -1 since circle is from opponent
+                        gameState.data[b * boardCount + m][0] = opponentMarkValue;
+                    }
+
+                } else if (sim.getBoards()[b].getMarks()[m].getSymbol() == circle) {
+                    // check if player is cross or circle
+                    if (currPlayer == cross) {
+                        // set node in first 81 nodes to 0 since crosses are stored in first 81 nodes
+                        gameState.data[b * boardCount + m][0] = opponentMarkValue;
+                    } else if (currPlayer == circle) {
+                        // set node in first 81 nodes to 0 since circles are stored in second 81 nodes
+                        gameState.data[b * boardCount + m][0] = ownMarkValue;
+                    }
+                } else {
+                    // field was empty, so set it to 0.5 in the matrix to recognize it later
+                    gameState.data[b * boardCount + m][0] = neutralValue;
                 }
             }
         }
@@ -416,8 +473,11 @@ public class Matrix implements Serializable {
     public static Matrix convertNextBoardIndexToMatrix(SimulatorInterface sim) {
         int nextBoard = sim.getIndexNextBoard();
 
-        double penaltyForbidden = 1.0;
-        double penaltyAllowed = 0.05;
+        // factorForbidden is used to cancel out invalid moves before applying softmax
+        // function
+        double factorForbidden = 0;
+        // factorAllowed is used to keep valid moves unmodified
+        double factorAllowed = 1;
 
         int boardCount = sim.getBoards().length;
         int markCount = sim.getBoards()[0].getMarks().length;
@@ -430,12 +490,12 @@ public class Matrix implements Serializable {
                 // check if current position divided by 9 is nextBoardIndex
 
                 if (i / boardCount == nextBoard) {
-                    result.data[i][0] = penaltyAllowed;
-                    result.data[i + boardCount * markCount][0] = penaltyAllowed;
+                    result.data[i][0] = factorAllowed;
+                    result.data[i + boardCount * markCount][0] = factorAllowed;
                 } else {
                     // set tile in cross and in circle section to 0 if not in next board
-                    result.data[i][0] = penaltyForbidden;
-                    result.data[i + boardCount * markCount][0] = penaltyForbidden;
+                    result.data[i][0] = factorForbidden;
+                    result.data[i + boardCount * markCount][0] = factorForbidden;
                 }
             }
         } else {
@@ -447,14 +507,50 @@ public class Matrix implements Serializable {
                     // iterate over matrix fields of corresponding board
                     for (int j = i * boardCount; j < i * boardCount + markCount; j++) {
                         // set board to 1 since it is open
-                        result.data[j][0] = penaltyAllowed;
+                        result.data[j][0] = factorAllowed;
                     }
                 } else {
                     // iterate over matrix fields of corresponding board
                     for (int j = i * boardCount; j < i * boardCount + markCount; j++) {
                         // set board to 0 since it is already closed
-                        result.data[j][0] = penaltyForbidden;
+                        result.data[j][0] = factorForbidden;
                     }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Creates a matrix that represents only values which are not equal and cancels
+     * out all other values
+     * 
+     * @param sim1 simulator state 1
+     * @param sim2 simulator state 2
+     * @return a matrix where equal values are cancelled out
+     */
+    public static Matrix calculateDifferences(SimulatorInterface sim1, SimulatorInterface sim2) {
+
+        double differenceValue = 1;
+        double equalityValue = 0;
+
+        int boardCount = sim1.getBoards().length;
+        int markCount = sim1.getBoards()[0].getMarks().length;
+
+        Matrix m1 = Matrix.convertGameStateToMatrixSmall(sim1);
+        Matrix m2 = Matrix.convertGameStateToMatrixSmall(sim2);
+
+        // create Matrix with same size as output matrix of neural network
+        Matrix result = new Matrix(boardCount * markCount, 1);
+
+        for (int row = 0; row < result.rowCount; row++) {
+            for (int col = 0; col < result.colCount; col++) {
+                if (m1.data[row][col] == m2.data[row][col]) {
+                    result.data[row][col] = equalityValue;
+                } else {
+                    result.data[row][col] = differenceValue;
+                    System.out.println("found difference at boardIndex " + row / 9 + " and markIndex " + row % 9);
                 }
             }
         }

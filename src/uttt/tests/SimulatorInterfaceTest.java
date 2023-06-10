@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uttt.UTTTFactory;
-import uttt.game.Board;
 import uttt.game.BoardInterface;
 import uttt.game.SimulatorInterface;
 import uttt.utils.Symbol;

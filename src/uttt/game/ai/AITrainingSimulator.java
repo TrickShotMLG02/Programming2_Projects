@@ -73,7 +73,8 @@ public class AITrainingSimulator implements SimulatorInterface, Cloneable {
 
                 // train model on grabbed result if simulator is not null
                 if (sim != null && currentPlayer.getClass() != AIPlayer.class) {
-                    System.out.println("Training model on move to current state");
+                    if (NeuralNetwork.verbose)
+                        System.out.println("Training model on move to current state");
 
                     // create matrix containing expected values by comparing sim from state before
                     // move with sim from state after move
@@ -146,8 +147,6 @@ public class AITrainingSimulator implements SimulatorInterface, Cloneable {
                 // save state to file for later training
                 // TODO: implement saving
             }
-
-            System.out.println("\n\n");
 
         }
         // print winner

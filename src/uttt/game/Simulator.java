@@ -111,7 +111,7 @@ public class Simulator implements SimulatorInterface {
 
         if ((getIndexNextBoard() == -1 || getIndexNextBoard() == boardIndex) && symbol == currentPlayerSymbol) {
             if (boards[boardIndex].setMarkAt(symbol, markIndex)) {
-                setIndexNextBoard(boardIndex);
+                setIndexNextBoard(markIndex);
                 return true;
             }
             return false;

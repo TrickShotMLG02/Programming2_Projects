@@ -109,7 +109,7 @@ public class SimulatorInterfaceTest {
 				assertNotNull(mark);
 				// should be valid since setmark within valid indexes with nextBoardIndex -1 may
 				// return true
-				assertTrue(simulator9.setMarkAt(Symbol.CROSS, board, mark));
+				assertTrue(simulator9.setMarkAt(simulator9.getCurrentPlayerSymbol(), board, mark));
 			}
 		}
 
@@ -118,7 +118,7 @@ public class SimulatorInterfaceTest {
 			for (int mark = 0; mark < 9; mark++) {
 				simulator9.setIndexNextBoard(-1);
 				simulator9.setCurrentPlayerSymbol(Symbol.CIRCLE);
-				assertTrue(simulator9.setMarkAt(Symbol.CIRCLE, board, mark));
+				assertTrue(simulator9.setMarkAt(simulator9.getCurrentPlayerSymbol(), board, mark));
 			}
 		}
 
@@ -127,7 +127,7 @@ public class SimulatorInterfaceTest {
 			for (int mark = 0; mark < 9; mark++) {
 				simulator9.setIndexNextBoard(-1);
 				simulator9.setCurrentPlayerSymbol(Symbol.EMPTY);
-				assertTrue(simulator9.setMarkAt(Symbol.EMPTY, board, mark));
+				assertTrue(simulator9.setMarkAt(simulator9.getCurrentPlayerSymbol(), board, mark));
 			}
 		}
 	}
@@ -140,7 +140,7 @@ public class SimulatorInterfaceTest {
 			for (int mark = 0; mark < 9; mark++) {
 				simulator9.setIndexNextBoard(-1);
 				simulator9.setCurrentPlayerSymbol(Symbol.CROSS);
-				assertFalse(simulator9.setMarkAt(Symbol.CROSS, board, mark));
+				assertFalse(simulator9.setMarkAt(simulator9.getCurrentPlayerSymbol(), board, mark));
 			}
 		}
 
@@ -149,7 +149,7 @@ public class SimulatorInterfaceTest {
 			for (int mark = 0; mark < 9; mark++) {
 				simulator9.setIndexNextBoard(-1);
 				simulator9.setCurrentPlayerSymbol(Symbol.CIRCLE);
-				assertFalse(simulator9.setMarkAt(Symbol.CIRCLE, board, mark));
+				assertFalse(simulator9.setMarkAt(simulator9.getCurrentPlayerSymbol(), board, mark));
 			}
 		}
 
@@ -158,7 +158,7 @@ public class SimulatorInterfaceTest {
 			for (int mark = 0; mark < 9; mark++) {
 				simulator9.setIndexNextBoard(-1);
 				simulator9.setCurrentPlayerSymbol(Symbol.EMPTY);
-				assertFalse(simulator9.setMarkAt(Symbol.EMPTY, board, mark));
+				assertFalse(simulator9.setMarkAt(simulator9.getCurrentPlayerSymbol(), board, mark));
 			}
 		}
 
@@ -167,7 +167,7 @@ public class SimulatorInterfaceTest {
 			for (int mark = 0; mark < 9; mark++) {
 				simulator9.setIndexNextBoard(-1);
 				simulator9.setCurrentPlayerSymbol(Symbol.CROSS);
-				assertFalse(simulator9.setMarkAt(Symbol.CROSS, board, mark));
+				assertFalse(simulator9.setMarkAt(simulator9.getCurrentPlayerSymbol(), board, mark));
 			}
 		}
 

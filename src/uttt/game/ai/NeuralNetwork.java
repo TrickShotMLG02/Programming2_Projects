@@ -25,6 +25,7 @@ import uttt.game.SimulatorInterface;
 public class NeuralNetwork implements Serializable {
 
     public static final String MODEL_TO_USE = "src/uttt/game/ai/models/model_test.dat";
+    public static boolean verbose = false;
 
     // matrices to store weights and bias for the layser
     private Matrix weight_input_hidden;
@@ -106,8 +107,9 @@ public class NeuralNetwork implements Serializable {
         // create prediction with outputLayer
         Prediction nextMovePrediction = new Prediction(sim, outputLayer);
 
-        // print statistics about prediction
-        System.out.println(nextMovePrediction.toString());
+        // print statistics about prediction if verbose
+        if (verbose)
+            System.out.println(nextMovePrediction.toString() + "\n\n");
 
         // return prediction
         return nextMovePrediction;

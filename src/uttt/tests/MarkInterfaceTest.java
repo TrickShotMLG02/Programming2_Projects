@@ -28,14 +28,14 @@ public class MarkInterfaceTest {
 	@Test
 	public void invalidIndexOnCreationTest() {
 		// check for index below bounds
-		assertThrows(Exception.class, () -> {
+		assertThrows(IllegalArgumentException.class, () -> {
 			markInvalid = UTTTFactory.createMark(Symbol.EMPTY, -1);
 			markInvalid.getPosition();
 			markInvalid.getSymbol();
 		});
 
 		// check for index above bounds
-		assertThrows(Exception.class, () -> {
+		assertThrows(IllegalArgumentException.class, () -> {
 			markInvalid = UTTTFactory.createMark(Symbol.EMPTY, 9);
 			markInvalid.getPosition();
 			markInvalid.getSymbol();
@@ -45,7 +45,7 @@ public class MarkInterfaceTest {
 	@Test
 	public void invalidSetSymbolTest() {
 		// check if markInvalid throws an exception on setSymbol with null
-		assertThrows(Exception.class, () -> {
+		assertThrows(IllegalArgumentException.class, () -> {
 			markInvalid.setSymbol(null);
 		});
 	}

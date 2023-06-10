@@ -43,6 +43,13 @@ public class Prediction {
         predictedMove = new Move(boardIndex, markIndex);
     }
 
+    public String expectedToString() {
+        int bi = Matrix.getBiggestValueIndexes(simulator, outputData)[0];
+        int mi = Matrix.getBiggestValueIndexes(simulator, outputData)[1];
+
+        return "Expected Output: \nBoardIndex: " + bi + "\nMarkIndex: " + mi + "\n";
+    }
+
     public String toString() {
         return "Propability of choice: " + getPropability() + "\nBoardIndex: " + boardIndex + "\nMarkIndex: "
                 + markIndex + "\n";
@@ -58,6 +65,13 @@ public class Prediction {
 
     public Move getPredictedMove() {
         return predictedMove;
+    }
+
+    public boolean predictionCorrect(Prediction actualResult) {
+        int bi = Matrix.getBiggestValueIndexes(simulator, outputData)[0];
+        int mi = Matrix.getBiggestValueIndexes(simulator, outputData)[1];
+
+        return actualResult.boardIndex == bi && actualResult.markIndex == mi;
     }
 
     /**

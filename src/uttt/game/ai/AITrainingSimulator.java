@@ -134,6 +134,7 @@ public class AITrainingSimulator implements SimulatorInterface, Cloneable {
                         currentPlayer = flipPlayers(playerOne, playerTwo, currentPlayer);
 
                         // train ai on random move
+                        // TODO: Punish ai since it chose invalid index
 
                         // update screen
                         ui.updateScreen(this);

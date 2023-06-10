@@ -11,6 +11,8 @@ public class AIPlayer implements PlayerInterface {
     private Symbol playerSymbol;
     private NeuralNetwork model;
 
+    public int failedPredictions = 0;
+
     public static long timeoutInMs = 0;
 
     /**

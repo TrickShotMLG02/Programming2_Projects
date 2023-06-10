@@ -3,15 +3,11 @@ package uttt.game.ai;
 import java.util.ArrayList;
 import java.util.List;
 
-import uttt.UTTTFactory;
 import uttt.game.Board;
 import uttt.game.BoardInterface;
-import uttt.game.GameRunnerInterface;
 import uttt.game.Main;
-import uttt.game.PlayerInterface;
 import uttt.game.Simulator;
 import uttt.game.SimulatorInterface;
-import uttt.game.UserInterface;
 import uttt.tests.util;
 import uttt.utils.Symbol;
 
@@ -26,15 +22,15 @@ public class AIManager {
 
     // for loading a model
     public static final String MODEL_TO_USE = "src/uttt/game/ai/models/model_test.dat";
-    private static boolean loadExistingModel = false;
+    private static boolean loadExistingModel = true;
 
     // save model / update model
     private static boolean saveModel = false;
     private static boolean updateModel = false;
 
     // play real game against ai
-    private static boolean playGameVsAI = true;
-    private static boolean testGameAI = false;
+    private static boolean playGameVsAI = false;
+    private static boolean testGameAI = true;
 
     public static void main(String[] args) {
 
@@ -76,13 +72,14 @@ public class AIManager {
             }
 
             if (testGameAI) {
-                // visualize board for testing
-                UserInterface gui = UTTTFactory.createUserInterface(true);
-                GameRunnerInterface game = UTTTFactory.createSimulator();
-                PlayerInterface playerOne = UTTTFactory.createBonusPlayer(Symbol.CIRCLE);
-                PlayerInterface playerTwo = UTTTFactory.createHumanPlayer(Symbol.CROSS);
 
-                game.run(playerOne, playerTwo, gui);
+                // printing expected output, actual predicted output as well as if it was
+                // correctly
+                Prediction pTest = createPredictionBoard5ToWin(aiSymbol);
+                System.out.println(pTest.expectedToString());
+                System.out.println(
+                        "Successful prediction: "
+                                + pTest.predictionCorrect(model.predictNextMove(pTest.simulator)) + "\n");
             }
 
             if (playGameVsAI) {

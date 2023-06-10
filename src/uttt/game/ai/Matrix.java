@@ -490,8 +490,11 @@ public class Matrix implements Serializable {
                 // check if current position divided by 9 is nextBoardIndex
 
                 if (i / boardCount == nextBoard) {
-                    result.data[i][0] = factorAllowed;
-                    result.data[i + boardCount * markCount][0] = factorAllowed;
+                    result.data[i][0] = sim.getBoards()[i / markCount].getMarks()[i % markCount]
+                            .getSymbol() == Symbol.EMPTY ? factorAllowed : factorForbidden;
+                    result.data[i
+                            + boardCount * markCount][0] = sim.getBoards()[i / markCount].getMarks()[i % markCount]
+                                    .getSymbol() == Symbol.EMPTY ? factorAllowed : factorForbidden;
                 } else {
                     // set tile in cross and in circle section to 0 if not in next board
                     result.data[i][0] = factorForbidden;
@@ -507,7 +510,8 @@ public class Matrix implements Serializable {
                     // iterate over matrix fields of corresponding board
                     for (int j = i * boardCount; j < i * boardCount + markCount; j++) {
                         // set board to 1 since it is open
-                        result.data[j][0] = factorAllowed;
+                        result.data[j][0] = sim.getBoards()[i].getMarks()[j - i * boardCount]
+                                .getSymbol() == Symbol.EMPTY ? factorAllowed : factorForbidden;
                     }
                 } else {
                     // iterate over matrix fields of corresponding board

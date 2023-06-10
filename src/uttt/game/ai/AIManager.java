@@ -3,11 +3,15 @@ package uttt.game.ai;
 import java.util.ArrayList;
 import java.util.List;
 
+import uttt.UTTTFactory;
 import uttt.game.Board;
 import uttt.game.BoardInterface;
+import uttt.game.GameRunnerInterface;
 import uttt.game.Main;
+import uttt.game.PlayerInterface;
 import uttt.game.Simulator;
 import uttt.game.SimulatorInterface;
+import uttt.game.UserInterface;
 import uttt.tests.util;
 import uttt.utils.Symbol;
 
@@ -18,19 +22,39 @@ import uttt.utils.Symbol;
  */
 public class AIManager {
 
+    // Storage for the current model
     public static NeuralNetwork model;
 
-    // for loading a model
-    public static final String MODEL_TO_USE = "src/uttt/game/ai/models/model_test.dat";
+    // Loading a model
     private static boolean loadExistingModel = true;
+    public static final String MODEL_TO_USE = "src/uttt/game/ai/models/model_game_training.dat";
 
-    // save model / update model
+    // Save model / update model
     private static boolean saveModel = false;
-    private static boolean updateModel = false;
+    public static boolean updateModel = false;
 
-    // play real game against ai
+    // Training
+    private static boolean iterativeTraining = false;
+    private static int iterations = 100;
+    private static boolean trainAIOnGame = true;
+
+    // Test trained scenarios
+    private static boolean testGameStateAI = false;
+
+    // Play real game against ai
     private static boolean playGameVsAI = false;
-    private static boolean testGameAI = true;
+    private static boolean playAIVsAI = false;
+
+    /**
+     * Function to create a new neural network
+     */
+    public static void setupModel() {
+        if (loadExistingModel) {
+            model = NeuralNetwork.LoadNetwork(MODEL_TO_USE);
+        } else {
+            model = new NeuralNetwork(0.05, 162, 81, 100);
+        }
+    }
 
     public static void main(String[] args) {
 
@@ -55,11 +79,14 @@ public class AIManager {
                     simulators.add((SimulatorInterface) prediction.simulator);
                 });
 
-                // train model on simulators and predictions
-                model.iterativeTraining(
-                        (SimulatorInterface[]) simulators.toArray(new SimulatorInterface[simulators.size()]),
-                        (Prediction[]) predictions.toArray(new Prediction[predictions.size()]),
-                        1000);
+                if (iterativeTraining) {
+                    // train model on simulators and predictions
+                    model.iterativeTraining(
+                            (SimulatorInterface[]) simulators.toArray(new SimulatorInterface[simulators.size()]),
+                            (Prediction[]) predictions.toArray(new Prediction[predictions.size()]),
+                            iterations);
+
+                }
 
                 // afterwards save model to disk
                 if (saveModel) {
@@ -71,35 +98,37 @@ public class AIManager {
                 System.out.println("\n");
             }
 
-            if (testGameAI) {
+            if (testGameStateAI) {
 
                 // printing expected output, actual predicted output as well as if it was
                 // correctly
-                Prediction pTest = createPredictionBoard5ToWin(aiSymbol);
+                Prediction pTest = createPredictionBoard2ToWin(aiSymbol);
                 System.out.println(pTest.expectedToString());
                 System.out.println(
                         "Successful prediction: "
                                 + pTest.predictionCorrect(model.predictNextMove(pTest.simulator)) + "\n");
-            }
-
-            if (playGameVsAI) {
+            } else if (playGameVsAI) {
                 // set timeout for ai player
                 AIPlayer.timeoutInMs = 500;
 
                 // start a game with human player and ai
                 Main.main(new String[] { "true", "false" });
+            } else if (trainAIOnGame) {
+                // train the ai on a game being played between 2 human players
+                // thus start a new game between 2 players, after each valid move,
+                // create new prediction of the current game state
+                // and train model on state before move with new move as expected output
+
+                // start game with player 1 human and player 2 AI
+                AIPlayer.timeoutInMs = 1000;
+                LaunchGame(true, false);
+            } else if (playAIVsAI) {
+                AIPlayer.timeoutInMs = 2000;
+                LaunchGame(false, false);
             }
 
         }
 
-    }
-
-    public static void setupModel() {
-        if (loadExistingModel) {
-            model = NeuralNetwork.LoadNetwork(MODEL_TO_USE);
-        } else {
-            model = new NeuralNetwork(0.01, 162, 81, 100);
-        }
     }
 
     public static Prediction createPredictionBoard2ToWin(Symbol winnerSymbol) {
@@ -246,6 +275,37 @@ public class AIManager {
         p.setAtIndex(3, 4, 1);
 
         return p;
+    }
+
+    public static void LaunchGame(boolean p1human, boolean p2human) {
+        // Create an instance of the Ultimate TicTacToe training simulator.
+        GameRunnerInterface game = new AITrainingSimulator();
+
+        // Create an instance of the user interface that is used to communicate
+        // with the user.
+        UserInterface ui = UTTTFactory.createUserInterface(true);
+
+        PlayerInterface playerOne;
+        PlayerInterface playerTwo;
+
+        // Create an instance of player one.
+        if (p1human) {
+            playerOne = UTTTFactory.createHumanPlayer(Symbol.CROSS);
+        } else {
+            playerOne = UTTTFactory.createBonusPlayer(Symbol.CROSS);
+        }
+
+        // Create an instance of player two.
+        if (p2human) {
+            playerTwo = UTTTFactory.createHumanPlayer(Symbol.CIRCLE);
+        } else {
+            playerTwo = UTTTFactory.createBonusPlayer(Symbol.CIRCLE);
+        }
+
+        System.out.println("\n\nRunning Training Simulator\n\n");
+
+        // Simulate the game until it is over.
+        game.run(playerOne, playerTwo, ui);
     }
 
 }

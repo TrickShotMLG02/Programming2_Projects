@@ -115,7 +115,7 @@ public class AITrainingSimulator implements SimulatorInterface, Cloneable {
 
                     // increment failed predictions of ai player
                     // ((AIPlayer) playerOne).failedPredictions += 1;
-
+                    System.out.println(move.toString());
                     move = Util.generateRandomValidMove(this);
 
                     /*

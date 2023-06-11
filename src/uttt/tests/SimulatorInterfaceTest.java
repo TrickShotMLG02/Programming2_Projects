@@ -273,11 +273,7 @@ public class SimulatorInterfaceTest {
 
 		simulator9.setIndexNextBoard(8);
 		// possible since no winner exists and empty marks
-		simulator9.getBoards()[8].getMarks()[0].setSymbol(Symbol.EMPTY);
-		simulator9.getBoards()[8].getMarks()[2].setSymbol(Symbol.EMPTY);
-		simulator9.getBoards()[8].getMarks()[4].setSymbol(Symbol.EMPTY);
-		simulator9.getBoards()[8].getMarks()[5].setSymbol(Symbol.EMPTY);
-		simulator9.getBoards()[8].getMarks()[8].setSymbol(Symbol.EMPTY);
+		simulator9.setBoards(util.createBoardInterface(Symbol.EMPTY, 9));
 		assertTrue(simulator9.isMovePossible(8));
 	}
 
@@ -300,19 +296,18 @@ public class SimulatorInterfaceTest {
 	@Test
 	public void isMovePossibleAdvancedValidTest() {
 		// test isMovePossible(int boardIndex, int markIndex) function
+		simulator9.setIndexNextBoard(0);
 		simulator9.setBoards(util.createBoardInterface(Symbol.CROSS, 9));
 		assertFalse(simulator9.isMovePossible(0, 0));
 
 		// not possible since winner exists
+		simulator9.setIndexNextBoard(8);
 		simulator9.getBoards()[8].getMarks()[8].setSymbol(Symbol.EMPTY);
 		assertFalse(simulator9.isMovePossible(8, 8));
 
 		// possible since no winner exists and empty marks
-		simulator9.getBoards()[8].getMarks()[0].setSymbol(Symbol.EMPTY);
-		simulator9.getBoards()[8].getMarks()[2].setSymbol(Symbol.EMPTY);
-		simulator9.getBoards()[8].getMarks()[4].setSymbol(Symbol.EMPTY);
-		simulator9.getBoards()[8].getMarks()[5].setSymbol(Symbol.EMPTY);
-		simulator9.getBoards()[8].getMarks()[8].setSymbol(Symbol.EMPTY);
+		simulator9.setIndexNextBoard(8);
+		simulator9.setBoards(util.createBoardInterface(Symbol.EMPTY, 9));
 		assertTrue(simulator9.isMovePossible(8, 8));
 
 	}

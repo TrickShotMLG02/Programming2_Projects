@@ -44,14 +44,15 @@ public class AITests {
         board.setMarkAt(looser, 3);
         board.setMarkAt(looser, 4);
 
+        // DONT CREATE UI SINCE IT CAUSES SECURITY VIOLATION
         // create simple tic tac toe ui
-        UserInterface ui = UTTTFactory.createUserInterface(false);
+        // UserInterface ui = UTTTFactory.createUserInterface(false);
 
         // should have no winner yet
         assertEquals(Symbol.EMPTY, board.getWinner());
 
         // grab ai move
-        int mi = ai.getPlayerMove(board, ui);
+        int mi = ai.getPlayerMove(board, null);
 
         // set mark at move
         board.setMarkAt(ai.getSymbol(), mi);

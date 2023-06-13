@@ -27,7 +27,15 @@ public class NeuralNetwork implements Serializable {
     public static final String MODEL_TO_USE = "src/uttt/game/ai/models/model_test.dat";
     public static boolean verbose = false;
 
-    // matrices to store weights and bias for the layser
+    // matrices to store weights and bias for the layer
+    /*
+     * 
+     * TODO:
+     * Since file read is not supported on the server, just print finished matrices
+     * and manually define their values below, but make sure, they don't get
+     * overridden by random values
+     * 
+     */
     private Matrix weight_input_hidden;
     private Matrix bias_hidden;
     private Matrix weight_output_hidden;

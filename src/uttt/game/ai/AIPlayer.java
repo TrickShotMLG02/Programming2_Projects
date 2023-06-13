@@ -53,11 +53,6 @@ public class AIPlayer implements PlayerInterface {
             throw new IllegalArgumentException("Game not found");
         }
 
-        // check if ui is null ONLY FOR PLAYERS (NOT AI)
-        if (ui == null) {
-            throw new IllegalArgumentException("GUI not found");
-        }
-
         if (utttModel == null) {
             throw new IllegalArgumentException("neural network not found");
         }
@@ -83,11 +78,6 @@ public class AIPlayer implements PlayerInterface {
     public int getPlayerMove(BoardInterface board, UserInterface ui) throws IllegalArgumentException {
 
         // TODO: implement functionality for getPlayerMove
-
-        // check if ui is null ONLY FOR PLAYERS (NOT AI)
-        if (ui == null) {
-            throw new IllegalArgumentException("GUI not found");
-        }
 
         if (utttModel == null) {
             throw new IllegalArgumentException("neural network not found");

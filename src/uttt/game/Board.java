@@ -71,7 +71,7 @@ public class Board implements BoardInterface {
             throw new IllegalArgumentException("Symbol is null");
 
         // check if there is an empty mark at index markIndex
-        if (marks[markIndex].getSymbol() == Symbol.EMPTY) {
+        if (marks[markIndex].getSymbol() == Symbol.EMPTY && !isClosed()) {
             marks[markIndex].setSymbol(symbol);
             return true;
         } else {

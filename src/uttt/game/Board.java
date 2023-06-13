@@ -36,6 +36,12 @@ public class Board implements BoardInterface {
         if (marks == null)
             throw new IllegalArgumentException("Marks array is null");
 
+        for (int i = 0; i < marks.length; i++) {
+            if (marks[i] == null) {
+                throw new IllegalArgumentException("Mark element null");
+            }
+        }
+
         if (marks.length != 9)
             throw new IllegalArgumentException("There must be 9 marks");
 

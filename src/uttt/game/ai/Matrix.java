@@ -10,7 +10,7 @@ import uttt.utils.Symbol;
  * 
  * Following code is inspired by
  * https://towardsdatascience.com/understanding-and-implementing-neural-networks-in-java-from-scratch-61421bb6352c
- * but not directly copied, instead only noted down the functions which may be useful for matrices and implemented them from scratch
+ * but not fully copied, instead mostly noted down the functions which may be useful for matrices and implemented them from scratch as you can also see in the AI Concept.pdf
  * 
  * Also the correct usage of the activation functions is inspired by
  * https://towardsdatascience.com/how-to-choose-the-right-activation-function-for-neural-networks-3941ff0e6f9c
@@ -305,8 +305,8 @@ public class Matrix implements Serializable {
 
     /**
      * Applies the derivative softMax function which is reached by subtracting the
-     * actual output from the target value
-     * as mentioned here
+     * actual output from the target value as mentioned here
+     * 
      * https://stackoverflow.com/questions/57631507/how-can-i-take-the-derivative-of-the-softmax-output-in-back-prop
      * 
      * @param targetValues the matrix containing the targetValues of the

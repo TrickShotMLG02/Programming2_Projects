@@ -27,7 +27,12 @@ public class AIPlayer implements PlayerInterface {
             playerSymbol = symbol;
 
             // load neural network models
-            utttModel = NeuralNetwork.LoadNetwork(AIManager.MODEL_TO_USE);
+            // utttModel = NeuralNetwork.LoadNetwork(AIManager.MODEL_TO_USE);
+
+            // dont load existing model, create new one
+            AIManager.setServerUse();
+            AIManager.setupModel();
+
             tttModel = null;
 
         } catch (Exception e) {

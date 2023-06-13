@@ -26,25 +26,38 @@ public class AIManager {
     public static NeuralNetwork model;
 
     // Loading a model
-    private static boolean loadExistingModel = true;
+    private static boolean loadExistingModel = false;
     public static final String MODEL_TO_USE = "src/uttt/game/ai/models/model_game_training.dat";
 
     // Save model / update model
     private static boolean saveModel = false;
-    public static boolean updateModel = true;
+    public static boolean updateModel = false;
 
     // Training
-    private static boolean iterativeTraining = false;
+    private static boolean iterativeTraining = true;
     private static int iterations = 100;
     private static boolean trainAIOnGame = false;
 
     // Test trained scenarios
-    private static boolean testGameStateAI = true;
+    private static boolean testGameStateAI = false;
 
     // Play real game against ai
     private static boolean playGameVsAI = false;
     private static boolean playAIVsAI = false;
     private static boolean playAIVsRandom = false;
+
+    public static void setServerUse() {
+        loadExistingModel = false;
+        saveModel = false;
+        updateModel = false;
+        iterativeTraining = true;
+        iterations = 100;
+        trainAIOnGame = false;
+        testGameStateAI = false;
+        playGameVsAI = false;
+        playAIVsAI = false;
+        playAIVsRandom = false;
+    }
 
     /**
      * Function to create a new neural network

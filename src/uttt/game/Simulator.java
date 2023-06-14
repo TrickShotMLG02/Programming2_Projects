@@ -152,9 +152,6 @@ public class Simulator implements SimulatorInterface {
     @Override
     public boolean isGameOver() {
 
-        if (getWinner() != Symbol.EMPTY)
-            return true;
-
         for (int i = 0; i < boards.length; i++) {
             if (!boards[i].isClosed()) {
                 return false;
@@ -172,10 +169,7 @@ public class Simulator implements SimulatorInterface {
         if (getIndexNextBoard() != boardIndex)
             return false;
 
-        if (getWinner() == Symbol.EMPTY)
-            return !boards[boardIndex].isClosed();
-        else
-            return false;
+        return !boards[boardIndex].isClosed();
     }
 
     @Override
@@ -187,22 +181,14 @@ public class Simulator implements SimulatorInterface {
         // check if the nextBoardIndex is -1
         if (getIndexNextBoard() == -1) {
             // check if move is possible on boardIndex and markIndex
-            if (getWinner() == Symbol.EMPTY) {
-                return boards[boardIndex].isMovePossible(markIndex);
-            } else {
-                return false;
-            }
+            return boards[boardIndex].isMovePossible(markIndex);
         }
 
         // check if board at nextBoardIndex is not closed and if nextBoardIndex is equal
         // to boardIndex to prevent placing outside current board
         if (!boards[getIndexNextBoard()].isClosed() && getIndexNextBoard() == boardIndex) {
             // then check if move is possible there and return result
-            if (getWinner() == Symbol.EMPTY) {
-                return boards[boardIndex].isMovePossible(markIndex);
-            } else {
-                return false;
-            }
+            return boards[boardIndex].isMovePossible(markIndex);
         } else {
             return false;
         }

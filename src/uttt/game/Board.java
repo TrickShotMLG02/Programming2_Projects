@@ -99,14 +99,14 @@ public class Board implements BoardInterface {
     @Override
     public boolean isMovePossible(int markIndex) throws IllegalArgumentException {
 
+        if (markIndex < 0 || markIndex > 8)
+            throw new IllegalArgumentException("index out of bounds");
+
         // check if there is a winner
         if (hasWinner() != Symbol.EMPTY) {
             // no move possible
             return false;
         }
-
-        if (markIndex < 0 || markIndex > 8)
-            throw new IllegalArgumentException("index out of bounds");
 
         // check if current index is empty symbol
         if (marks[markIndex].getSymbol() == Symbol.EMPTY) {

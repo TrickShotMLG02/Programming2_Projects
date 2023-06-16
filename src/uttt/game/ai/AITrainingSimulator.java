@@ -224,7 +224,7 @@ public class AITrainingSimulator implements SimulatorInterface, Cloneable {
 
         if ((getIndexNextBoard() == -1 || getIndexNextBoard() == boardIndex) && symbol == currentPlayerSymbol) {
             if (boards[boardIndex].setMarkAt(symbol, markIndex)) {
-                setIndexNextBoard(boardIndex);
+                setIndexNextBoard(markIndex);
                 return true;
             }
             return false;
@@ -265,6 +265,9 @@ public class AITrainingSimulator implements SimulatorInterface, Cloneable {
     @Override
     public boolean isGameOver() {
 
+        if (getWinner() != Symbol.EMPTY)
+            return true;
+
         for (int i = 0; i < boards.length; i++) {
             if (!boards[i].isClosed()) {
                 return false;
@@ -278,7 +281,9 @@ public class AITrainingSimulator implements SimulatorInterface, Cloneable {
     public boolean isMovePossible(int boardIndex) throws IllegalArgumentException {
         if (boardIndex < 0 || boardIndex > 8)
             throw new IllegalArgumentException("Index out of bounds");
-        return !boards[boardIndex].isClosed();
+
+        return !boards[boardIndex].isClosed() && !isGameOver()
+                && (getIndexNextBoard() == -1 || getIndexNextBoard() == boardIndex);
     }
 
     @Override
@@ -288,14 +293,14 @@ public class AITrainingSimulator implements SimulatorInterface, Cloneable {
             throw new IllegalArgumentException("index out of bounds");
 
         // check if the nextBoardIndex is -1
-        if (getIndexNextBoard() == -1) {
+        if (!isGameOver() && getIndexNextBoard() == -1) {
             // check if move is possible on boardIndex and markIndex
             return boards[boardIndex].isMovePossible(markIndex);
         }
 
         // check if board at nextBoardIndex is not closed and if nextBoardIndex is equal
         // to boardIndex to prevent placing outside current board
-        if (!boards[getIndexNextBoard()].isClosed() && getIndexNextBoard() == boardIndex) {
+        if (!isGameOver() && !boards[getIndexNextBoard()].isClosed() && getIndexNextBoard() == boardIndex) {
             // then check if move is possible there and return result
             return boards[boardIndex].isMovePossible(markIndex);
         } else {

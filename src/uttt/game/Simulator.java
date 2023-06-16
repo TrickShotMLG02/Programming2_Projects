@@ -169,7 +169,8 @@ public class Simulator implements SimulatorInterface {
         if (boardIndex < 0 || boardIndex > 8)
             throw new IllegalArgumentException("Index out of bounds");
 
-        return !boards[boardIndex].isClosed() && !isGameOver();
+        return !boards[boardIndex].isClosed() && !isGameOver()
+                && (getIndexNextBoard() == -1 || getIndexNextBoard() == boardIndex);
     }
 
     @Override

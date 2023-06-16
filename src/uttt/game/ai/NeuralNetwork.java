@@ -7,8 +7,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
 
 import uttt.game.SimulatorInterface;
+import uttt.utils.Move;
 
 /*
  * 
@@ -25,7 +27,7 @@ import uttt.game.SimulatorInterface;
 public class NeuralNetwork implements Serializable {
 
     public static final String MODEL_TO_USE = "src/uttt/game/ai/models/model_test.dat";
-    public static boolean verbose = false;
+    public static boolean verbose = true;
 
     // matrices to store weights and bias for the layer
     /*
@@ -40,6 +42,9 @@ public class NeuralNetwork implements Serializable {
     private Matrix bias_hidden;
     private Matrix weight_output_hidden;
     private Matrix bias_output;
+
+    private static double penaltyForBadMove = 0.01;
+    private static double rewardForGoodMove = 1;
 
     // specify learning rate
     private double learningRate;
@@ -98,22 +103,28 @@ public class NeuralNetwork implements Serializable {
 
         // convert nextBoardIndex to a matrix to filter out all boards which can not be
         // chosen in this move
-        Matrix allowedMovesFilter = Matrix.convertNextBoardIndexToMatrix(sim);
+        Matrix allowedBoardsFilter = Matrix.convertNextBoardIndexToMatrix(sim);
+
+        // convert all available mark positions to matrix of size 81
+        Matrix allowedMarksFilter = Matrix.convertPossibleMarkIndexToMatrix(sim);
 
         // multiply output from hidden layer with corresponding weights
         Matrix outputLayer = Matrix.multiplyMatrices(weight_output_hidden, hiddenLayer);
         // add bias to the calculated output layer
         outputLayer.elementWiseAddition(bias_output);
 
-        // to filter out any invalid moves, multiply the filter with the output layer
-        // before applying softMaxDistribution
-        outputLayer.elementWiseMultiplication(allowedMovesFilter);
+        // to filter out any invalid moves, multiply the filters for boards and marks
+        // with the output layer before applying softMaxDistribution
+        outputLayer.elementWiseMultiplication(allowedBoardsFilter);
+        outputLayer.elementWiseMultiplication(allowedMarksFilter);
 
         // apply softmax activation function to outputLayer
         outputLayer.softMaxFunction();
 
         // create prediction with outputLayer
         Prediction nextMovePrediction = new Prediction(sim, outputLayer);
+
+        System.out.println("propability for correct output: " + outputLayer.getData()[9][0]);
 
         // print statistics about prediction if verbose
         if (verbose)
@@ -146,6 +157,9 @@ public class NeuralNetwork implements Serializable {
         outputLayer.elementWiseAddition(bias_output);
         // apply softmax to output layer
         outputLayer.softMaxFunction();
+
+        // apply penalties for ai to outputLayer
+        punishBadMove(state, outputLayer, penaltyForBadMove);
 
         // create new matrix for targetstate
         Matrix targetOutput = targetState.getData();
@@ -221,6 +235,75 @@ public class NeuralNetwork implements Serializable {
 
         // predict next move just for analysis how good it worked
         // predictNextMove(state);
+    }
+
+    /**
+     * TODO: implement second part which applies penalty if ai blocks opponent
+     * instead of winning
+     * Punishes a bad move which let the enemy win the current board or if it blocks
+     * enemy instead of winning a board
+     * 
+     * @param state       the state before the ai move
+     * @param outputLayer the output layer of the network, where we want to apply
+     *                    punishment to before backpropagating
+     * @param penalty     the value of the penalty which is applied
+     */
+    private void punishBadMove(SimulatorInterface state, Matrix outputLayer, double penalty) {
+        // Get the move that let the enemy win the game and punish it
+        List<Move> possibleMoves = AITrainingSimulator.getPossibleMoves(state);
+        Move badMove;
+
+        // TODO: check if move from ai let the opponent player win
+        // For that extract the move from the outputlayer (the index of the element with
+        // highest propability), which represents the move, which will be done by the ai
+        int[] indexes = Matrix.getBiggestValueIndexes(state, outputLayer);
+        int boardIndex = indexes[0];
+        int markIndex = indexes[1];
+
+        // create copy of Simulator
+        SimulatorInterface simulateNextStep = AITrainingSimulator.copySimulator(state);
+        // simulate move on copied simulator which was predicted by ai
+        AITrainingSimulator.simulateMove(simulateNextStep, new Move(boardIndex, markIndex));
+
+        // check if ai blocked the opponent from winning with next move, if so, then do
+        // nothing. else, punish every move which didn't block the ai
+
+        if (AITrainingSimulator.isWinPossible(simulateNextStep)) {
+            // ai blocked successfully
+            System.out.println("AI blocked opponent from winning");
+            // apply reward to move in matrix
+            int index = boardIndex * 9 + markIndex;
+            outputLayer.getData()[index][0] *= rewardForGoodMove;
+            return;
+        }
+
+        for (int i = 0; i < possibleMoves.size(); i++) {
+            // create copy of Simulator
+            simulateNextStep = AITrainingSimulator.copySimulator(state);
+            // simulate move on copied simulator
+            AITrainingSimulator.simulateMove(simulateNextStep, possibleMoves.get(i));
+
+            // check if opponent will be able to win the game after applying move from list
+            if (AITrainingSimulator.isWinPossible(simulateNextStep)) {
+                // store current move as bad move since it let the opponent win
+                badMove = possibleMoves.get(i);
+
+                // calculate position of move in output layer matrix
+                int matrixIndex = badMove.getBoardIndex() * 9 + badMove.getMarkIndex();
+                // TODO: punish move by subtracting or multiplying penalty
+
+                // print penalty information
+                System.out.println("punished ai (" + state.getCurrentPlayerSymbol().toString()
+                        + ") for move which didn't block opponent ("
+                        + simulateNextStep.getCurrentPlayerSymbol().toString() + ") at BoardIndex: "
+                        + badMove.getBoardIndex() + " MarkIndex: " + badMove.getMarkIndex() + "\nFrom "
+                        + outputLayer.getData()[matrixIndex][0] + " to "
+                        + (outputLayer.getData()[matrixIndex][0] * penalty));
+
+                outputLayer.getData()[matrixIndex][0] *= penalty;
+            }
+        }
+
     }
 
     /**

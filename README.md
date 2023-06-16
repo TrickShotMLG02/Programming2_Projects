@@ -1,6 +1,10 @@
-# Programming2_Projects
+# Projects of Programming 2 Course
 
-to copy old repositories here:
+Note: Projects are pushed after all deadlines for the whole project are over
+---
+
+
+## Instructions to upload an existing repository
 
 1. clone project from gitlab to local folder
 2. edit .git/config file and change remote_origin url to this github repo url (https)

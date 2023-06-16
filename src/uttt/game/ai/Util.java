@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import uttt.game.BoardInterface;
+import uttt.game.MarkInterface;
 import uttt.game.SimulatorInterface;
 import uttt.utils.Move;
 import uttt.utils.Symbol;
@@ -76,6 +77,25 @@ public class Util {
 
         Move rndMove = new Move(rndBoardIndex, rndMarkIndex);
         return rndMove;
+
+    }
+
+    public static boolean contains2SymbolsAndEmpty(SimulatorInterface sim, Symbol symbolToTest, int boardIndex,
+            int indexA, int indexB, int indexC) {
+        BoardInterface board = sim.getBoards()[boardIndex];
+        MarkInterface[] marks = board.getMarks();
+
+        Symbol symA = marks[indexA].getSymbol();
+        Symbol symB = marks[indexB].getSymbol();
+        Symbol symC = marks[indexC].getSymbol();
+
+        // check if two symbols are equal and one is empty
+        if ((symA == symB && symC == Symbol.EMPTY) || (symA == symC && symB == Symbol.EMPTY)
+                || (symB == symC && symA == Symbol.EMPTY)) {
+            // return true if those symbols are the symbol to test
+            return symA == symbolToTest || symB == symbolToTest || symC == symbolToTest;
+        }
+        return false;
 
     }
 }

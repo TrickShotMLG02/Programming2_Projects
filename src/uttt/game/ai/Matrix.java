@@ -3,6 +3,7 @@ package uttt.game.ai;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import uttt.game.MarkInterface;
 import uttt.game.SimulatorInterface;
 import uttt.utils.Symbol;
 
@@ -527,6 +528,47 @@ public class Matrix implements Serializable {
     }
 
     /**
+     * Convert all empty marks to a matrix representation where empty marks are
+     * marked with 1 and all others with 0
+     * 
+     * @param sim simulator containing current game
+     * @return matrix containing possible marks to be set
+     */
+    public static Matrix convertPossibleMarkIndexToMatrix(SimulatorInterface sim) {
+        int nextBoard = sim.getIndexNextBoard();
+
+        // factorForbidden is used to cancel out invalid moves before applying softmax
+        // function
+        double factorForbidden = 0;
+        // factorAllowed is used to keep valid moves unmodified
+        double factorAllowed = 1;
+
+        int boardCount = sim.getBoards().length;
+        int markCount = sim.getBoards()[0].getMarks().length;
+
+        Matrix result = new Matrix(boardCount * markCount, 1);
+
+        // iterate over all boards and marks
+        for (int board = 0; board < boardCount; board++) {
+            for (int mark = 0; mark < markCount; mark++) {
+                if (board == nextBoard || nextBoard == -1) {
+
+                    // check if mark is empty
+                    MarkInterface tmp = sim.getBoards()[board].getMarks()[mark];
+                    if (tmp.getSymbol() == Symbol.EMPTY) {
+                        result.setAtIndex(board, mark, factorAllowed);
+                    } else {
+                        result.setAtIndex(board, mark, factorForbidden);
+                    }
+
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Creates a matrix that represents only values which are not equal and cancels
      * out all other values
      * 
@@ -598,6 +640,17 @@ public class Matrix implements Serializable {
 
         // return indexes
         return indexes;
+    }
+
+    /**
+     * Set a specific value at board/markIndex of matrix
+     * 
+     * @param boardIndex
+     * @param markIndex
+     * @param value
+     */
+    public void setAtIndex(int boardIndex, int markIndex, double value) {
+        data[boardIndex * 9 + markIndex][0] = value;
     }
 
     public double[][] getData() {

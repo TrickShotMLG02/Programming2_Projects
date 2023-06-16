@@ -1,8 +1,12 @@
 package uttt.game.ai;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import uttt.game.Board;
 import uttt.game.BoardInterface;
 import uttt.game.PlayerInterface;
+import uttt.game.Simulator;
 import uttt.game.SimulatorInterface;
 import uttt.game.UserInterface;
 import uttt.utils.Move;
@@ -328,4 +332,123 @@ public class AITrainingSimulator implements SimulatorInterface, Cloneable {
 
     }
 
+    /**
+     * Function used for ai training to simulate a specific move in the simulator
+     * 
+     * @param state the simulator state where the move should be simulated in
+     * @param move  move which should be simulated
+     */
+    public static void simulateMove(SimulatorInterface state, Move move) {
+
+        // get indexes from move
+        int boardIndex = move.getBoardIndex();
+        int markIndex = move.getMarkIndex();
+
+        // set mark at indexes to simulate move
+        state.getBoards()[boardIndex].getMarks()[markIndex].setSymbol(state.getCurrentPlayerSymbol());
+
+        // System.out.println("Simulated place of " +
+        // state.getCurrentPlayerSymbol().toString() + " at position " + boardIndex +
+        // "|" + markIndex);
+
+        state.setCurrentPlayerSymbol(state.getCurrentPlayerSymbol().flip());
+
+    }
+
+    public static boolean isWinPossible(SimulatorInterface state) {
+        // check if there are 2 equal symbols and one empty symbol in a row/col/diagonal
+        // where the 2 symbols are the symbolToTestWin
+        // if so, return true else false
+
+        // symbol to test for
+        Symbol symbolToTestWin = state.getCurrentPlayerSymbol();
+
+        // iterate over all boards
+        for (int board = 0; board < 9; board++) {
+
+            // check if board is valid
+            if (board == state.getIndexNextBoard() || state.getIndexNextBoard() == -1) {
+
+                boolean winPossible = false;
+
+                // check all winning patterns
+                winPossible = winPossible || Util.contains2SymbolsAndEmpty(state,
+                        symbolToTestWin, board, 0, 1, 2);
+                winPossible = winPossible || Util.contains2SymbolsAndEmpty(state,
+                        symbolToTestWin, board, 3, 4, 5);
+                winPossible = winPossible || Util.contains2SymbolsAndEmpty(state,
+                        symbolToTestWin, board, 6, 7, 8);
+                winPossible = winPossible || Util.contains2SymbolsAndEmpty(state,
+                        symbolToTestWin, board, 0, 3, 6);
+                winPossible = winPossible || Util.contains2SymbolsAndEmpty(state,
+                        symbolToTestWin, board, 1, 4, 7);
+                winPossible = winPossible || Util.contains2SymbolsAndEmpty(state,
+                        symbolToTestWin, board, 2, 5, 8);
+                winPossible = winPossible || Util.contains2SymbolsAndEmpty(state,
+                        symbolToTestWin, board, 0, 4, 8);
+                winPossible = winPossible || Util.contains2SymbolsAndEmpty(state,
+                        symbolToTestWin, board, 6, 4, 2);
+
+                // return true as soon as a win is possible
+                if (winPossible) {
+                    return winPossible;
+                }
+            }
+        }
+
+        // return false if no win is possible
+        return false;
+
+    }
+
+    public static SimulatorInterface copySimulator(SimulatorInterface sim) {
+        // create new Simulator
+        SimulatorInterface simCpy = new Simulator();
+
+        // copy values
+
+        BoardInterface[] boards = new BoardInterface[9];
+
+        for (int i = 0; i < 9; i++) {
+            boards[i] = new Board();
+            for (int j = 0; j < 9; j++) {
+                Symbol tmp = sim.getBoards()[i].getMarks()[j].getSymbol();
+                boards[i].getMarks()[j].setSymbol(tmp);
+            }
+        }
+
+        simCpy.setBoards(boards);
+        simCpy.setCurrentPlayerSymbol(sim.getCurrentPlayerSymbol());
+        simCpy.setIndexNextBoard(sim.getIndexNextBoard());
+
+        // return copy
+        return simCpy;
+    }
+
+    public static List<Move> getPossibleMoves(SimulatorInterface sim) {
+
+        // create list to store possible moves in
+        List<Move> possibleMoves = new ArrayList<Move>();
+
+        // grab index which specifies next board
+        int nextBoard = sim.getIndexNextBoard();
+
+        for (int board = 0; board < 9; board++) {
+            for (int mark = 0; mark < 9; mark++) {
+
+                // only get moves from board which can be played
+                if (nextBoard == -1 || board == nextBoard) {
+                    // test if move is possible
+                    if (sim.isMovePossible(board, mark)) {
+                        // add new move with indexes to list
+                        possibleMoves.add(new Move(board, mark));
+                    }
+                }
+
+            }
+        }
+
+        return possibleMoves;
+
+    }
 }

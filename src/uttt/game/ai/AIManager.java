@@ -8,6 +8,8 @@ import uttt.game.Board;
 import uttt.game.BoardInterface;
 import uttt.game.GameRunnerInterface;
 import uttt.game.Main;
+import uttt.game.Mark;
+import uttt.game.MarkInterface;
 import uttt.game.PlayerInterface;
 import uttt.game.Simulator;
 import uttt.game.SimulatorInterface;
@@ -39,7 +41,7 @@ public class AIManager {
     private static boolean trainAIOnGame = false;
 
     // Test trained scenarios
-    private static boolean testGameStateAI = false;
+    private static boolean testGameStateAI = true;
 
     // Play real game against ai
     private static boolean playGameVsAI = false;
@@ -102,6 +104,7 @@ public class AIManager {
                 List<Prediction> predictions = new ArrayList<Prediction>();
                 predictions.add(createPredictionBoard2ToWin(aiSymbol));
                 predictions.add(createPredictionBoard3ToWin(aiSymbol));
+                predictions.add(createPredicitonBoard0ToBlockOpponent(aiSymbol.flip()));
                 // predictions.add(createPredictionBoard5ToWin(aiSymbol));
 
                 // extract simulators from predictions
@@ -135,11 +138,12 @@ public class AIManager {
 
                 // printing expected output, actual predicted output as well as if it was
                 // correctly
-                Prediction pTest = createPredictionBoard2ToWin(aiSymbol);
+                Prediction pTest = createPredicitonBoard1ToBlockOpponent(aiSymbol.flip());
                 System.out.println(pTest.expectedToString());
                 System.out.println(
                         "Successful prediction: "
                                 + pTest.predictionCorrect(model.predictNextMove(pTest.simulator)) + "\n");
+
             } else if (playGameVsAI) {
                 // set timeout for ai player
                 AIPlayer.timeoutInMs = 500;
@@ -167,6 +171,84 @@ public class AIManager {
 
         }
 
+    }
+
+    public static Prediction createPredicitonBoard0ToBlockOpponent(Symbol opponentSymbol) {
+        BoardInterface[] boards = new BoardInterface[9];
+
+        BoardInterface b0 = new Board();
+        MarkInterface[] marks = new MarkInterface[9];
+
+        marks[0] = new Mark(opponentSymbol, 0);
+        marks[1] = new Mark(opponentSymbol, 1);
+        marks[2] = new Mark(Symbol.EMPTY, 2);
+        marks[3] = new Mark(opponentSymbol.flip(), 3);
+        marks[4] = new Mark(Symbol.EMPTY, 4);
+        marks[5] = new Mark(Symbol.EMPTY, 5);
+        marks[6] = new Mark(opponentSymbol.flip(), 6);
+        marks[7] = new Mark(Symbol.EMPTY, 7);
+        marks[8] = new Mark(Symbol.EMPTY, 8);
+
+        // setup board on which enemy should be blocked
+        b0.setMarks(marks);
+        boards[0] = b0;
+
+        for (int i = 1; i < 9; i++) {
+            boards[i] = new Board();
+        }
+
+        SimulatorInterface sim = new Simulator();
+        sim.setBoards(boards);
+        sim.setIndexNextBoard(0);
+        sim.setCurrentPlayerSymbol(opponentSymbol.flip());
+
+        Matrix expectedOutput = new Matrix(81, 1);
+        expectedOutput.setMatrix0();
+
+        Prediction p = new Prediction(sim, expectedOutput);
+
+        p.setAtIndex(0, 2, 1);
+
+        return p;
+    }
+
+    public static Prediction createPredicitonBoard1ToBlockOpponent(Symbol opponentSymbol) {
+        BoardInterface[] boards = new BoardInterface[9];
+
+        BoardInterface b1 = new Board();
+        MarkInterface[] marks = new MarkInterface[9];
+
+        marks[0] = new Mark(Symbol.EMPTY, 0);
+        marks[1] = new Mark(opponentSymbol, 1);
+        marks[2] = new Mark(opponentSymbol, 2);
+        marks[3] = new Mark(opponentSymbol.flip(), 3);
+        marks[4] = new Mark(Symbol.EMPTY, 4);
+        marks[5] = new Mark(Symbol.EMPTY, 5);
+        marks[6] = new Mark(opponentSymbol.flip(), 6);
+        marks[7] = new Mark(Symbol.EMPTY, 7);
+        marks[8] = new Mark(Symbol.EMPTY, 8);
+
+        for (int i = 0; i < 9; i++) {
+            boards[i] = new Board();
+        }
+
+        // setup board on which enemy should be blocked
+        b1.setMarks(marks);
+        boards[1] = b1;
+
+        SimulatorInterface sim = new Simulator();
+        sim.setBoards(boards);
+        sim.setIndexNextBoard(1);
+        sim.setCurrentPlayerSymbol(opponentSymbol.flip());
+
+        Matrix expectedOutput = new Matrix(81, 1);
+        expectedOutput.setMatrix0();
+
+        Prediction p = new Prediction(sim, expectedOutput);
+
+        p.setAtIndex(1, 0, 1);
+
+        return p;
     }
 
     public static Prediction createPredictionBoard2ToWin(Symbol winnerSymbol) {

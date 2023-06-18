@@ -21,6 +21,8 @@ import uttt.utils.Move;
  * in addition this explanation was considered for the design of the neural network
  * https://www.numpyninja.com/post/neural-network-and-its-functionality
  * 
+ * Also the script from Marius Smytzek of lecture Neural Networks (2019) was used for deeper understanding of neural networks and their implementation
+ * 
  * 
  * More information can be found in "PROG 2 UTTT-AI Concept.pdf"
  */

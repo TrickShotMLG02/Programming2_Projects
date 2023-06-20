@@ -113,4 +113,18 @@ public class Plane extends BBoxedPrimitive {
         };
     }
 
+    @Override
+    public int hashCode() {
+        return m.hashCode() ^ u.hashCode() ^ v.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (other instanceof Plane) {
+            final Plane cobj = (Plane) other;
+            return cobj.m.equals(m) && cobj.u.equals(u) && cobj.v.equals(v);
+        }
+        return false;
+    }
+
 }

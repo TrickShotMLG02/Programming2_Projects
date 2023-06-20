@@ -60,9 +60,7 @@ public class Sphere extends BBoxedPrimitive {
              */
             private Point point = null;
             // r is the distance of the ray
-            // s is x translation in 2d
-            // t is y translation in 2d
-            private float r, s, t;
+            private float r;
 
             @Override
             public float getParameter() {

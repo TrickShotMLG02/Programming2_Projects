@@ -18,7 +18,11 @@ public class Plane extends BBoxedPrimitive {
         super(BBox.INF);
 
         // chosen point
-        this.m = a;
+        if (a.equals(Point.ORIGIN)) {
+            this.m = b;
+        } else {
+            this.m = a;
+        }
 
         // vector 1
         this.u = b.sub(a);
@@ -35,9 +39,20 @@ public class Plane extends BBoxedPrimitive {
         super(BBox.INF);
 
         // set m to support point
-        this.m = supp;
+        if (supp.equals(Point.ORIGIN)) {
+            // move support point with offset 1 at each variable which is 0 in normal vector
+            // for preventing NaN error in cosinus angle function of a vector and Origin
+            // vector, since it is division by 0
+            float x = supp.x() == 0 && n.x() == 0 ? 1 : 0;
+            float y = supp.y() == 0 && n.y() == 0 ? 1 : 0;
+            float z = supp.z() == 0 && n.z() == 0 ? 1 : 0;
 
-        this.n = n;
+            this.m = new Point(x, y, z);
+        } else {
+            this.m = supp;
+        }
+
+        this.n = n.normalized();
         // create orthogonal vector by setting one coordinate to 0, switching two others
         // and multiplying one with -1
         this.u = new Vec3(0, -n.z(), n.y());
@@ -52,7 +67,7 @@ public class Plane extends BBoxedPrimitive {
 
             private Point point = null;
             // r is the distance of the ray
-            private float r;
+            private float r = -1;
 
             @Override
             public float getParameter() {
@@ -87,10 +102,15 @@ public class Plane extends BBoxedPrimitive {
                     return false;
                 }
 
+                if (solution > tmax) {
+                    return false;
+                }
+
                 // check that hit was good
-                if (solution <= tmax && solution >= tmin) {
+                if (true || solution <= tmax && solution >= tmin) {
                     // store solution as raycast hit distance
                     this.r = solution;
+                    this.r = angle;
 
                     // return true, since hit was valid
                     return true;

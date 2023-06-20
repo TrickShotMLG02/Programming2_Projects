@@ -4,7 +4,8 @@ import raytracer.math.Point;
 import raytracer.math.Vec3;
 
 public final class GeomFactory {
-	private GeomFactory() {}
+	private GeomFactory() {
+	}
 
 	/**
 	 * Generates a plane from three given points. Each of the points is located
@@ -12,10 +13,10 @@ public final class GeomFactory {
 	 *
 	 * The points must not lie on a straight line.
 	 *
-	 * @param a  First span point
-	 * @param b  Second span point
-	 * @param c  Third span point
-	 * @return   The new plane
+	 * @param a First span point
+	 * @param b Second span point
+	 * @param c Third span point
+	 * @return The new plane
 	 */
 	public static Primitive createPlane(final Point a, final Point b, final Point c) {
 		// TODO Implement this method
@@ -26,9 +27,9 @@ public final class GeomFactory {
 	 * Generates a plane from a given point (that is located on the plane) and a
 	 * normal vector of this plane.
 	 *
-	 * @param n     The normal vector defining this plane
-	 * @param supp  An arbitrary point that lies on the plane
-	 * @return      The new plane
+	 * @param n    The normal vector defining this plane
+	 * @param supp An arbitrary point that lies on the plane
+	 * @return The new plane
 	 */
 	public static Primitive createPlane(final Vec3 n, final Point supp) {
 		// TODO Implement this method
@@ -38,22 +39,31 @@ public final class GeomFactory {
 	/**
 	 * Generates a sphere from given center point and radius.
 	 *
-	 * @param m  Center point of the sphere
-	 * @param r  Radius
-	 * @return   The new sphere
+	 * @param m Center point of the sphere
+	 * @param r Radius
+	 * @return The new sphere
 	 */
 	public static Primitive createSphere(final Point m, final float r) {
 		// TODO Implement this method
-		throw new UnsupportedOperationException("This method has not yet been implemented.");
+
+		// calculate 2 points on surface of sphere
+
+		// calculate point 1 on surface of sphere
+		Point p1OnSurface = new Point(m.get(0) + r, m.get(1), m.get(2));
+
+		// calculate point 2 on surface of sphere
+		Point p2OnSurface = new Point(m.get(0), m.get(1) + r, m.get(2));
+
+		return new Sphere(m, p1OnSurface, p2OnSurface);
 	}
 
 	/**
 	 * Generates a triangle from given three points.
 	 *
-	 * @param a  First point
-	 * @param b  Second point
-	 * @param c  Third point
-	 * @return   The new triangle
+	 * @param a First point
+	 * @param b Second point
+	 * @param c Third point
+	 * @return The new triangle
 	 */
 	public static Triangle createTriangle(final Point a, final Point b, final Point c) {
 		return new Triangle(a, b, c);

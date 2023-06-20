@@ -30,8 +30,7 @@ public final class ShaderFactory {
      *                                       epsilon)
      */
     public static Shader createCheckerBoard(final Shader a, final Shader b, final float scale) {
-        // TODO Implement this method
-        throw new UnsupportedOperationException("This method has not yet been implemented.");
+        return new CheckerBoard(a, b, scale);
     }
 
     /**
@@ -61,7 +60,6 @@ public final class ShaderFactory {
      */
     public static Shader createPhong(final Shader inner, final Color ambient, final float diffuse, final float specular,
             final float shininess) {
-        // TODO Implement this method
-        throw new UnsupportedOperationException("This method has not yet been implemented.");
+        return new Phong(inner, ambient, diffuse, specular, shininess);
     }
 }

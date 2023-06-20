@@ -64,7 +64,6 @@ public class Sphere extends BBoxedPrimitive {
 
             @Override
             public float getParameter() {
-                // calculate distance between starting point and hit point
                 return r;
             }
 
@@ -86,9 +85,10 @@ public class Sphere extends BBoxedPrimitive {
                 // p_s = starting point of ray
                 // c_k = center of sphere
 
-                // b = 2 * dir * (p_s - c_k)
+                // p_s - c_k
                 Vec3 ps_ck = ray.base().sub(m);
 
+                // b = 2 * dir * (ps_ck)
                 float b = 2 * dir.dot(ps_ck);
 
                 // c = (p_s - c_k)^2 - r_k^2
@@ -113,11 +113,16 @@ public class Sphere extends BBoxedPrimitive {
                         return false;
                     }
 
-                    // store solution as raycast hit distance
-                    r = solution;
+                    // check that hit was good
+                    if (solution <= tmax && solution >= tmin) {
+                        // store solution as raycast hit distance
+                        r = solution;
 
-                    // return true, since hit was valid
-                    return true;
+                        // return true, since hit was valid
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
 
             }

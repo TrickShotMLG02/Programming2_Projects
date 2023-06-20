@@ -70,7 +70,8 @@ public class Sphere extends BBoxedPrimitive {
             @Override
             public Point getPoint() {
                 if (point == null)
-                    point = ray.eval(getParameter()).add(n.scale(0.0001f));
+                    // point = ray.eval(getParameter()).add(n.scale(0.0001f));
+                    point = ray.eval(getParameter());
                 return point;
             }
 

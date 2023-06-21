@@ -106,9 +106,12 @@ public class OBJReader {
 			switch (tokens[0]) {
 				// line contains a vertice
 				case "v":
-					// create point from coordinates and scale it
-					Point p = new Point(Float.valueOf(tokens[1]) * scale, Float.valueOf(tokens[2]) * scale,
-							Float.valueOf(tokens[3]) * scale);
+					// create point from coordinates
+					Point p = new Point(Float.valueOf(tokens[1]), Float.valueOf(tokens[2]),
+							Float.valueOf(tokens[3]));
+
+					// scale point
+					p.scale(scale);
 
 					// translate point in space
 					p.add(translate);

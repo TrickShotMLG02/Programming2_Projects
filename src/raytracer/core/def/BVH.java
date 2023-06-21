@@ -55,13 +55,32 @@ public class BVH extends BVHBase {
 
     @Override
     public BBox bbox() {
-        BBox newBoundingBox = BBox.EMPTY;
-        // TODO: compute bounding Box of the current objects
 
         Point min;
         Point max;
 
-        return newBoundingBox;
+        // check if there are any childObjects
+        if (childObjects.size() > 0) {
+            min = childObjects.get(0).bbox().getMin();
+        } else {
+            min = BBox.EMPTY.getMin();
+        }
+
+        // set max to min, since tere is a larger point than min
+        max = min;
+
+        for (Obj obj : childObjects) {
+            // calculate min point from all childObjects
+            min = min.min(obj.bbox().getMin());
+        }
+
+        for (Obj obj : childObjects) {
+            // calculate max point from all childObjects
+            max = max.max(obj.bbox().getMax());
+        }
+
+        // create new Box with points min and max
+        return BBox.create(min, max);
     }
 
     /**
@@ -75,17 +94,10 @@ public class BVH extends BVHBase {
 
         // check if the oject we want to add is a standard object
         if (prim instanceof StandardObj) {
-            // check if current bounding box has reached the threshold of objects
-            if (childObjects.size() >= THRESHOLD) {
 
-                // TODO:
-                // restructure everything
+            // add it to the elments of the current bounding box
+            childObjects.add(prim);
 
-            } else {
-                // add it to the elments of the current bounding box
-                childObjects.add(prim);
-
-            }
         } else if (prim instanceof BVH) {
             // add boundingbox to children bounding boxes
             childBVHs.add((BVH) prim);
@@ -94,9 +106,6 @@ public class BVH extends BVHBase {
 
         // recalculate this bounding box
         this.boundingBox = bbox();
-
-        // TODO Implement this method
-        throw new UnsupportedOperationException("This method has not yet been implemented.");
     }
 
     /**
@@ -121,8 +130,8 @@ public class BVH extends BVHBase {
 
         // iterate over all objects and get element wise maximum of current maxPoint and
         // getMin()
-        for (int i = 0; i < childBVHs.size(); i++) {
-            maxPoint = childBVHs.get(i).boundingBox.getMin().max(maxPoint);
+        for (int i = 0; i < childObjects.size(); i++) {
+            maxPoint = childObjects.get(i).bbox().getMin().max(maxPoint);
         }
 
         return maxPoint;
@@ -148,8 +157,111 @@ public class BVH extends BVHBase {
     public void distributeObjects(final BVHBase a, final BVHBase b,
             final int splitDim, final float splitPos) {
 
-        // TODO Implement this method
-        throw new UnsupportedOperationException("This method has not yet been implemented.");
+        // get min point of current bvh
+        Point minBvh = bbox().getMin();
+
+        // create vector3 with splitpos at splitDim and everything else 0,
+        Vec3 splitPoint;
+        switch (splitDim) {
+            case 0:
+                splitPoint = new Vec3(splitPos, 0, 0);
+                break;
+
+            case 1:
+                splitPoint = new Vec3(0, splitPos, 0);
+                break;
+
+            case 2:
+                splitPoint = new Vec3(0, 0, splitPos);
+                break;
+            default:
+                splitPoint = new Vec3(0, 0, 0);
+        }
+
+        // add vector to min point
+        Point splitDimensionPoint = minBvh.add(splitPoint);
+
+        // iterate over all objects in current BVH and check if objects min point is in
+        // the BVHBase a. If so, add it to a else to b
+        for (Obj obj : childObjects) {
+
+            // compare minPoint of all objets at coordinate splitDim with
+            // splitDimensionPoint
+
+            switch (splitDim) {
+                case 0:
+                    if (obj.bbox().getMin().x() <= splitDimensionPoint.x()) {
+                        a.add(obj);
+                    } else {
+                        b.add(obj);
+                    }
+                    childObjects.remove(obj);
+                    break;
+
+                case 1:
+                    if (obj.bbox().getMin().y() <= splitDimensionPoint.y()) {
+                        a.add(obj);
+                    } else {
+                        b.add(obj);
+                    }
+                    childObjects.remove(obj);
+                    break;
+
+                case 2:
+                    if (obj.bbox().getMin().z() <= splitDimensionPoint.z()) {
+                        a.add(obj);
+                    } else {
+                        b.add(obj);
+                    }
+                    childObjects.remove(obj);
+                    break;
+
+                default:
+                    break;
+            }
+
+        }
+
+        childBVHs.add((BVH) a);
+
+        // distribute Objects in a only if there are more than 4 objects in it
+
+        if (a.getObjects().size() > THRESHOLD) {
+
+            // create two BVHs for distribution
+            BVH bvh1 = new BVH();
+            BVH bvh2 = new BVH();
+
+            Point minPoint = boundingBox.getMin();
+
+            // get maxMinPoint to extract splitDimension
+            Point maxMinPoint = calculateMaxOfMinPoints();
+
+            // convert maxMinPoint to a vector
+            Vec3 v = maxMinPoint.sub(Point.ORIGIN);
+
+            // calculate splitDimension int
+            int splitDimension = calculateSplitDimension(v);
+
+            // calculate splitPosition float
+
+            // TODO:
+            // restructure everything
+
+            // TODO Implement this method
+            throw new UnsupportedOperationException("This method has not yet been implemented.");
+        }
+
+        childBVHs.add((BVH) b);
+
+        // distribute Objects in b only if there are more than 4 objects in it
+
+        if (b.getObjects().size() > THRESHOLD) {
+
+            // TODO:
+            // restructure everything
+
+        }
     }
 
     @Override

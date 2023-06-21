@@ -134,7 +134,7 @@ public class Sphere extends BBoxedPrimitive {
     public boolean equals(final Object other) {
         if (other instanceof Sphere) {
             final Sphere cobj = (Sphere) other;
-            return cobj.m.equals(m) && this.r == r;
+            return cobj.m.equals(m) && cobj.r == r;
         }
         return false;
     }

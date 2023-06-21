@@ -20,6 +20,7 @@ public class Sphere extends BBoxedPrimitive {
      * @param r the radius of the sphere
      */
     public Sphere(final Point c, final float r) {
+        super(BBox.create(c.sub(new Vec3(r, r, r)), c.add(new Vec3(r, r, r))));
         this.r = r;
         this.m = c;
     }

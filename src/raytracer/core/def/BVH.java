@@ -15,6 +15,22 @@ import raytracer.math.Vec3;
  */
 public class BVH extends BVHBase {
 
+    /*
+     * calculateMaxOfMinPoints -> calculates the maximum of all minimum points
+     * (elementwise)
+     * 
+     * CalculateSplitDimension: get difference as vector between min and max point
+     * Afterwards get the largest coordinate from x,y,z and return it
+     * 
+     * Get middle of the vector between min and max point's largest value
+     * Distribute objects on left side to one box and objects on right side to
+     * another box
+     * Do that until there are 4 or less objects within each box
+     * Distribute by the minimum point. So if the minimum point lies within a box,
+     * the object is added to that particular box
+     * 
+     */
+
     // list that contains all child objects of the current bounding box
     private List<Obj> childObjects;
     // list of all BVHs that are children of current BVH
@@ -143,6 +159,7 @@ public class BVH extends BVHBase {
     @Override
     public void distributeObjects(final BVHBase a, final BVHBase b,
             final int splitDim, final float splitPos) {
+
         // TODO Implement this method
         throw new UnsupportedOperationException("This method has not yet been implemented.");
     }

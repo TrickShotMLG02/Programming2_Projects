@@ -10,12 +10,10 @@ import java.util.Locale;
 import java.util.Scanner;
 
 import raytracer.core.def.Accelerator;
-import raytracer.geom.BBox;
+import raytracer.core.def.StandardObj;
 import raytracer.geom.GeomFactory;
 import raytracer.geom.Primitive;
-import raytracer.math.Color;
 import raytracer.math.Point;
-import raytracer.math.Ray;
 import raytracer.math.Vec3;
 
 /**
@@ -108,8 +106,13 @@ public class OBJReader {
 			switch (tokens[0]) {
 				// line contains a vertice
 				case "v":
-					// create point from coordinates
-					Point p = new Point(Float.valueOf(tokens[1]), Float.valueOf(tokens[2]), Float.valueOf(tokens[3]));
+					// create point from coordinates and scale it
+					Point p = new Point(Float.valueOf(tokens[1]) * scale, Float.valueOf(tokens[2]) * scale,
+							Float.valueOf(tokens[3]) * scale);
+
+					// translate point in space
+					p.add(translate);
+
 					// add point to vertices list
 					vertices.add(p);
 					break;
@@ -124,9 +127,11 @@ public class OBJReader {
 
 					// create Triangle
 					Primitive triangle = GeomFactory.createTriangle(a, b, c);
+					// create object of triangle and shader
+					Obj obj = new StandardObj(triangle, shader);
 
-					// TODO:
-					// store triangle in structure or something like that
+					// add object to accelerator structure
+					accelerator.add(obj);
 
 					break;
 
@@ -141,8 +146,5 @@ public class OBJReader {
 
 		// close scanner
 		scanner.close();
-
-		// TODO Implement this method
-		throw new UnsupportedOperationException("This method has not yet been implemented.");
 	}
 }

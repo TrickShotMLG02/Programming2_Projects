@@ -72,47 +72,49 @@ public class Main {
 				f.setVisible(true);
 			}
 		});
-		final boolean implementedPlane        = false; // TODO implement Plane
-		final boolean implementedCheckerBoard = false; // TODO implement CheckerBoard
-		final boolean implementedSphere       = false; // TODO implement Sphere
-		final boolean implementedPhong        = false; // TODO implement Phong
-		final boolean implementedOBJReader    = false; // TODO implement OBJReader
-		final boolean implementedBVH          = false; // TODO implement BVH
-		final LightSource ls      = new PointLightSource(new Point(-10, 10, -10), Color.WHITE);
-		final Color       ambient = Color.WHITE.scale(0.05f);
-		final Camera      cam     = new PerspectiveCamera(new Point(0, 4, -10), Point.ORIGIN, new Vec3(0, 5, 0), 3, 4, 3);
-		final Accelerator accel   = new SimpleAccelerator();
+		final boolean implementedPlane = true; // TODO implement Plane
+		final boolean implementedCheckerBoard = true; // TODO implement CheckerBoard
+		final boolean implementedSphere = true; // TODO implement Sphere
+		final boolean implementedPhong = false; // TODO implement Phong
+		final boolean implementedOBJReader = false; // TODO implement OBJReader
+		final boolean implementedBVH = false; // TODO implement BVH
+		final LightSource ls = new PointLightSource(new Point(-10, 10, -10), Color.WHITE);
+		final Color ambient = Color.WHITE.scale(0.05f);
+		final Camera cam = new PerspectiveCamera(new Point(0, 4, -10), Point.ORIGIN, new Vec3(0, 5, 0), 3, 4, 3);
+		final Accelerator accel = new SimpleAccelerator();
 
 		{
-			final Primitive tri      = GeomFactory.createTriangle(new Point(-3, .5f, -1.5f), new Point(-1, 2.5f, -1.5f), new Point(1, .5f, -1.5f));
-			final Shader    yellow   = new SingleColor(Color.YELLOW);
-			final Obj       triangle = new StandardObj(tri, yellow);
+			final Primitive tri = GeomFactory.createTriangle(new Point(-3, .5f, -1.5f), new Point(-1, 2.5f, -1.5f),
+					new Point(1, .5f, -1.5f));
+			final Shader yellow = new SingleColor(Color.YELLOW);
+			final Obj triangle = new StandardObj(tri, yellow);
 			accel.add(triangle);
 		}
 
 		if (implementedPlane) {
-			final Primitive plane    = GeomFactory.createPlane(Vec3.Y, Point.ORIGIN);
-			final Shader    black    = new SingleColor(Color.BLACK);
-			final Shader    white    = new SingleColor(Color.WHITE);
-			final Shader    shader   = implementedCheckerBoard ? ShaderFactory.createCheckerBoard(black, white, 2f) : white;
-			final Obj       triangle = new StandardObj(plane, shader);
+			final Primitive plane = GeomFactory.createPlane(Vec3.Y, Point.ORIGIN);
+			final Shader black = new SingleColor(Color.BLACK);
+			final Shader white = new SingleColor(Color.WHITE);
+			final Shader shader = implementedCheckerBoard ? ShaderFactory.createCheckerBoard(black, white, 2f) : white;
+			final Obj triangle = new StandardObj(plane, shader);
 			accel.add(triangle);
 		}
 
 		if (implementedSphere) {
 			{
-				final Primitive prim   = GeomFactory.createSphere(new Point(0, 1, 0), 1);
-				final Shader    blue   = new SingleColor(Color.BLUE);
-				final Shader    shader = implementedPhong ? ShaderFactory.createPhong(blue, ambient, 0.4f, 1.0f, 15) : blue;
-				final Obj       sphere = new StandardObj(prim, shader);
+				final Primitive prim = GeomFactory.createSphere(new Point(0, 1, 0), 1);
+				final Shader blue = new SingleColor(Color.BLUE);
+				final Shader shader = implementedPhong ? ShaderFactory.createPhong(blue, ambient, 0.4f, 1.0f, 15)
+						: blue;
+				final Obj sphere = new StandardObj(prim, shader);
 				accel.add(sphere);
 			}
 
 			{
-				final Primitive prim   = GeomFactory.createSphere(new Point(1, 1.3f, 0), 1);
-				final Shader    red    = new SingleColor(Color.RED);
-				final Shader    shader = implementedPhong ? ShaderFactory.createPhong(red, ambient, 0.4f, 1.0f, 15) : red;
-				final Obj       sphere = new StandardObj(prim, shader);
+				final Primitive prim = GeomFactory.createSphere(new Point(1, 1.3f, 0), 1);
+				final Shader red = new SingleColor(Color.RED);
+				final Shader shader = implementedPhong ? ShaderFactory.createPhong(red, ambient, 0.4f, 1.0f, 15) : red;
+				final Obj sphere = new StandardObj(prim, shader);
 				accel.add(sphere);
 			}
 		}
@@ -121,17 +123,18 @@ public class Main {
 			final BVH bvh = implementedBVH ? new BVH() : null;
 			try {
 				final String filename;
-				final float  scale;
+				final float scale;
 				if (implementedBVH) {
 					filename = "obj/bunny.obj";
-					scale    = 25;
+					scale = 25;
 				} else {
 					filename = "obj/pyramid.obj";
-					scale    = 1;
+					scale = 1;
 				}
 
-				final Shader green  = new SingleColor(Color.GREEN);
-				final Shader shader = implementedPhong ? ShaderFactory.createPhong(green, ambient, 1.f, .5f, 50) : green;
+				final Shader green = new SingleColor(Color.GREEN);
+				final Shader shader = implementedPhong ? ShaderFactory.createPhong(green, ambient, 1.f, .5f, 50)
+						: green;
 				OBJReader.read(filename, bvh != null ? bvh : accel, shader, scale, new Vec3(-3, 0, 0));
 			} catch (final FileNotFoundException e) {
 				System.err.println(e);
@@ -147,9 +150,8 @@ public class Main {
 		final List<LightSource> lights = new ArrayList<LightSource>();
 		lights.add(ls);
 
-		final Scene    scene = new StandardScene(cam, lights, accel);
-		final Renderer r     = new Renderer(scene, xRes, yRes, 2);
-
+		final Scene scene = new StandardScene(cam, lights, accel);
+		final Renderer r = new Renderer(scene, xRes, yRes, 2);
 
 		final Executor exe = Executors.newFixedThreadPool(2);
 		final CompletionService<Renderer.Work> ecs = new ExecutorCompletionService<Renderer.Work>(exe);

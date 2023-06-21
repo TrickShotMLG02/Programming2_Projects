@@ -1,6 +1,6 @@
 package raytracer.shade;
 
-import java.util.Collection;
+import java.util.List;
 
 import raytracer.core.Hit;
 import raytracer.core.LightSource;
@@ -42,18 +42,25 @@ public class Phong implements Shader {
         Color phong = ambient;
 
         // get light sources
-        Collection<LightSource> lights = trace.getScene().getLightSources();
+        List<LightSource> lights = trace.getScene().getLightSources().stream().toList();
 
         // set base color as black
         Color diffusion = Color.BLACK;
 
         // iterate over all light sources
         for (int i = 0; i < lights.size(); i++) {
-            LightSource light = (LightSource) lights.toArray()[i];
+            LightSource light = lights.get(i);
 
-            // add diffusion for current light to diffusion color
-            diffusion = diffusion.add(light.getColor().mul(inner.shade(hit, trace)).scale(diffuse)
-                    .scale(Math.max(0, hit.getNormal().dot(trace.getRay().dir()))));
+            // check if shadow ray hits something on way from hit point to light source
+            // send new ray back
+            Trace shadowTrace = trace.spawn(hit.getPoint(), trace.getRay().invDir().normalized());
+            if (shadowTrace.getHit().hits()) {
+
+                // add diffusion for current light to diffusion color
+                diffusion = diffusion.add(light.getColor().mul(inner.shade(hit, trace)).scale(diffuse)
+                        .scale(Math.max(0, hit.getNormal().dot(trace.getRay().dir().inv()))));
+
+            }
         }
 
         // add diffusion to phong value
@@ -64,13 +71,13 @@ public class Phong implements Shader {
 
         // iterate over all light sources
         for (int i = 0; i < lights.size(); i++) {
-            LightSource light = (LightSource) lights.toArray()[i];
+            LightSource light = lights.get(i);
 
             // add specularity for current light to diffusion color
             specularity = specularity.add(light.getColor().scale(specular)
                     .scale((float) Math.pow(Math.max(0,
                             trace.getRay().reflect(hit.getPoint(), hit.getNormal()).dir()
-                                    .dot(trace.getRay().dir())),
+                                    .dot(trace.getRay().dir().inv())),
                             smoothness)));
         }
 

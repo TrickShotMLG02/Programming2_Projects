@@ -1,11 +1,12 @@
 package raytracer.shade;
 
+import java.util.Collection;
+
 import raytracer.core.Hit;
 import raytracer.core.LightSource;
 import raytracer.core.Shader;
 import raytracer.core.Trace;
 import raytracer.math.Color;
-import raytracer.math.Ray;
 
 public class Phong implements Shader {
 
@@ -36,44 +37,47 @@ public class Phong implements Shader {
 
     @Override
     public Color shade(Hit hit, Trace trace) {
+
+        // set phong color to ambient color
         Color phong = ambient;
 
-        /*
-         * 
-         * Maybe already implemented somewhere in the project
-         * 
-         */
-        // shoot shadow rays to all light sources and check for obstacles
-        for (LightSource light : trace.getScene().getLightSources()) {
+        // get light sources
+        Collection<LightSource> lights = trace.getScene().getLightSources();
 
-            // calculate expected ray length for light source
-            float lightDistance = hit.getPoint().sub(light.getLocation()).norm();
+        // set base color as black
+        Color diffusion = Color.BLACK;
 
-            // shoot shadow ray to light source and compare lengths
-            Ray ray = new Ray(hit.getPoint(), light.getLocation().sub(hit.getPoint()).normalized());
+        // iterate over all light sources
+        for (int i = 0; i < lights.size(); i++) {
+            LightSource light = (LightSource) lights.toArray()[i];
 
-            // maybe reflect the ray back to the inverse direction of the original ray
-            trace.getRay().reflect(hit.getPoint(), ray.dir().inv());
-
-            // TODO
-            // check if ray reaches the light source after a specific distance, or if it
-            // hits something else on its way
-
+            // add diffusion for current light to diffusion color
+            diffusion = diffusion.add(light.getColor().mul(inner.shade(hit, trace)).scale(diffuse)
+                    .scale(Math.max(0, hit.getNormal().dot(trace.getRay().dir()))));
         }
 
-        Color diffusion = null;
-        // color of light source dot color of underlying shader * konstant of material
-        // diffuse * max (0, reflection vector, vector of light source) ^ gloss factor
+        // add diffusion to phong value
+        phong = phong.add(diffusion);
 
-        // sum up for all lights
+        // set base color as black
+        Color specularity = Color.BLACK;
 
-        phong.add(diffusion);
+        // iterate over all light sources
+        for (int i = 0; i < lights.size(); i++) {
+            LightSource light = (LightSource) lights.toArray()[i];
 
-        // vector from light source to hit point on surface
+            // add specularity for current light to diffusion color
+            specularity = specularity.add(light.getColor().scale(specular)
+                    .scale((float) Math.pow(Math.max(0,
+                            trace.getRay().reflect(hit.getPoint(), hit.getNormal()).dir()
+                                    .dot(trace.getRay().dir())),
+                            smoothness)));
+        }
 
-        Color specularity = null;
-        phong.add(specularity);
+        // add specularity to phong value
+        phong = phong.add(specularity);
 
+        // return phong color
         return phong;
     }
 

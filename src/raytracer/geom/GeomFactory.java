@@ -43,17 +43,7 @@ public final class GeomFactory {
 	 * @return The new sphere
 	 */
 	public static Primitive createSphere(final Point m, final float r) {
-		// TODO Implement this method
-
-		// calculate 2 points on surface of sphere
-
-		// calculate point 1 on surface of sphere
-		Point p1OnSurface = new Point(m.get(0) + r, m.get(1), m.get(2));
-
-		// calculate point 2 on surface of sphere
-		Point p2OnSurface = new Point(m.get(0), m.get(1) + r, m.get(2));
-
-		return new Sphere(m, p1OnSurface, p2OnSurface);
+		return new Sphere(m, r);
 	}
 
 	/**

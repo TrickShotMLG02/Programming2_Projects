@@ -16,11 +16,14 @@ import raytracer.math.Vec3;
 public class BVH extends BVHBase {
 
     /*
+     * Done:
      * calculateMaxOfMinPoints -> calculates the maximum of all minimum points
      * (elementwise)
      * 
+     * Done:
      * CalculateSplitDimension: get difference as vector between min and max point
      * Afterwards get the largest coordinate from x,y,z and return it
+     * 
      * 
      * Get middle of the vector between min and max point's largest value
      * Distribute objects on left side to one box and objects on right side to
@@ -127,33 +130,18 @@ public class BVH extends BVHBase {
 
     @Override
     public int calculateSplitDimension(final Vec3 extent) {
-        // TODO Implement this method
+        // if x is largest coordinate -> 0
+        // if y is largest coordinate -> 1
+        // if z is largest coordinate -> 2
 
-        Point maxPoint = calculateMaxOfMinPoints();
+        float maxCoord = Math.max(extent.x(), Math.max(extent.y(), extent.z()));
 
-        Point minPoint;
-
-        if (childBVHs.size() == 0 && childObjects.size() == 0) {
+        if (maxCoord == extent.x())
             return 0;
-        } else if (childBVHs.size() == 0) {
-            // there are only child objects but no child boxes
-            minPoint = childObjects.get(0).bbox().getMin();
-        } else {
-            minPoint = childBVHs.get(0).boundingBox.getMin();
-            for (int i = 0; i < childBVHs.size(); i++) {
-                minPoint = childBVHs.get(i).boundingBox.getMin().max(minPoint);
-            }
-        }
-
-        // calculate minPoint from extent and maxPoint
-        minPoint = maxPoint.sub(extent);
-
-        // minPoint now contains minimum point of all objects
-
-        // get largest distance between min and max
-
-        // return largest distance
-        return (int) maxPoint.sub(minPoint).norm();
+        else if (maxCoord == extent.y())
+            return 1;
+        else
+            return 2;
     }
 
     @Override

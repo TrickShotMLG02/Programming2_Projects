@@ -38,20 +38,6 @@ public class Plane extends BBoxedPrimitive {
         // create 2d box which is infinitely large
         super(BBox.INF);
 
-        // set m to support point
-        if (supp.equals(Point.ORIGIN)) {
-            // move support point with offset 1 at each variable which is 0 in normal vector
-            // for preventing NaN error in cosinus angle function of a vector and Origin
-            // vector, since it is division by 0
-            float x = supp.x() == 0 && n.x() == 0 ? 1 : 0;
-            float y = supp.y() == 0 && n.y() == 0 ? 1 : 0;
-            float z = supp.z() == 0 && n.z() == 0 ? 1 : 0;
-
-            this.m = new Point(x, y, z);
-        } else {
-            this.m = supp;
-        }
-
         this.n = n.normalized();
         // create orthogonal vector by setting one coordinate to 0, switching two others
         // and multiplying one with -1
@@ -59,6 +45,15 @@ public class Plane extends BBoxedPrimitive {
 
         // create second orthogonal vector from crossproduct
         this.v = n.cross(u);
+
+        // set m to support point
+        if (supp.equals(Point.ORIGIN)) {
+            // if support point is origin, add u and v to get a point on the plane
+            this.m = supp.add(u).add(v);
+        } else {
+            this.m = supp;
+        }
+
     }
 
     @Override

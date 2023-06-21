@@ -102,15 +102,10 @@ public class Plane extends BBoxedPrimitive {
                     return false;
                 }
 
-                if (solution > tmax) {
-                    return false;
-                }
-
                 // check that hit was good
                 if (solution <= tmax && solution >= tmin) {
                     // store solution as raycast hit distance
                     this.r = solution;
-                    this.r = angle;
 
                     // return true, since hit was valid
                     return true;

@@ -58,7 +58,7 @@ public class Phong implements Shader {
 
                 // add diffusion for current light to diffusion color
                 diffusion = diffusion.add(light.getColor().mul(inner.shade(hit, trace)).scale(diffuse)
-                        .scale(Math.max(0, hit.getNormal().dot(trace.getRay().dir().inv()))));
+                        .scale(Math.max(0, hit.getNormal().normalized().dot(trace.getRay().dir().inv().normalized()))));
 
             }
         }

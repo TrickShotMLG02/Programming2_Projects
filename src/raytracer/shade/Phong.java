@@ -38,6 +38,11 @@ public class Phong implements Shader {
     public Color shade(Hit hit, Trace trace) {
         Color phong = ambient;
 
+        /*
+         * 
+         * Maybe already implemented somewhere in the project
+         * 
+         */
         // shoot shadow rays to all light sources and check for obstacles
         for (LightSource light : trace.getScene().getLightSources()) {
 
@@ -47,13 +52,24 @@ public class Phong implements Shader {
             // shoot shadow ray to light source and compare lengths
             Ray ray = new Ray(hit.getPoint(), light.getLocation().sub(hit.getPoint()).normalized());
 
+            // maybe reflect the ray back to the inverse direction of the original ray
+            trace.getRay().reflect(hit.getPoint(), ray.dir().inv());
+
             // TODO
-            // check if ray was successful
+            // check if ray reaches the light source after a specific distance, or if it
+            // hits something else on its way
 
         }
 
         Color diffusion = null;
+        // color of light source dot color of underlying shader * konstant of material
+        // diffuse * max (0, reflection vector, vector of light source) ^ gloss factor
+
+        // sum up for all lights
+
         phong.add(diffusion);
+
+        // vector from light source to hit point on surface
 
         Color specularity = null;
         phong.add(specularity);

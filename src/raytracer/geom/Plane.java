@@ -17,12 +17,7 @@ public class Plane extends BBoxedPrimitive {
         // create 2d box which is infinitely large
         super(BBox.INF);
 
-        // chosen point
-        if (a.equals(Point.ORIGIN)) {
-            this.m = b;
-        } else {
-            this.m = a;
-        }
+        this.m = a;
 
         // vector 1
         this.u = b.sub(a);
@@ -31,7 +26,7 @@ public class Plane extends BBoxedPrimitive {
         this.v = c.sub(a);
 
         // normalized normal vector of the plane
-        this.n = v.cross(u).normalized();
+        this.n = u.cross(v).normalized();
     }
 
     public Plane(final Vec3 n, final Point supp) {
@@ -47,12 +42,8 @@ public class Plane extends BBoxedPrimitive {
         this.v = n.cross(u);
 
         // set m to support point
-        if (supp.equals(Point.ORIGIN)) {
-            // if support point is origin, add u and v to get a point on the plane
-            this.m = supp.add(u).add(v);
-        } else {
-            this.m = supp;
-        }
+
+        this.m = supp;
 
     }
 
@@ -79,10 +70,19 @@ public class Plane extends BBoxedPrimitive {
 
             @Override
             protected boolean calculateHit() {
+                // create copy of support point since we should not modify original support
+                // point
+                Point m2 = m;
+                // if support point is the origin, we need to move, because we will otherwise
+                // run into a division by 0 error in the angle calculation
+                if (m.equals(Point.ORIGIN)) {
+                    m2 = m.add(u).add(v);
+                }
+
                 // get direction of ray
                 final Vec3 /* normalized */ dir = ray.dir();
 
-                Vec3 p_e = new Vec3(m.x(), m.y(), m.z());
+                Vec3 p_e = new Vec3(m2.x(), m2.y(), m2.z());
                 float angle = p_e.angle(n);
                 float distance = (float) (p_e.norm() * angle);
 
@@ -101,7 +101,6 @@ public class Plane extends BBoxedPrimitive {
                 if (solution <= tmax && solution >= tmin) {
                     // store solution as raycast hit distance
                     this.r = solution;
-
                     // return true, since hit was valid
                     return true;
                 } else {

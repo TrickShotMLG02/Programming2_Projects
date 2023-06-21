@@ -41,6 +41,18 @@ public class BVH extends BVHBase {
 
     private BBox boundingBox;
 
+    /*
+     * Missing/Incomplete function implementations
+     * 
+     * Check add function for some problems with the project description
+     * 
+     * BuildBVH needs to recursively restructure BVHs ect
+     * 
+     * Check distributeObjects
+     * 
+     * hit missing
+     */
+
     public BVH() {
         // create empty lists for child objects and child BVHs
         childObjects = new ArrayList<Obj>();
@@ -48,9 +60,6 @@ public class BVH extends BVHBase {
 
         // create emtpy bounding box, since there is nothing in it yet
         boundingBox = BBox.EMPTY;
-
-        // throw new UnsupportedOperationException("This method has not yet been
-        // implemented.");
     }
 
     @Override
@@ -113,9 +122,37 @@ public class BVH extends BVHBase {
      */
     @Override
     public void buildBVH() {
-        // TODO Implement this method
-        // this function is recursive
-        throw new UnsupportedOperationException("This method has not yet been implemented.");
+
+        // In the method buildBVH() the sub-boxes are built recursively.
+
+        // distribute Objects in a only if there are more than 4 objects in it
+
+        /*
+         * if (a.getObjects().size() > THRESHOLD) {
+         * 
+         * // create two BVHs for distribution
+         * BVH bvh1 = new BVH();
+         * BVH bvh2 = new BVH();
+         * 
+         * Point minPoint = boundingBox.getMin();
+         * 
+         * // get maxMinPoint to extract splitDimension
+         * Point maxMinPoint = calculateMaxOfMinPoints();
+         * 
+         * // convert maxMinPoint to a vector
+         * Vec3 v = maxMinPoint.sub(Point.ORIGIN);
+         * 
+         * // calculate splitDimension int
+         * int splitDimension = calculateSplitDimension(v);
+         * 
+         * // calculate splitPosition float
+         * 
+         * // TODO:
+         * // restructure everything
+         * 
+         * }
+         */
+
     }
 
     @Override
@@ -223,45 +260,7 @@ public class BVH extends BVHBase {
         }
 
         childBVHs.add((BVH) a);
-
-        // distribute Objects in a only if there are more than 4 objects in it
-
-        if (a.getObjects().size() > THRESHOLD) {
-
-            // create two BVHs for distribution
-            BVH bvh1 = new BVH();
-            BVH bvh2 = new BVH();
-
-            Point minPoint = boundingBox.getMin();
-
-            // get maxMinPoint to extract splitDimension
-            Point maxMinPoint = calculateMaxOfMinPoints();
-
-            // convert maxMinPoint to a vector
-            Vec3 v = maxMinPoint.sub(Point.ORIGIN);
-
-            // calculate splitDimension int
-            int splitDimension = calculateSplitDimension(v);
-
-            // calculate splitPosition float
-
-            // TODO:
-            // restructure everything
-
-            // TODO Implement this method
-            throw new UnsupportedOperationException("This method has not yet been implemented.");
-        }
-
         childBVHs.add((BVH) b);
-
-        // distribute Objects in b only if there are more than 4 objects in it
-
-        if (b.getObjects().size() > THRESHOLD) {
-
-            // TODO:
-            // restructure everything
-
-        }
     }
 
     @Override
@@ -272,21 +271,6 @@ public class BVH extends BVHBase {
 
     @Override
     public List<Obj> getObjects() {
-        // create list that contains child objects of current box
-        List<Obj> allObjects = childObjects;
-        // add all other child objects from child boxes
-        for (int i = 0; i < childBVHs.size(); i++) {
-            // add all objects from child box at index
-            allObjects.addAll(childBVHs.get(i).getObjects());
-        }
-
-        // TODO:
-        // check if it should return only the objects in the current box or in all sub
-        // boxes
-
-        // return all child objects iteratively
-        // return allObjects;
-
         // return only child objects of current box
         return childObjects;
     }

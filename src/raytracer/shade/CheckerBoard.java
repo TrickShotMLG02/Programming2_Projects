@@ -4,6 +4,7 @@ import raytracer.core.Hit;
 import raytracer.core.Shader;
 import raytracer.core.Trace;
 import raytracer.math.Color;
+import raytracer.math.Constants;
 import raytracer.math.Vec2;
 
 public class CheckerBoard implements Shader {
@@ -18,11 +19,11 @@ public class CheckerBoard implements Shader {
             throw new IllegalArgumentException("Shader is null");
         }
 
-        if (scale < 0 || Float.isInfinite(scale)) {
+        if (scale < Constants.EPS || Float.isInfinite(scale)) {
             throw new IllegalArgumentException("invalid scale");
         }
 
-        if (scale == 0) {
+        if (Constants.isZero(scale)) {
             throw new UnsupportedOperationException("scale is 0");
         }
 

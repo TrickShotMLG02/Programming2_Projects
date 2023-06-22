@@ -16,21 +16,10 @@ import raytracer.math.Vec3;
 public class BVH extends BVHBase {
 
     /*
-     * Done:
-     * calculateMaxOfMinPoints -> calculates the maximum of all minimum points
-     * (elementwise)
      * 
-     * Done:
-     * CalculateSplitDimension: get difference as vector between min and max point
-     * Afterwards get the largest coordinate from x,y,z and return it
+     * Missing:
      * 
-     * 
-     * Get middle of the vector between min and max point's largest value
-     * Distribute objects on left side to one box and objects on right side to
-     * another box
-     * Do that until there are 4 or less objects within each box
-     * Distribute by the minimum point. So if the minimum point lies within a box,
-     * the object is added to that particular box
+     * buildBVH()
      * 
      */
 
@@ -122,6 +111,8 @@ public class BVH extends BVHBase {
 
         // distribute Objects in a only if there are more than 4 objects in it
 
+        // there should only be up to 4 objects within one vbh or exactly 2 vbhs
+
         /*
          * if (a.getObjects().size() > THRESHOLD) {
          * 
@@ -143,7 +134,7 @@ public class BVH extends BVHBase {
          * // calculate splitPosition float
          * 
          * // TODO:
-         * // restructure everything
+         * // restructure everything recursively
          * 
          * }
          */
@@ -261,16 +252,47 @@ public class BVH extends BVHBase {
     @Override
     public Hit hit(final Ray ray, final Obj obj, final float tMin, final float tMax) {
 
-        // get hit of ray
+        // get hit of ray with main BVH
+        Hit parentHit = boundingBox.hit(ray, tMin, tMax);
 
         // check if ray hit the current bbox
+        if (parentHit.hits()) {
 
-        // check if the ray also hit a sub box
+            // there are either exactly 2 child BVHs or up to 4 childObjects
+            if (childObjects.size() != 0) {
 
-        // iteratively check if ray hittet bounding box of child object of that box
+                // there are only childobjects, no sub bvhs
+                for (Obj childObj : childObjects) {
 
-        // TODO Implement this method
-        throw new UnsupportedOperationException("This method has not yet been implemented.");
+                    // check if child object is hit
+                    Hit childObj_Hit = childObj.hit(ray, obj, tMin, tMax);
+                    if (childObj_Hit.hits()) {
+                        // child object was hit, return hit
+                        return childObj_Hit;
+                    }
+                }
+                // no object was hit within all child Objects of current BVH
+            } else {
+
+                // iterate over all child BVHs
+                for (BVH bvh : childBVHs) {
+                    // get hit of ray on current sub BVH with recursion
+                    Hit childBVH_Hit = bvh.hit(ray, obj, tMin, tMax);
+
+                    // check if the ray also hit a sub box
+                    if (childBVH_Hit.hits()) {
+
+                        // some object was hit, thus return childBVH_Hit
+                        return childBVH_Hit;
+                    }
+                }
+
+                // no object was hit within all child BVHs
+            }
+
+        }
+
+        return parentHit;
     }
 
     @Override

@@ -13,7 +13,7 @@ public class MyRayTraceTest {
 
 	@Test
 	public void test() {
-		assert (42 == 42);
+		// test here
 	}
 
 }

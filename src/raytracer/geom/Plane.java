@@ -62,7 +62,6 @@ public class Plane extends BBoxedPrimitive {
 
             @Override
             public Point getPoint() {
-                // TODO Auto-generated method stub
                 if (point == null)
                     point = ray.eval(getParameter()).add(n.scale(0.0001f));
                 return point;

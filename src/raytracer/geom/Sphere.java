@@ -112,7 +112,7 @@ public class Sphere extends BBoxedPrimitive {
 
             @Override
             public Vec2 getUV() {
-                // TODO: computeSphereUV from impactPoint as vector
+                // computeSphereUV from impactPoint as vector
                 return Util.computeSphereUV(getPoint().sub(m));
             }
 

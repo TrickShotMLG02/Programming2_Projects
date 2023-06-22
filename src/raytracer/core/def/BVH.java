@@ -113,6 +113,35 @@ public class BVH extends BVHBase {
 
         // there should only be up to 4 objects within one vbh or exactly 2 vbhs
 
+        // therefore check if there already exist child boxes and objects -> distribute
+        // objects into those 2 boxes and restructure them
+
+        if (childBVHs.size() > 0 && childObjects.size() > 0) {
+
+            // distribute objects into existing childBVHs and recursively distribute objects
+
+        } else if (childBVHs.size() == 0 && childObjects.size() > 0) {
+
+            // there are no childBVHs -> check if there are more than THRESHOLD objects in
+            // the childObjects
+
+            if (childObjects.size() > THRESHOLD) {
+
+                // if so, distribute all of them into two boxes and recursively distribute them
+
+            } else {
+
+                // otherwise we can stop recursion since there are no childBVHs
+                return;
+            }
+
+        } else if (childBVHs.size() > 0 && childObjects.size() == 0) {
+
+            // there are no free objects to distribute into child BVHs, thus distribute
+            // recursively on sub boxes
+
+        }
+
         /*
          * if (a.getObjects().size() > THRESHOLD) {
          * 

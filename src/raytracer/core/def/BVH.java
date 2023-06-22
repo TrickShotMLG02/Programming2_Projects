@@ -260,6 +260,15 @@ public class BVH extends BVHBase {
 
     @Override
     public Hit hit(final Ray ray, final Obj obj, final float tMin, final float tMax) {
+
+        // get hit of ray
+
+        // check if ray hit the current bbox
+
+        // check if the ray also hit a sub box
+
+        // iteratively check if ray hittet bounding box of child object of that box
+
         // TODO Implement this method
         throw new UnsupportedOperationException("This method has not yet been implemented.");
     }

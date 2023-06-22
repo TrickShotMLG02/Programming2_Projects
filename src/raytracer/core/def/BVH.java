@@ -44,11 +44,7 @@ public class BVH extends BVHBase {
     /*
      * Missing/Incomplete function implementations
      * 
-     * Check add function for some problems with the project description
-     * 
      * BuildBVH needs to recursively restructure BVHs ect
-     * 
-     * Check distributeObjects
      * 
      * hit missing
      */

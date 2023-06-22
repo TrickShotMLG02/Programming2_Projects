@@ -18,7 +18,7 @@ public class CheckerBoard implements Shader {
             throw new IllegalArgumentException("Shader is null");
         }
 
-        if (scale < 0) {
+        if (scale < 0 || scale == Float.POSITIVE_INFINITY) {
             throw new IllegalArgumentException("invalid scale");
         }
 

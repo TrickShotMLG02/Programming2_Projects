@@ -21,7 +21,11 @@ public class Phong implements Shader {
             final float smoothness) {
 
         if (diffuse < 0 || specular < 0 || smoothness < 0) {
-            throw new IllegalArgumentException("invalid value");
+            throw new IllegalArgumentException("invalid value -> may not be smaller 0");
+        }
+
+        if (Float.isInfinite(diffuse) || Float.isInfinite(specular) || Float.isInfinite(smoothness)) {
+            throw new IllegalArgumentException("invalid value -> may not be infinite");
         }
 
         if (ambient == null || inner == null) {

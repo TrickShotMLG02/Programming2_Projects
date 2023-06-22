@@ -111,10 +111,10 @@ public class OBJReader {
 							Float.valueOf(tokens[3]));
 
 					// scale point
-					p.scale(scale);
+					p = p.scale(scale);
 
 					// translate point in space
-					p.add(translate);
+					p = p.add(translate);
 
 					// add point to vertices list
 					vertices.add(p);

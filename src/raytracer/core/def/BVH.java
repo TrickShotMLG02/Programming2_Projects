@@ -91,8 +91,8 @@ public class BVH extends BVHBase {
 
             // add it to the elments of the current bounding box
             childObjects.add(prim);
-
         } else if (prim instanceof BVH) {
+
             // add boundingbox to children bounding boxes
             childBVHs.add((BVH) prim);
         }
@@ -120,6 +120,54 @@ public class BVH extends BVHBase {
 
             // distribute objects into existing childBVHs and recursively distribute objects
 
+            BVH a = childBVHs.get(0);
+            BVH b = childBVHs.get(1);
+
+            Point minPoint = boundingBox.getMin();
+
+            // get maxMinPoint to extract splitDimension
+            Point maxMinPoint = calculateMaxOfMinPoints();
+
+            // convert maxMinPoint to a vector
+            Vec3 v = maxMinPoint.sub(Point.ORIGIN);
+
+            // calculate splitDimension int
+            int splitDimension = calculateSplitDimension(v);
+
+            // get vector between minPoint and maxpoint where all coordinates are 0 except
+            // for the splitDimension
+            Vec3 splitVec;
+
+            switch (splitDimension) {
+                case 0:
+                    splitVec = new Vec3(maxMinPoint.get(0) - minPoint.get(0), 0, 0);
+                    break;
+
+                case 1:
+                    splitVec = new Vec3(0, maxMinPoint.get(0) - minPoint.get(0), 0);
+                    break;
+
+                case 2:
+                    splitVec = new Vec3(0, 0, maxMinPoint.get(0) - minPoint.get(0));
+                    break;
+
+                default:
+                    splitVec = Vec3.INF;
+                    break;
+            }
+
+            // scale splitVec by 0.5f to get half of the vector
+            splitVec = splitVec.scale(0.5f);
+
+            // calculate splitPosition float by adding the vector to the minPoint
+            float splitPosition = minPoint.add(splitVec).get(splitDimension);
+
+            // distribute
+            distributeObjects(a, b, splitDimension, splitPosition);
+
+            a.buildBVH();
+            b.buildBVH();
+
         } else if (childBVHs.size() == 0 && childObjects.size() > 0) {
 
             // there are no childBVHs -> check if there are more than THRESHOLD objects in
@@ -128,6 +176,50 @@ public class BVH extends BVHBase {
             if (childObjects.size() > THRESHOLD) {
 
                 // if so, distribute all of them into two boxes and recursively distribute them
+                BVH a = new BVH();
+                BVH b = new BVH();
+
+                Point minPoint = boundingBox.getMin();
+
+                // get maxMinPoint to extract splitDimension
+                Point maxMinPoint = calculateMaxOfMinPoints();
+
+                // convert maxMinPoint to a vector
+                Vec3 v = maxMinPoint.sub(Point.ORIGIN);
+
+                // calculate splitDimension int
+                int splitDimension = calculateSplitDimension(v);
+
+                // get vector between minPoint and maxpoint where all coordinates are 0 except
+                // for the splitDimension
+                Vec3 splitVec;
+
+                switch (splitDimension) {
+                    case 0:
+                        splitVec = new Vec3(maxMinPoint.get(0) - minPoint.get(0), 0, 0);
+                        break;
+
+                    case 1:
+                        splitVec = new Vec3(0, maxMinPoint.get(0) - minPoint.get(0), 0);
+                        break;
+
+                    case 2:
+                        splitVec = new Vec3(0, 0, maxMinPoint.get(0) - minPoint.get(0));
+                        break;
+
+                    default:
+                        splitVec = Vec3.INF;
+                        break;
+                }
+
+                // scale splitVec by 0.5f to get half of the vector
+                splitVec = splitVec.scale(0.5f);
+
+                // calculate splitPosition float by adding the vector to the minPoint
+                float splitPosition = minPoint.add(splitVec).get(splitDimension);
+
+                // distribute
+                distributeObjects(a, b, splitDimension, splitPosition);
 
             } else {
 
@@ -140,6 +232,9 @@ public class BVH extends BVHBase {
             // there are no free objects to distribute into child BVHs, thus distribute
             // recursively on sub boxes
 
+            for (int i = 0; i < childBVHs.size(); i++) {
+                childBVHs.get(i).buildBVH();
+            }
         }
 
         /*

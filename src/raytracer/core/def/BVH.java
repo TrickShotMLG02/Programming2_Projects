@@ -110,7 +110,6 @@ public class BVH extends BVHBase {
         } else if (prim instanceof BVH) {
             // add boundingbox to children bounding boxes
             childBVHs.add((BVH) prim);
-
         }
 
         // recalculate this bounding box
@@ -232,7 +231,6 @@ public class BVH extends BVHBase {
                     } else {
                         b.add(obj);
                     }
-                    childObjects.remove(obj);
                     break;
 
                 case 1:
@@ -241,7 +239,6 @@ public class BVH extends BVHBase {
                     } else {
                         b.add(obj);
                     }
-                    childObjects.remove(obj);
                     break;
 
                 case 2:
@@ -250,17 +247,19 @@ public class BVH extends BVHBase {
                     } else {
                         b.add(obj);
                     }
-                    childObjects.remove(obj);
                     break;
 
                 default:
                     break;
             }
-
         }
 
         childBVHs.add((BVH) a);
         childBVHs.add((BVH) b);
+
+        // remove objects from childObject list which where added to sub BVHs
+        childObjects.removeAll(a.getObjects());
+        childObjects.removeAll(b.getObjects());
     }
 
     @Override

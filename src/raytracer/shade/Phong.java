@@ -7,6 +7,7 @@ import raytracer.core.LightSource;
 import raytracer.core.Shader;
 import raytracer.core.Trace;
 import raytracer.math.Color;
+import raytracer.math.Constants;
 import raytracer.math.Vec3;
 
 public class Phong implements Shader {
@@ -20,7 +21,7 @@ public class Phong implements Shader {
     public Phong(final Shader inner, final Color ambient, final float diffuse, final float specular,
             final float smoothness) {
 
-        if (diffuse < 0 || specular < 0 || smoothness < 0) {
+        if (diffuse < -Constants.EPS || specular < -Constants.EPS || smoothness < -Constants.EPS) {
             throw new IllegalArgumentException("invalid value -> may not be smaller 0");
         }
 

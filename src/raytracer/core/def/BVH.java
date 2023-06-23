@@ -50,31 +50,19 @@ public class BVH extends BVHBase {
     @Override
     public BBox bbox() {
 
-        Point min;
-        Point max;
+        BBox box = BBox.EMPTY;
 
-        // check if there are any childObjects
-        if (childObjects.size() > 0) {
-            min = childObjects.get(0).bbox().getMin();
-        } else {
-            min = BBox.EMPTY.getMin();
-        }
-
-        // set max to min, since tere is a larger point than min
-        max = min;
-
+        // surround current box and object
         for (Obj obj : childObjects) {
-            // calculate min point from all childObjects
-            min = min.min(obj.bbox().getMin());
+            box = BBox.surround(box, obj.bbox());
         }
 
-        for (Obj obj : childObjects) {
-            // calculate max point from all childObjects
-            max = max.max(obj.bbox().getMax());
+        // surround current box and child box
+        for (BVH bvh : childBVHs) {
+            box = BBox.surround(box, bvh.boundingBox);
         }
 
-        // create new Box with points min and max
-        return BBox.create(min, max);
+        return box;
     }
 
     /**
@@ -87,14 +75,16 @@ public class BVH extends BVHBase {
     public void add(final Obj prim) {
 
         // check if the oject we want to add is a standard object
-        if (prim instanceof StandardObj) {
-
-            // add it to the elments of the current bounding box
-            childObjects.add(prim);
-        } else if (prim instanceof BVH) {
+        if (prim instanceof BVH) {
 
             // add boundingbox to children bounding boxes
             childBVHs.add((BVH) prim);
+
+        } else if (prim instanceof StandardObj) {
+
+            // add it to the elments of the current bounding box
+            childObjects.add(prim);
+
         }
 
         // recalculate this bounding box
@@ -262,7 +252,6 @@ public class BVH extends BVHBase {
          * 
          * }
          */
-
     }
 
     @Override
@@ -416,7 +405,9 @@ public class BVH extends BVHBase {
 
         }
 
-        return parentHit;
+        // return default Hit No since nothing was hit
+        return Hit.No.get();
+        // return parentHit;
     }
 
     @Override

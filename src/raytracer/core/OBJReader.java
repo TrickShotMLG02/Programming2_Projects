@@ -95,7 +95,7 @@ public class OBJReader {
 			throw new IllegalArgumentException("translation not finite");
 		}
 
-		if (Float.isNaN(scale) || Float.isInfinite(scale) || scale < -Constants.EPS) {
+		if (Float.isNaN(scale) || Float.isInfinite(scale)) {
 			throw new IllegalArgumentException("invalid scale");
 		}
 

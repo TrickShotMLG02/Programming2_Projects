@@ -21,7 +21,7 @@ public class Phong implements Shader {
     public Phong(final Shader inner, final Color ambient, final float diffuse, final float specular,
             final float smoothness) {
 
-        if (diffuse < -Constants.EPS || specular < -Constants.EPS || smoothness < 0.0f) {
+        if (diffuse < -Constants.EPS || specular < -Constants.EPS || smoothness < -Constants.EPS) {
             throw new IllegalArgumentException("invalid value -> may not be smaller 0");
         }
 

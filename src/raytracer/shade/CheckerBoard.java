@@ -19,7 +19,7 @@ public class CheckerBoard implements Shader {
             throw new IllegalArgumentException("Shader is null");
         }
 
-        if (scale < Constants.EPS || Float.isInfinite(scale) || Float.isNaN(scale)) {
+        if (scale < -Constants.EPS || Float.isInfinite(scale) || Float.isNaN(scale)) {
             throw new IllegalArgumentException("invalid scale");
         }
 

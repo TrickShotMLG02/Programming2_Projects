@@ -7,7 +7,6 @@ import raytracer.core.LightSource;
 import raytracer.core.Shader;
 import raytracer.core.Trace;
 import raytracer.math.Color;
-import raytracer.math.Constants;
 import raytracer.math.Vec3;
 
 public class Phong implements Shader {
@@ -21,12 +20,16 @@ public class Phong implements Shader {
     public Phong(final Shader inner, final Color ambient, final float diffuse, final float specular,
             final float smoothness) {
 
-        if (diffuse < -Constants.EPS || specular < -Constants.EPS || smoothness < -Constants.EPS) {
+        if (diffuse < 0.0f || specular < 0.0f || smoothness < 0.0f) {
             throw new IllegalArgumentException("invalid value -> may not be smaller 0");
         }
 
         if (Float.isInfinite(diffuse) || Float.isInfinite(specular) || Float.isInfinite(smoothness)) {
             throw new IllegalArgumentException("invalid value -> may not be infinite");
+        }
+
+        if (Float.isNaN(diffuse) || Float.isNaN(specular) || Float.isNaN(smoothness)) {
+            throw new IllegalArgumentException("Not a Number (NaN)");
         }
 
         if (ambient == null || inner == null) {

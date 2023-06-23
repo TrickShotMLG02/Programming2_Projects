@@ -226,32 +226,6 @@ public class BVH extends BVHBase {
                 childBVHs.get(i).buildBVH();
             }
         }
-
-        /*
-         * if (a.getObjects().size() > THRESHOLD) {
-         * 
-         * // create two BVHs for distribution
-         * BVH bvh1 = new BVH();
-         * BVH bvh2 = new BVH();
-         * 
-         * Point minPoint = boundingBox.getMin();
-         * 
-         * // get maxMinPoint to extract splitDimension
-         * Point maxMinPoint = calculateMaxOfMinPoints();
-         * 
-         * // convert maxMinPoint to a vector
-         * Vec3 v = maxMinPoint.sub(Point.ORIGIN);
-         * 
-         * // calculate splitDimension int
-         * int splitDimension = calculateSplitDimension(v);
-         * 
-         * // calculate splitPosition float
-         * 
-         * // TODO:
-         * // restructure everything recursively
-         * 
-         * }
-         */
     }
 
     @Override

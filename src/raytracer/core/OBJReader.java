@@ -13,6 +13,7 @@ import raytracer.core.def.Accelerator;
 import raytracer.core.def.StandardObj;
 import raytracer.geom.GeomFactory;
 import raytracer.geom.Primitive;
+import raytracer.math.Constants;
 import raytracer.math.Point;
 import raytracer.math.Vec3;
 
@@ -85,6 +86,18 @@ public class OBJReader {
 	public static void read(final InputStream in,
 			final Accelerator accelerator, final Shader shader, final float scale,
 			final Vec3 translate) throws FileNotFoundException {
+
+		if (accelerator == null || shader == null || translate == null) {
+			throw new IllegalArgumentException("parameter is null");
+		}
+
+		if (translate == Vec3.INF) {
+			throw new IllegalArgumentException("translation not finite");
+		}
+
+		if (Float.isNaN(scale) || Float.isInfinite(scale) || scale < -Constants.EPS) {
+			throw new IllegalArgumentException("invalid scale");
+		}
 
 		// list for storing vertices
 		List<Point> vertices = new ArrayList<>();

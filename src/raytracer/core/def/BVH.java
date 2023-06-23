@@ -25,6 +25,8 @@ public class BVH extends BVHBase {
 
     // list that contains all child objects of the current bounding box
     private List<Obj> childObjects;
+    // list of all BVHs that are children of current BVH
+    private List<BVH> childBVHs;
 
     private BBox boundingBox;
 
@@ -39,6 +41,7 @@ public class BVH extends BVHBase {
     public BVH() {
         // create empty lists for child objects and child BVHs
         childObjects = new ArrayList<Obj>();
+        childBVHs = new ArrayList<BVH>();
 
         // create emtpy bounding box, since there is nothing in it yet
         boundingBox = BBox.EMPTY;
@@ -46,6 +49,7 @@ public class BVH extends BVHBase {
 
     @Override
     public BBox bbox() {
+
         Point min;
         Point max;
 
@@ -90,7 +94,7 @@ public class BVH extends BVHBase {
         } else if (prim instanceof BVH) {
 
             // add boundingbox to children bounding boxes
-            childObjects.add(prim);
+            childBVHs.add((BVH) prim);
         }
 
         // recalculate this bounding box
@@ -112,23 +116,12 @@ public class BVH extends BVHBase {
         // therefore check if there already exist child boxes and objects -> distribute
         // objects into those 2 boxes and restructure them
 
-        if (childObjects.size() > 0) {
+        if (childBVHs.size() > 0 && childObjects.size() > 0) {
 
             // distribute objects into existing childBVHs and recursively distribute objects
 
-            BVH a = null;
-            BVH b = null;
-
-            for (Obj obj : childObjects) {
-
-                if (obj instanceof BVH) {
-                    if (a == null)
-                        a = (BVH) obj;
-                    else if (b == null)
-                        b = (BVH) obj;
-                }
-
-            }
+            BVH a = childBVHs.get(0);
+            BVH b = childBVHs.get(1);
 
             Point minPoint = boundingBox.getMin();
 
@@ -172,13 +165,10 @@ public class BVH extends BVHBase {
             // distribute
             distributeObjects(a, b, splitDimension, splitPosition);
 
-            if (a != null)
-                a.buildBVH();
+            a.buildBVH();
+            b.buildBVH();
 
-            if (b != null)
-                b.buildBVH();
-
-        } else if (childObjects.size() > 0) {
+        } else if (childBVHs.size() == 0 && childObjects.size() > 0) {
 
             // there are no childBVHs -> check if there are more than THRESHOLD objects in
             // the childObjects
@@ -237,39 +227,48 @@ public class BVH extends BVHBase {
                 return;
             }
 
-        }
-    }
+        } else if (childBVHs.size() > 0 && childObjects.size() == 0) {
 
-    /*
-     * if (a.getObjects().size() > THRESHOLD) {
-     * 
-     * // create two BVHs for distribution
-     * BVH bvh1 = new BVH();
-     * BVH bvh2 = new BVH();
-     * 
-     * Point minPoint = boundingBox.getMin();
-     * 
-     * // get maxMinPoint to extract splitDimension
-     * Point maxMinPoint = calculateMaxOfMinPoints();
-     * 
-     * // convert maxMinPoint to a vector
-     * Vec3 v = maxMinPoint.sub(Point.ORIGIN);
-     * 
-     * // calculate splitDimension int
-     * int splitDimension = calculateSplitDimension(v);
-     * 
-     * // calculate splitPosition float
-     * 
-     * // TODO:
-     * // restructure everything recursively
-     * 
-     * }
-     */
+            // there are no free objects to distribute into child BVHs, thus distribute
+            // recursively on sub boxes
+
+            for (int i = 0; i < childBVHs.size(); i++) {
+                childBVHs.get(i).buildBVH();
+            }
+        }
+
+        /*
+         * if (a.getObjects().size() > THRESHOLD) {
+         * 
+         * // create two BVHs for distribution
+         * BVH bvh1 = new BVH();
+         * BVH bvh2 = new BVH();
+         * 
+         * Point minPoint = boundingBox.getMin();
+         * 
+         * // get maxMinPoint to extract splitDimension
+         * Point maxMinPoint = calculateMaxOfMinPoints();
+         * 
+         * // convert maxMinPoint to a vector
+         * Vec3 v = maxMinPoint.sub(Point.ORIGIN);
+         * 
+         * // calculate splitDimension int
+         * int splitDimension = calculateSplitDimension(v);
+         * 
+         * // calculate splitPosition float
+         * 
+         * // TODO:
+         * // restructure everything recursively
+         * 
+         * }
+         */
+
+    }
 
     @Override
     public Point calculateMaxOfMinPoints() {
 
-        if (childObjects.size() == 0) {
+        if (childBVHs.size() == 0 && childObjects.size() == 0) {
             return Point.ORIGIN;
         }
 
@@ -347,21 +346,17 @@ public class BVH extends BVHBase {
 
                 case 1:
                     if (obj.bbox().getMin().y() <= splitDimensionPoint.y()) {
-                        if (a != null)
-                            a.add(obj);
+                        a.add(obj);
                     } else {
-                        if (b != null)
-                            b.add(obj);
+                        b.add(obj);
                     }
                     break;
 
                 case 2:
                     if (obj.bbox().getMin().z() <= splitDimensionPoint.z()) {
-                        if (a != null)
-                            a.add(obj);
+                        a.add(obj);
                     } else {
-                        if (b != null)
-                            b.add(obj);
+                        b.add(obj);
                     }
                     break;
 
@@ -369,18 +364,13 @@ public class BVH extends BVHBase {
                     break;
             }
         }
-        if (a != null)
-            childObjects.add(a);
 
-        if (a != null)
-            childObjects.add(b);
+        childBVHs.add((BVH) a);
+        childBVHs.add((BVH) b);
 
         // remove objects from childObject list which where added to sub BVHs
-        if (a != null)
-            childObjects.removeAll(a.getObjects());
-
-        if (b != null)
-            childObjects.removeAll(b.getObjects());
+        childObjects.removeAll(a.getObjects());
+        childObjects.removeAll(b.getObjects());
     }
 
     @Override
@@ -406,6 +396,22 @@ public class BVH extends BVHBase {
                     }
                 }
                 // no object was hit within all child Objects of current BVH
+            } else {
+
+                // iterate over all child BVHs
+                for (BVH bvh : childBVHs) {
+                    // get hit of ray on current sub BVH with recursion
+                    Hit childBVH_Hit = bvh.hit(ray, obj, tMin, tMax);
+
+                    // check if the ray also hit a sub box
+                    if (childBVH_Hit.hits()) {
+
+                        // some object was hit, thus return childBVH_Hit
+                        return childBVH_Hit;
+                    }
+                }
+
+                // no object was hit within all child BVHs
             }
 
         }

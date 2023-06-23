@@ -13,7 +13,6 @@ import raytracer.core.def.Accelerator;
 import raytracer.core.def.StandardObj;
 import raytracer.geom.GeomFactory;
 import raytracer.geom.Primitive;
-import raytracer.math.Constants;
 import raytracer.math.Point;
 import raytracer.math.Vec3;
 

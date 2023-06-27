@@ -25,7 +25,6 @@ import raytracer.core.Shader;
 import raytracer.core.def.Accelerator;
 import raytracer.core.def.BVH;
 import raytracer.core.def.PointLightSource;
-import raytracer.core.def.SimpleAccelerator;
 import raytracer.core.def.StandardObj;
 import raytracer.core.def.StandardScene;
 import raytracer.geom.GeomFactory;
@@ -40,6 +39,8 @@ import raytracer.shade.SingleColor;
  * File provided by Marcel Ulrich
  */
 public class CornellBox {
+
+    private static final boolean usePhong = true;
 
     private static class MyPanel extends JPanel {
 
@@ -187,7 +188,6 @@ public class CornellBox {
                 new Point(0, 5, 0),
                 new Vec3(0, 5, 0),
                 5, 10, 10);
-        // final Accelerator accel = new SimpleAccelerator();
         final Accelerator accel = new BVH();
 
         // Floor
@@ -195,8 +195,12 @@ public class CornellBox {
             final Primitive plane = GeomFactory.createPlane(Vec3.Y, Point.ORIGIN);
             final Shader white = new SingleColor(Color.WHITE);
             final Shader shader = ShaderFactory.createPhong(white, ambient, 0.4f, 1.0f, 15);
-            final Obj floor = new StandardObj(plane, shader);
-            // final Obj floor = new StandardObj(plane, white);
+
+            Obj floor;
+            if (usePhong)
+                floor = new StandardObj(plane, shader);
+            else
+                floor = new StandardObj(plane, white);
             accel.add(floor);
         }
 
@@ -205,8 +209,12 @@ public class CornellBox {
             final Primitive plane = GeomFactory.createPlane(Vec3.X, new Point(-5, 0, 0));
             final Shader blue = new SingleColor(Color.BLUE);
             final Shader shader = ShaderFactory.createPhong(blue, ambient, 0.7f, 1.0f, 15);
-            final Obj leftWall = new StandardObj(plane, shader);
-            // final Obj leftWall = new StandardObj(plane, blue);
+            Obj leftWall;
+            if (usePhong)
+                leftWall = new StandardObj(plane, shader);
+            else
+                leftWall = new StandardObj(plane, blue);
+
             accel.add(leftWall);
         }
 
@@ -215,8 +223,12 @@ public class CornellBox {
             final Primitive plane = GeomFactory.createPlane(Vec3.X.neg(), new Point(5, 0, 0));
             final Shader red = new SingleColor(Color.RED);
             final Shader shader = ShaderFactory.createPhong(red, ambient, 0.8f, 0.4f, 1);
-            final Obj rightWall = new StandardObj(plane, shader);
-            // final Obj rightWall = new StandardObj(plane, red);
+
+            Obj rightWall;
+            if (usePhong)
+                rightWall = new StandardObj(plane, shader);
+            else
+                rightWall = new StandardObj(plane, red);
             // accel.add(rightWall);
         }
 
@@ -225,8 +237,13 @@ public class CornellBox {
             final Primitive plane = GeomFactory.createPlane(Vec3.Z.neg(), new Point(0, 0, 5));
             final Shader green = new SingleColor(Color.GREEN);
             final Shader shader = ShaderFactory.createPhong(green, ambient, 0.5f, 0.0f, 1);
-            final Obj backWall = new StandardObj(plane, shader);
-            // final Obj backWall = new StandardObj(plane, shader);
+
+            Obj backWall;
+
+            if (usePhong)
+                backWall = new StandardObj(plane, shader);
+            else
+                backWall = new StandardObj(plane, shader);
             accel.add(backWall);
         }
 
@@ -235,8 +252,12 @@ public class CornellBox {
             final Primitive plane = GeomFactory.createPlane(Vec3.Y.neg(), new Point(0, 10, 0));
             final Shader white = new SingleColor(Color.WHITE);
             final Shader shader = ShaderFactory.createPhong(white, ambient, 0.4f, 1.0f, 15);
-            final Obj ceiling = new StandardObj(plane, shader);
-            // final Obj ceiling = new StandardObj(plane, white);
+
+            Obj ceiling;
+            if (usePhong)
+                ceiling = new StandardObj(plane, shader);
+            else
+                ceiling = new StandardObj(plane, white);
             // accel.add(ceiling);
         }
 
@@ -244,28 +265,43 @@ public class CornellBox {
         {
             final Shader yellow = new SingleColor(Color.YELLOW);
             final Shader shader = ShaderFactory.createPhong(yellow, ambient, 1.0f, 0.2f, 5);
-            createCube(
-                    new Point(1, 0, 0),
-                    new Vec3(3, 3, 3),
-                    shader, accel);
+
+            if (usePhong)
+                createCube(
+                        new Point(1, 0, 0),
+                        new Vec3(3, 3, 3),
+                        shader, accel);
+            else
+                createCube(
+                        new Point(1, 0, 0),
+                        new Vec3(3, 3, 3),
+                        yellow, accel);
         }
 
         // white cube
         {
             final Shader white = new SingleColor(Color.WHITE);
             final Shader shader = ShaderFactory.createPhong(white, ambient, 1.0f, 5.2f, 5);
-            createCube(
-                    new Point(-2.0f, 0, 2),
-                    new Vec3(3, 6, 3),
-                    shader, accel,
-                    new Vec3(0, (float) (-45 * Math.PI / 180), 0));
+
+            if (usePhong)
+                createCube(
+                        new Point(-2.0f, 0, 2),
+                        new Vec3(3, 6, 3),
+                        shader, accel,
+                        new Vec3(0, (float) (-45 * Math.PI / 180), 0));
+            else
+                createCube(
+                        new Point(-2.0f, 0, 2),
+                        new Vec3(3, 6, 3),
+                        white, accel,
+                        new Vec3(0, (float) (-45 * Math.PI / 180), 0));
         }
 
         final List<LightSource> lights = new ArrayList<LightSource>();
 
         // light pane => grid of lights
         {
-            int resolution = 4;
+            int resolution = 2;
             float dimension = 2.0f;
             float height = 9.5f;
             float intensity = 1.5f;

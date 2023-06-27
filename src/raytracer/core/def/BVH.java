@@ -15,28 +15,13 @@ import raytracer.math.Vec3;
  */
 public class BVH extends BVHBase {
 
-    /*
-     * 
-     * Missing:
-     * 
-     * buildBVH()
-     * 
-     */
-
     // list that contains all child objects of the current bounding box
     private List<Obj> childObjects;
     // list of all BVHs that are children of current BVH
     private List<BVH> childBVHs;
 
+    // current bounding box
     private BBox boundingBox;
-
-    /*
-     * Missing/Incomplete function implementations
-     * 
-     * BuildBVH needs to recursively restructure BVHs ect
-     * 
-     * hit missing
-     */
 
     public BVH() {
         // create empty lists for child objects and child BVHs
@@ -53,287 +38,149 @@ public class BVH extends BVHBase {
         BBox box = BBox.EMPTY;
 
         // surround current box and object
-        for (Obj obj : childObjects) {
+        for (Obj obj : childObjects)
             box = BBox.surround(box, obj.bbox());
-        }
 
         // surround current box and child box
-        for (BVH bvh : childBVHs) {
+        for (BVH bvh : childBVHs)
             box = BBox.surround(box, bvh.boundingBox);
-        }
 
         return box;
     }
 
-    /**
-     * Adds an object to the acceleration structure
-     *
-     * @param prim
-     *             The object to add
-     */
     @Override
     public void add(final Obj prim) {
 
         // check if the oject we want to add is a standard object
-        if (prim instanceof BVH) {
-
+        if (prim instanceof BVH)
             // add boundingbox to children bounding boxes
             childBVHs.add((BVH) prim);
-
-        } else if (prim instanceof StandardObj) {
-
+        else if (prim instanceof StandardObj)
             // add it to the elments of the current bounding box
             childObjects.add(prim);
-
-        }
 
         // recalculate this bounding box
         this.boundingBox = bbox();
     }
 
-    /**
-     * Builds the actual bounding volume hierarchy
-     */
     @Override
     public void buildBVH() {
 
-        // In the method buildBVH() the sub-boxes are built recursively.
-
-        // distribute Objects in a only if there are more than 4 objects in it
-
-        // there should only be up to 4 objects within one vbh or exactly 2 vbhs
-
-        // therefore check if there already exist child boxes and objects -> distribute
-        // objects into those 2 boxes and restructure them
+        BVH a;
+        BVH b;
 
         if (childBVHs.size() > 0 && childObjects.size() > 0) {
-
-            // distribute objects into existing childBVHs and recursively distribute objects
-
-            BVH a = childBVHs.get(0);
-            BVH b = childBVHs.get(1);
-
-            Point minPoint = boundingBox.getMin();
-
-            // get maxMinPoint to extract splitDimension
-            Point maxMinPoint = calculateMaxOfMinPoints();
-
-            // convert maxMinPoint to a vector
-            Vec3 v = maxMinPoint.sub(Point.ORIGIN);
-
-            // calculate splitDimension int
-            int splitDimension = calculateSplitDimension(v);
-
-            // get vector between minPoint and maxpoint where all coordinates are 0 except
-            // for the splitDimension
-            Vec3 splitVec;
-
-            switch (splitDimension) {
-                case 0:
-                    splitVec = new Vec3(maxMinPoint.get(0) - minPoint.get(0), 0, 0);
-                    break;
-
-                case 1:
-                    splitVec = new Vec3(0, maxMinPoint.get(0) - minPoint.get(0), 0);
-                    break;
-
-                case 2:
-                    splitVec = new Vec3(0, 0, maxMinPoint.get(0) - minPoint.get(0));
-                    break;
-
-                default:
-                    splitVec = Vec3.INF;
-                    break;
-            }
-
-            // scale splitVec by 0.5f to get half of the vector
-            splitVec = splitVec.scale(0.5f);
-
-            // calculate splitPosition float by adding the vector to the minPoint
-            float splitPosition = minPoint.add(splitVec).get(splitDimension);
-
-            // distribute
-            distributeObjects(a, b, splitDimension, splitPosition);
-
-            a.buildBVH();
-            b.buildBVH();
-
+            // grab both existing BVHs
+            a = childBVHs.get(0);
+            b = childBVHs.get(1);
         } else if (childBVHs.size() == 0 && childObjects.size() > 0) {
-
-            // there are no childBVHs -> check if there are more than THRESHOLD objects in
-            // the childObjects
-
+            // there are no childBVHs -> check if there are more than THRESHOLD objects
             if (childObjects.size() > THRESHOLD) {
-
-                // if so, distribute all of them into two boxes and recursively distribute them
-                BVH a = new BVH();
-                BVH b = new BVH();
-
-                Point minPoint = boundingBox.getMin();
-
-                // get maxMinPoint to extract splitDimension
-                Point maxMinPoint = calculateMaxOfMinPoints();
-
-                // convert maxMinPoint to a vector
-                Vec3 v = maxMinPoint.sub(Point.ORIGIN);
-
-                // calculate splitDimension int
-                int splitDimension = calculateSplitDimension(v);
-
-                // get vector between minPoint and maxpoint where all coordinates are 0 except
-                // for the splitDimension
-                Vec3 splitVec;
-
-                switch (splitDimension) {
-                    case 0:
-                        splitVec = new Vec3(maxMinPoint.get(0) - minPoint.get(0), 0, 0);
-                        break;
-
-                    case 1:
-                        splitVec = new Vec3(0, maxMinPoint.get(0) - minPoint.get(0), 0);
-                        break;
-
-                    case 2:
-                        splitVec = new Vec3(0, 0, maxMinPoint.get(0) - minPoint.get(0));
-                        break;
-
-                    default:
-                        splitVec = Vec3.INF;
-                        break;
-                }
-
-                // scale splitVec by 0.5f to get half of the vector
-                splitVec = splitVec.scale(0.5f);
-
-                // calculate splitPosition float by adding the vector to the minPoint
-                float splitPosition = minPoint.add(splitVec).get(splitDimension);
-
-                // distribute
-                distributeObjects(a, b, splitDimension, splitPosition);
-
-            } else {
-
-                // otherwise we can stop recursion since there are no childBVHs
+                // create new BVHs for distribution since there are none
+                a = new BVH();
+                b = new BVH();
+            } else
                 return;
-            }
 
         } else if (childBVHs.size() > 0 && childObjects.size() == 0) {
 
             // there are no free objects to distribute into child BVHs, thus distribute
             // recursively on sub boxes
-
             for (int i = 0; i < childBVHs.size(); i++) {
                 childBVHs.get(i).buildBVH();
             }
-        }
+            return;
+        } else
+            return;
+
+        // grab smallest point (which is the minPoint of the BBox)
+        Point minPoint = bbox().getMin();
+
+        // get maxMinPoint to extract splitDimension
+        Point maxMinPoint = calculateMaxOfMinPoints();
+
+        // convert maxMinPoint to a vector
+        Vec3 v = maxMinPoint.sub(minPoint);
+
+        // calculate splitDimension int
+        int splitDimension = calculateSplitDimension(v);
+
+        // create Zero vector where only splitDimension is changed
+        Vec3 splitVec = Vec3.INF;
+
+        if (splitDimension == 0)
+            splitVec = new Vec3(v.x(), 0, 0);
+        if (splitDimension == 1)
+            splitVec = new Vec3(0, v.y(), 0);
+        if (splitDimension == 2)
+            splitVec = new Vec3(0, 0, v.z());
+
+        // scale splitVec by 0.5f to get half of the vector
+        splitVec = splitVec.scale(0.5f);
+
+        // calculate splitPosition float by adding the vector to the minPoint
+        float splitPosition = minPoint.add(splitVec).get(splitDimension);
+
+        // distribute objects into a and b
+        distributeObjects(a, b, splitDimension, splitPosition);
+
+        // build newly distributed bvhs
+        a.buildBVH();
+        b.buildBVH();
     }
 
     @Override
     public Point calculateMaxOfMinPoints() {
 
-        if (childBVHs.size() == 0 && childObjects.size() == 0) {
-            return Point.ORIGIN;
-        }
+        // return min point of bounding box since nothing in it
+        if (childBVHs.size() == 0 && childObjects.size() == 0)
+            return boundingBox.getMin();
 
         // initialize with minimum point of first object
         Point maxPoint = childObjects.get(0).bbox().getMin();
 
-        // iterate over all objects and get element wise maximum of current maxPoint and
-        // getMin()
-        for (int i = 0; i < childObjects.size(); i++) {
+        // iterate over all objects and get maximum of current maxPoint and getMin()
+        for (int i = 0; i < childObjects.size(); i++)
             maxPoint = childObjects.get(i).bbox().getMin().max(maxPoint);
-        }
 
         return maxPoint;
     }
 
     @Override
     public int calculateSplitDimension(final Vec3 extent) {
-        // if x is largest coordinate -> 0
-        // if y is largest coordinate -> 1
-        // if z is largest coordinate -> 2
 
-        float maxCoord = Math.max(extent.x(), Math.max(extent.y(), extent.z()));
+        // extract max value from extent vector
+        float maxCoord = Math.max(Math.abs(extent.x()), Math.max(Math.abs(extent.y()), Math.abs(extent.z())));
 
-        if (maxCoord == extent.x())
-            return 0;
-        else if (maxCoord == extent.y())
-            return 1;
-        else
-            return 2;
+        // grab index of largest coordinate
+        for (int i = 0; i < 3; i++) {
+            if (maxCoord == extent.get(i))
+                return i;
+        }
+        return -1;
     }
 
     @Override
     public void distributeObjects(final BVHBase a, final BVHBase b,
             final int splitDim, final float splitPos) {
 
-        // get min point of current bvh
-        Point minBvh = bbox().getMin();
-
-        // create vector3 with splitpos at splitDim and everything else 0,
-        Vec3 splitPoint;
-        switch (splitDim) {
-            case 0:
-                splitPoint = new Vec3(splitPos, 0, 0);
-                break;
-
-            case 1:
-                splitPoint = new Vec3(0, splitPos, 0);
-                break;
-
-            case 2:
-                splitPoint = new Vec3(0, 0, splitPos);
-                break;
-            default:
-                splitPoint = new Vec3(0, 0, 0);
-        }
-
-        // add vector to min point
-        Point splitDimensionPoint = minBvh.add(splitPoint);
-
         // iterate over all objects in current BVH and check if objects min point is in
         // the BVHBase a. If so, add it to a else to b
         for (Obj obj : childObjects) {
 
-            // compare minPoint of all objets at coordinate splitDim with
-            // splitDimensionPoint
+            // compare minPoint of curr objets at coordinate splitDim with splitpos
+            BVHBase bvh = obj.bbox().getMin().get(splitDim) < splitPos ? a : b;
 
-            switch (splitDim) {
-                case 0:
-                    if (obj.bbox().getMin().x() <= splitDimensionPoint.x()) {
-                        a.add(obj);
-                    } else {
-                        b.add(obj);
-                    }
-                    break;
-
-                case 1:
-                    if (obj.bbox().getMin().y() <= splitDimensionPoint.y()) {
-                        a.add(obj);
-                    } else {
-                        b.add(obj);
-                    }
-                    break;
-
-                case 2:
-                    if (obj.bbox().getMin().z() <= splitDimensionPoint.z()) {
-                        a.add(obj);
-                    } else {
-                        b.add(obj);
-                    }
-                    break;
-
-                default:
-                    break;
-            }
+            // add obj to the specific box
+            bvh.add(obj);
         }
 
+        // add BVHs to childBVHs
         childBVHs.add((BVH) a);
         childBVHs.add((BVH) b);
 
         // remove objects from childObject list which where added to sub BVHs
-        childObjects.removeAll(a.getObjects());
-        childObjects.removeAll(b.getObjects());
+        childObjects.clear();
     }
 
     @Override
@@ -345,48 +192,57 @@ public class BVH extends BVHBase {
         // check if ray hit the current bbox
         if (parentHit.hits()) {
 
-            // there are either exactly 2 child BVHs or up to 4 childObjects
+            // there are up to 4 childObjects
             if (childObjects.size() != 0) {
 
-                // there are only childobjects, no sub bvhs
+                // iterate over all child objects
                 for (Obj childObj : childObjects) {
 
                     // check if child object is hit
                     Hit childObj_Hit = childObj.hit(ray, obj, tMin, tMax);
-                    if (childObj_Hit.hits()) {
-                        // child object was hit, return hit
+                    if (childObj_Hit.hits())
                         return childObj_Hit;
-                    }
                 }
-                // no object was hit within all child Objects of current BVH
             } else {
+                // grab both BVHs
+                BVH bvh1 = childBVHs.get(0);
+                BVH bvh2 = childBVHs.get(1);
 
-                // iterate over all child BVHs
-                for (BVH bvh : childBVHs) {
-                    // get hit of ray on current sub BVH with recursion
-                    Hit childBVH_Hit = bvh.hit(ray, obj, tMin, tMax);
+                // test for hit on first BVH
+                Hit bvh1Hit = bvh1.hit(ray, obj, tMin, tMax);
 
-                    // check if the ray also hit a sub box
-                    if (childBVH_Hit.hits()) {
+                // set hit distance to Infinity
+                float h1D = Float.POSITIVE_INFINITY;
+                if (bvh1Hit.hits())
+                    h1D = bvh1Hit.getParameter();
 
-                        // some object was hit, thus return childBVH_Hit
-                        return childBVH_Hit;
-                    }
-                }
+                // test for hit on second BVH
+                Hit bvh2Hit = bvh2.hit(ray, obj, tMin, tMax);
 
-                // no object was hit within all child BVHs
+                // set hit distance to Infinity
+                float h2D = Float.POSITIVE_INFINITY;
+                if (bvh2Hit.hits())
+                    h2D = bvh2Hit.getParameter();
+
+                // check if only first bvh was hit
+                if (h1D != Float.POSITIVE_INFINITY && h2D == Float.POSITIVE_INFINITY)
+                    return bvh1Hit;
+
+                // check if only second bvh was hit
+                if (h1D == Float.POSITIVE_INFINITY && h2D != Float.POSITIVE_INFINITY)
+                    return bvh2Hit;
+
+                // both BVHs were hit -> check for closer one (first hit) as stated here
+                // https://forum.prog2.sic.saarland/t/rabbit-has-black-areas/1559/3
+                return h1D < h2D ? bvh1Hit : bvh2Hit;
             }
-
         }
-
         // return default Hit No since nothing was hit
         return Hit.No.get();
-        // return parentHit;
     }
 
     @Override
     public List<Obj> getObjects() {
-        // return only child objects of current box
         return childObjects;
     }
 }

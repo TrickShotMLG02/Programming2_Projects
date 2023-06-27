@@ -195,14 +195,23 @@ public class BVH extends BVHBase {
             // there are up to 4 childObjects
             if (childObjects.size() != 0) {
 
+                float hD = Float.POSITIVE_INFINITY;
+                Hit closestHit = Hit.No.get();
+
                 // iterate over all child objects
                 for (Obj childObj : childObjects) {
 
-                    // check if child object is hit
+                    // check if child object is hit and hit is valid and there is no closer object
                     Hit childObj_Hit = childObj.hit(ray, obj, tMin, tMax);
                     if (childObj_Hit.hits())
-                        return childObj_Hit;
+                        if (childObj_Hit.getParameter() >= tMin && childObj_Hit.getParameter() <= tMax)
+                            if (hD == Float.POSITIVE_INFINITY || hD > childObj_Hit.getParameter()) {
+                                hD = childObj_Hit.getParameter();
+                                closestHit = childObj_Hit;
+                            }
                 }
+
+                return closestHit;
             } else {
                 // grab both BVHs
                 BVH bvh1 = childBVHs.get(0);
@@ -214,7 +223,8 @@ public class BVH extends BVHBase {
                 // set hit distance to Infinity
                 float h1D = Float.POSITIVE_INFINITY;
                 if (bvh1Hit.hits())
-                    h1D = bvh1Hit.getParameter();
+                    if (bvh1Hit.getParameter() >= tMin && bvh1Hit.getParameter() <= tMax)
+                        h1D = bvh1Hit.getParameter();
 
                 // test for hit on second BVH
                 Hit bvh2Hit = bvh2.hit(ray, obj, tMin, tMax);
@@ -222,7 +232,8 @@ public class BVH extends BVHBase {
                 // set hit distance to Infinity
                 float h2D = Float.POSITIVE_INFINITY;
                 if (bvh2Hit.hits())
-                    h2D = bvh2Hit.getParameter();
+                    if (bvh2Hit.getParameter() >= tMin && bvh2Hit.getParameter() <= tMax)
+                        h2D = bvh2Hit.getParameter();
 
                 // check if only first bvh was hit
                 if (h1D != Float.POSITIVE_INFINITY && h2D == Float.POSITIVE_INFINITY)

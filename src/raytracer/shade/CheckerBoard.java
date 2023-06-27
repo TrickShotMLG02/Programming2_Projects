@@ -15,17 +15,14 @@ public class CheckerBoard implements Shader {
 
     public CheckerBoard(final Shader a, final Shader b, final float scale) {
 
-        if (a == null || b == null) {
+        if (a == null || b == null)
             throw new IllegalArgumentException("Shader is null");
-        }
 
-        if (scale < -Constants.EPS || Float.isInfinite(scale) || Float.isNaN(scale)) {
+        if (scale < -Constants.EPS || Float.isInfinite(scale) || Float.isNaN(scale))
             throw new IllegalArgumentException("invalid scale");
-        }
 
-        if (Constants.isZero(scale)) {
+        if (Constants.isZero(scale))
             throw new UnsupportedOperationException("scale is 0");
-        }
 
         this.shaderEven = a;
         this.shaderOdd = b;
@@ -35,15 +32,11 @@ public class CheckerBoard implements Shader {
     @Override
     public Color shade(Hit hit, Trace trace) {
         Vec2 uv = hit.getUV();
-
         int index = (int) (Math.floor((double) (uv.x() / scale)) + Math.floor((double) (uv.y() / scale)));
 
-        if (index % 2 == 0) {
+        if (index % 2 == 0)
             return shaderEven.shade(hit, trace);
-        } else {
+        else
             return shaderOdd.shade(hit, trace);
-        }
-
     }
-
 }

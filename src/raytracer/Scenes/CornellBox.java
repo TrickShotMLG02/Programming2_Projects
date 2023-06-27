@@ -42,7 +42,7 @@ import raytracer.shade.SingleColor;
 public class CornellBox {
 
     private static final boolean usePhong = true;
-    private static final boolean useAcceleration = false;
+    private static final boolean useAcceleration = true;
 
     private static class MyPanel extends JPanel {
 
@@ -250,7 +250,7 @@ public class CornellBox {
             if (usePhong)
                 backWall = new StandardObj(plane, shader);
             else
-                backWall = new StandardObj(plane, shader);
+                backWall = new StandardObj(plane, green);
             accel.add(backWall);
         }
 

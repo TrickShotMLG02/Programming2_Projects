@@ -111,7 +111,7 @@ public class OBJReader {
 		// lopp over whole file
 		while (scanner.hasNextLine()) {
 
-			// current öine
+			// current line
 			String line = scanner.nextLine();
 			String[] tokens = line.split(" ");
 
@@ -154,9 +154,7 @@ public class OBJReader {
 				default:
 					// skip line
 					break;
-
 			}
-
 		}
 
 		// close scanner

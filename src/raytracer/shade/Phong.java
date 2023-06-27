@@ -21,28 +21,23 @@ public class Phong implements Shader {
     public Phong(final Shader inner, final Color ambient, final float diffuse, final float specular,
             final float smoothness) {
 
-        if (diffuse < -Constants.EPS || specular < -Constants.EPS || smoothness < -Constants.EPS) {
+        if (diffuse < -Constants.EPS || specular < -Constants.EPS || smoothness < -Constants.EPS)
             throw new IllegalArgumentException("invalid value -> may not be smaller 0");
-        }
 
-        if (Float.isInfinite(diffuse) || Float.isInfinite(specular) || Float.isInfinite(smoothness)) {
+        if (Float.isInfinite(diffuse) || Float.isInfinite(specular) || Float.isInfinite(smoothness))
             throw new IllegalArgumentException("invalid value -> may not be infinite");
-        }
 
-        if (Float.isNaN(diffuse) || Float.isNaN(specular) || Float.isNaN(smoothness)) {
+        if (Float.isNaN(diffuse) || Float.isNaN(specular) || Float.isNaN(smoothness))
             throw new IllegalArgumentException("Not a Number (NaN)");
-        }
 
-        if (ambient == null || inner == null) {
+        if (ambient == null || inner == null)
             throw new IllegalArgumentException("instance null");
-        }
 
         this.inner = inner;
         this.ambient = ambient;
         this.diffuse = diffuse;
         this.specular = specular;
         this.smoothness = smoothness;
-
     }
 
     @Override
@@ -77,19 +72,11 @@ public class Phong implements Shader {
                 // grab color of light source
                 Color light_baseColor = light.getColor().mul(baseColor);
 
-                /*
-                 * calculate color for diffusion
-                 */
-
                 // calculate diffusion coefficient using scalar product n_v
                 float diffusionCoefficient = Math.max(0, hit.getNormal().dot(lightVec));
 
                 // add diffusion for current light source to diffusion color
                 diffusion = diffusion.add(light_baseColor).scale(diffuse).scale(diffusionCoefficient);
-
-                /*
-                 * calculate color for specularity
-                 */
 
                 // calculate angle of reflection vector using scalar product
                 float reflectionAngle = reflectionVector.dot(lightVec);
@@ -100,13 +87,9 @@ public class Phong implements Shader {
                 // calculate specularity for current light source
                 specularity = specularity.add(light.getColor().scale(specular).scale(specularityCoefficient));
             }
-
         }
 
-        /*
-         * apply colors to phong
-         */
-
+        // set phong color to ambient color
         phong = phong.add(ambient);
 
         // add diffusion to phong value

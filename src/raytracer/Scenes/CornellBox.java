@@ -25,6 +25,7 @@ import raytracer.core.Shader;
 import raytracer.core.def.Accelerator;
 import raytracer.core.def.BVH;
 import raytracer.core.def.PointLightSource;
+import raytracer.core.def.SimpleAccelerator;
 import raytracer.core.def.StandardObj;
 import raytracer.core.def.StandardScene;
 import raytracer.geom.GeomFactory;
@@ -41,6 +42,7 @@ import raytracer.shade.SingleColor;
 public class CornellBox {
 
     private static final boolean usePhong = true;
+    private static final boolean useAcceleration = false;
 
     private static class MyPanel extends JPanel {
 
@@ -188,7 +190,12 @@ public class CornellBox {
                 new Point(0, 5, 0),
                 new Vec3(0, 5, 0),
                 5, 10, 10);
-        final Accelerator accel = new BVH();
+
+        final Accelerator accel;
+        if (useAcceleration)
+            accel = new BVH();
+        else
+            accel = new SimpleAccelerator();
 
         // Floor
         {

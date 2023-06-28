@@ -236,7 +236,7 @@ public class CornellBox {
                 rightWall = new StandardObj(plane, shader);
             else
                 rightWall = new StandardObj(plane, red);
-            // accel.add(rightWall);
+            accel.add(rightWall);
         }
 
         // Back wall
@@ -265,7 +265,7 @@ public class CornellBox {
                 ceiling = new StandardObj(plane, shader);
             else
                 ceiling = new StandardObj(plane, white);
-            // accel.add(ceiling);
+            accel.add(ceiling);
         }
 
         // yellow cube

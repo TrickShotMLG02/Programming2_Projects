@@ -97,11 +97,6 @@ public class RotatingShowcase {
     }
 
     private static void createCube(
-            Point pos, Vec3 size, Shader shader, Accelerator accel) {
-        createCube(pos, size, shader, accel, new Vec3(0, 0, 0));
-    }
-
-    private static void createCube(
             Point pos, Vec3 size, Shader shader, Accelerator accel,
             Vec3 rot) {
         // use 2*6 triangles to create a box

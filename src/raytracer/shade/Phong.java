@@ -77,7 +77,7 @@ public class Phong implements Shader {
                 float diffusionCoefficient = Math.max(0, hit.getNormal().dot(lightVec));
 
                 // add diffusion for current light source to diffusion color
-                diffusion = diffusion.add(light_baseColor).scale(diffuse).scale(diffusionCoefficient);
+                diffusion = diffusion.add(light_baseColor.scale(diffuse).scale(diffusionCoefficient));
 
                 // calculate angle of reflection vector using scalar product
                 float reflectionAngle = reflectionVector.dot(lightVec);

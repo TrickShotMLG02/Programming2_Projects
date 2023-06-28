@@ -308,7 +308,7 @@ public class CornellBox {
 
         // light pane => grid of lights
         {
-            int resolution = 2;
+            int resolution = 6;
             float dimension = 2.0f;
             float height = 9.5f;
             float intensity = 1.5f;

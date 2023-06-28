@@ -59,6 +59,7 @@ public class Phong implements Shader {
 
             // calculate vector from hitpoint to light
             Vec3 lightVec = light.getLocation().sub(hit.getPoint()).normalized();
+            float lightDistance = light.getLocation().sub(hit.getPoint()).norm();
 
             // calculate reflection vector of light on hitpoint from camera position
             Vec3 reflectionVector = trace.getRay().reflect(hit.getPoint(), hit.getNormal()).dir();
@@ -67,7 +68,7 @@ public class Phong implements Shader {
             Trace shadowTrace = trace.spawn(hit.getPoint(), lightVec);
 
             // check that trace is not blocked by any object
-            if (!shadowTrace.getHit().hits()) {
+            if (!shadowTrace.getHit().hits() || shadowTrace.getHit().getParameter() > lightDistance) {
 
                 // grab color of light source
                 Color light_baseColor = light.getColor().mul(baseColor);

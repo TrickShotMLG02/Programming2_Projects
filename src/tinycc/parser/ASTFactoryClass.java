@@ -3,7 +3,11 @@ package tinycc.parser;
 import java.util.List;
 
 import tinycc.diagnostic.Locatable;
+import tinycc.implementation.Util;
+import tinycc.implementation.expression.BinaryExpression;
+import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
+import tinycc.implementation.expression.PrimaryExpression;
 import tinycc.implementation.statement.Statement;
 import tinycc.implementation.type.FunctionType;
 import tinycc.implementation.type.ObjectType;
@@ -61,35 +65,14 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public Type createBaseType(TokenKind kind) {
-
-        // extract text of kind
-        String strKind = kind.getText();
-
-        // capitalize first letter of string and rest lowercase
-        String formattedKind = strKind.substring(0, 1).toUpperCase() + strKind.substring(1).toLowerCase();
-
-        // the package path of the base types
-        String path = "tinycc.implementation.type.BaseTypes.";
-
-        // concat package path and kind
-        String fullClassName = path + formattedKind;
-
-        try {
-            // create class with name from kind
-            Class<?> cls = Class.forName(fullClassName);
-
-            // return new Object of type cls
-            return (ObjectType) cls.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            // TODO: what should i do on invalid input?
-            return null;
-        }
+        return Util.create(kind, ObjectType.class, Util.CREATE_BASE_TYPE);
     }
 
     @Override
     public Expression createBinaryExpression(Token operator, Expression left, Expression right) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createBinaryExpression'");
+        // create Binary Operator of Type BinaryOperator
+        BinaryOperator op = Util.create(operator.getKind(), BinaryOperator.class, Util.CREATE_BINARY_OPERATOR);
+        return new BinaryExpression(op, left, right);
     }
 
     @Override
@@ -113,8 +96,7 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public Expression createPrimaryExpression(Token token) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createPrimaryExpression'");
+        return Util.create(token, PrimaryExpression.class);
     }
 
     @Override

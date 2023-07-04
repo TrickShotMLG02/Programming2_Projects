@@ -14,8 +14,7 @@ public class BinaryExpression extends Expression{
 
     @Override
     public String toString() {
-        // TODO: finish implementation
-        return "Binary_" + operator + "[Const_42, Const_1337]";
+        return "Binary_" + operator + "[" + left + "," + right + "]";
     }
     
 }

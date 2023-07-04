@@ -2,6 +2,7 @@ package tinycc.implementation;
 
 import tinycc.diagnostic.Diagnostic;
 import tinycc.parser.ASTFactory;
+import tinycc.parser.ASTFactoryClass;
 import tinycc.parser.Lexer;
 import tinycc.parser.Parser;
 import tinycc.logic.Formula;
@@ -36,7 +37,7 @@ public class Compiler {
 	 * @see ASTFactory
 	 */
 	public ASTFactory getASTFactory() {
-		throw new UnsupportedOperationException("TODO: implement this");
+		return new ASTFactoryClass();
 	}
 
 	/**

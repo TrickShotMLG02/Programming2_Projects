@@ -5,6 +5,7 @@ import java.util.List;
 import tinycc.diagnostic.Locatable;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.statement.Statement;
+import tinycc.implementation.type.FunctionType;
 import tinycc.implementation.type.ObjectType;
 import tinycc.implementation.type.PointerType;
 import tinycc.implementation.type.Type;

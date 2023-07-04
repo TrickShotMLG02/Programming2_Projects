@@ -68,8 +68,8 @@ public class ASTFactoryClass implements ASTFactory {
         // capitalize first letter of string and rest lowercase
         String formattedKind = strKind.substring(0, 1).toUpperCase() + strKind.substring(1).toLowerCase();
 
-        // prepend package path to the kind
-        String path = "tinycc.implementation.type.";
+        // the package path of the base types
+        String path = "tinycc.implementation.type.BaseTypes.";
 
         // concat package path and kind
         String fullClassName = path + formattedKind;

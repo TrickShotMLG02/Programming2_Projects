@@ -1,10 +1,8 @@
-package tinycc.parser;
+package tinycc.implementation.type;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import tinycc.implementation.type.Type;
 
 public class FunctionType extends Type {
 

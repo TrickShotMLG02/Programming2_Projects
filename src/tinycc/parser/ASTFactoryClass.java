@@ -50,8 +50,7 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public Type createFunctionType(Type returnType, List<Type> parameters) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createFunctionType'");
+        return new FunctionType(returnType, parameters);
     }
 
     @Override

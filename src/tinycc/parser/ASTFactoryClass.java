@@ -18,6 +18,7 @@ import tinycc.implementation.statement.Statements.Declaration;
 import tinycc.implementation.statement.Statements.ExpressionStatement;
 import tinycc.implementation.statement.Statements.If;
 import tinycc.implementation.statement.Statements.Return;
+import tinycc.implementation.statement.Statements.While;
 import tinycc.implementation.type.FunctionType;
 import tinycc.implementation.type.PointerType;
 import tinycc.implementation.type.Type;
@@ -61,8 +62,7 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public Statement createWhileStatement(Locatable loc, Expression condition, Statement body) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createWhileStatement'");
+        return new While(loc, condition, body);
     }
 
     @Override

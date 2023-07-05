@@ -7,14 +7,17 @@ import tinycc.implementation.Util;
 import tinycc.implementation.expression.BinaryExpression;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
-import tinycc.implementation.expression.PrimaryExpression;
+import tinycc.implementation.expression.UnaryExpression;
+import tinycc.implementation.expression.UnaryOperator;
 import tinycc.implementation.statement.Statement;
 import tinycc.implementation.type.FunctionType;
-import tinycc.implementation.type.ObjectType;
 import tinycc.implementation.type.PointerType;
 import tinycc.implementation.type.Type;
 
 public class ASTFactoryClass implements ASTFactory {
+
+
+    
 
     @Override
     public Statement createBlockStatement(Locatable loc, List<Statement> statements) {
@@ -70,7 +73,6 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public Expression createBinaryExpression(Token operator, Expression left, Expression right) {
-        // create Binary Operator of Type BinaryOperator
         BinaryOperator op = Util.createBinaryOperator(operator.getKind());
         return new BinaryExpression(op, left, right);
     }
@@ -90,8 +92,8 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public Expression createUnaryExpression(Token operator, boolean postfix, Expression operand) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createUnaryExpression'");
+        UnaryOperator op = Util.createUnaryOperator(operator, operand);
+        return new UnaryExpression(op, operand);
     }
 
     @Override

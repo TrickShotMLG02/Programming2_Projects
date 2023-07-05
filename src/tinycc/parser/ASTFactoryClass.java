@@ -15,6 +15,7 @@ import tinycc.implementation.expression.UnaryOperator;
 import tinycc.implementation.statement.Statement;
 import tinycc.implementation.statement.Statements.Block;
 import tinycc.implementation.statement.Statements.Declaration;
+import tinycc.implementation.statement.Statements.ExpressionStatement;
 import tinycc.implementation.statement.Statements.If;
 import tinycc.implementation.statement.Statements.Return;
 import tinycc.implementation.type.FunctionType;
@@ -44,8 +45,7 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public Statement createExpressionStatement(Locatable loc, Expression expression) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createExpressionStatement'");
+        return new ExpressionStatement(loc, expression);
     }
 
     @Override

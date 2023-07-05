@@ -6,6 +6,7 @@ import java.util.List;
 import tinycc.diagnostic.Locatable;
 import tinycc.implementation.Util;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
+import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.Function;
 import tinycc.implementation.expression.BinaryExpression;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
@@ -117,8 +118,8 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public void createFunctionDefinition(Type type, Token name, List<Token> parameterNames, Statement body) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createFunctionDefinition'");
+        ExternalDeclaration dec = new Function(type, name, parameterNames, body);
+        declarations.add(dec);
     }
     
     public List<ExternalDeclaration> getExternalDeclarations() {

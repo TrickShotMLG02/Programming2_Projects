@@ -8,11 +8,11 @@ public class UnaryExpression extends Expression {
     public UnaryExpression(UnaryOperator operator, Expression exp) {
         this.operator = operator;
         this.exp = exp;
+        lOperand = exp.resultOperand;
     }
 
     @Override
     public String toString() {
         return "Unary_" + operator + "[" + exp + "]";
     }
-    
 }

@@ -22,5 +22,13 @@ public class Function extends ExternalDeclaration {
         // TODO: Implement toString method
         return getType().toString();
     }
+
+    public List<Token> getParameterNames() {
+        return parameterNames;
+    }
+
+    public Statement getBody() {
+        return body;
+    }
     
 }

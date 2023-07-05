@@ -1,5 +1,6 @@
 package tinycc.implementation;
 
+import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.expression.UnaryOperator;
@@ -126,4 +127,7 @@ public class Util {
             return null;
     }
 
+    public static ExternalDeclaration createExternalDeclaration(Type type, Token name) {
+        return new ExternalDeclaration(type, name);
+    }
 }

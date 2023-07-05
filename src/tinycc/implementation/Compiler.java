@@ -7,6 +7,7 @@ import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.Function;
 import tinycc.implementation.statement.Statement;
+import tinycc.implementation.statement.Statements.Block;
 import tinycc.parser.ASTFactory;
 import tinycc.parser.ASTFactoryClass;
 import tinycc.parser.Lexer;
@@ -83,9 +84,14 @@ public class Compiler {
 			
 			// check if it is a function
 			if (declaration instanceof Function) {
-				// typecast and extract statement
+				// typecast and extract body
+				Function function = (Function) declaration;
+				Statement functionBody = function.getBody();
 
-				// check if statement is a block, if so, recursively check for those too
+				// check if body is a block, if so, recursively check for those too
+				if (functionBody instanceof Block) {
+					
+				}
 			}
 
 			// otherwise check all other things

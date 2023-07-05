@@ -1,9 +1,11 @@
 package tinycc.parser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import tinycc.diagnostic.Locatable;
 import tinycc.implementation.Util;
+import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.expression.BinaryExpression;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
@@ -16,7 +18,8 @@ import tinycc.implementation.type.Type;
 
 public class ASTFactoryClass implements ASTFactory {
 
-
+    // TODO: Maybe use hashset or kv map for easier use and avoiding double declaration of same variable name
+    private List<ExternalDeclaration> declarations = new ArrayList<ExternalDeclaration>();
     
 
     @Override
@@ -103,8 +106,8 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public void createExternalDeclaration(Type type, Token name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createExternalDeclaration'");
+        ExternalDeclaration decl = Util.createExternalDeclaration(type, name);
+        declarations.add(decl);
     }
 
     @Override
@@ -113,4 +116,7 @@ public class ASTFactoryClass implements ASTFactory {
         throw new UnsupportedOperationException("Unimplemented method 'createFunctionDefinition'");
     }
     
+    public List<ExternalDeclaration> getExternalDeclarations() {
+        return declarations;
+    }
 }

@@ -1,15 +1,30 @@
 package tinycc.implementation;
 
-import java.lang.reflect.Constructor;
-
+import tinycc.implementation.expression.BinaryOperator;
+import tinycc.implementation.expression.Expression;
+import tinycc.implementation.expression.BinaryOperators.And_And;
+import tinycc.implementation.expression.BinaryOperators.Asterisk;
+import tinycc.implementation.expression.BinaryOperators.Bang_Equal;
+import tinycc.implementation.expression.BinaryOperators.Equal;
+import tinycc.implementation.expression.BinaryOperators.Equal_Equal;
+import tinycc.implementation.expression.BinaryOperators.Greater;
+import tinycc.implementation.expression.BinaryOperators.Greater_Equal;
+import tinycc.implementation.expression.BinaryOperators.Less;
+import tinycc.implementation.expression.BinaryOperators.Less_Equal;
+import tinycc.implementation.expression.BinaryOperators.Minus;
+import tinycc.implementation.expression.BinaryOperators.Pipe_Pipe;
+import tinycc.implementation.expression.BinaryOperators.Plus;
+import tinycc.implementation.expression.BinaryOperators.Slash;
+import tinycc.implementation.expression.PrimaryExpressions.Identifier;
+import tinycc.implementation.expression.PrimaryExpressions.Number;
+import tinycc.implementation.type.Type;
+import tinycc.implementation.type.BaseTypes.Char;
+import tinycc.implementation.type.BaseTypes.Int;
+import tinycc.implementation.type.BaseTypes.Void;
 import tinycc.parser.Token;
 import tinycc.parser.TokenKind;
 
 public class Util {
-
-    public static final String CREATE_BASE_TYPE = "tinycc.implementation.type.BaseTypes.";
-    public static final String CREATE_BINARY_OPERATOR = "tinycc.implementation.expression.BinaryOperators.";
-    public static final String CREATE_PRIMARY_EXPRESSION = "tinycc.implementation.expression.PrimaryExpressions.";
 
     public static String capitalizeEnumName(String enumName) {
         char[] chrs = enumName.toCharArray();
@@ -28,6 +43,8 @@ public class Util {
         return formattedName;
     }
 
+
+
     /**
      * Function to create Object of type extracted from TokenKind
      * @param <T> return type specified by superclassType
@@ -35,65 +52,60 @@ public class Util {
      * @param superclassType specifies the return type
      * @return new Object
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public static <T> T create(TokenKind kind, Class superclassType, String typePackage) {
-        // extract text of kind
-        String strKind = kind.name().toLowerCase();
-
-        // capitalize first letter of string and rest lowercase
-        String formattedKind = Util.capitalizeEnumName(strKind);
-
-        // the package path of the base types
-        String path = typePackage;
-
-        // concat package path and kind
-        String fullClassName = path + formattedKind;
-        
-        try {
-            // create class with name from kind
-            Class<?> cls = Class.forName(fullClassName);
-
-            // check if cls is a sub class of superClassType (since only then typecasting should be possible)
-            if (superclassType.isAssignableFrom(cls)) {
-                // return new Object of type cls
-                return (T) cls.getDeclaredConstructor().newInstance();
-            }
-        } catch (Exception e) {
-            // TODO: what should i do on invalid input?
-        }
-        return null;
+    public static Type createType(TokenKind kind) {
+        if (kind == TokenKind.INT)
+            return new Int();
+        else if (kind == TokenKind.CHAR)
+            return new Char();
+        else if (kind == TokenKind.VOID)
+            return new Void();
+        else
+            return null;
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public static <T> T create(Token token, Class superclassType) {
-        // extract text of kind
-        String strKind = token.getKind().name().toLowerCase();
+    public static Expression createPrimaryExpression(Token token) {
+        TokenKind kind = token.getKind();
+        if (kind == TokenKind.CHARACTER)
+            return new tinycc.implementation.expression.PrimaryExpressions.Character(token);
+        else if (kind == TokenKind.IDENTIFIER)
+            return new Identifier(token);
+        else if (kind == TokenKind.NUMBER)
+            return new Number(token);
+        else if (kind == TokenKind.STRING)
+            return new tinycc.implementation.expression.PrimaryExpressions.String(token);
+        else
+            return null;
+    }
 
-        // capitalize first letter of string and rest lowercase
-        String formattedKind = Util.capitalizeEnumName(strKind);
 
-        // formatted kind contains if it is number or string...
 
-        // the package path of the base types
-        String path = CREATE_PRIMARY_EXPRESSION;
-
-        // concat package path and kind
-        String fullClassName = path + formattedKind;
-        
-        try {
-            // create class with name from kind
-            Class<?> cls = Class.forName(fullClassName);
-
-            // check if cls is a sub class of superClassType (since only then typecasting should be possible)
-            if (superclassType.isAssignableFrom(cls)) {
-                // grab constructor since we need to pass a parameter to it
-                Constructor<T> constructor = (Constructor<T>) cls.getDeclaredConstructor(token.getClass());
-                // call constructor with parameter
-                return constructor.newInstance(token);
-            }
-        } catch (Exception e) {
-            // TODO: what should i do on invalid input?
-        }
-        return null;
+    public static BinaryOperator createBinaryOperator(TokenKind kind) {
+        if (kind == TokenKind.AND_AND)
+            return new And_And();
+        else if (kind == TokenKind.ASTERISK)
+            return new Asterisk();
+        else if (kind == TokenKind.BANG_EQUAL)
+            return new Bang_Equal();
+        else if (kind == TokenKind.EQUAL_EQUAL)
+            return new Equal_Equal();
+        else if (kind == TokenKind.EQUAL)
+            return new Equal();
+        else if (kind == TokenKind.GREATER_EQUAL)
+            return new Greater_Equal();
+        else if (kind == TokenKind.GREATER)
+            return new Greater();
+        else if (kind == TokenKind.LESS_EQUAL)
+            return new Less_Equal();
+        else if (kind == TokenKind.LESS)
+            return new Less();
+        else if (kind == TokenKind.MINUS)
+            return new Minus();
+        else if (kind == TokenKind.PIPE_PIPE)
+            return new Pipe_Pipe();
+        else if (kind == TokenKind.PLUS)
+            return new Plus();
+        else if (kind == TokenKind.SLASH)
+            return new Slash();
+        else return null;
     }
 }

@@ -65,13 +65,13 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public Type createBaseType(TokenKind kind) {
-        return Util.create(kind, ObjectType.class, Util.CREATE_BASE_TYPE);
+        return Util.createType(kind);
     }
 
     @Override
     public Expression createBinaryExpression(Token operator, Expression left, Expression right) {
         // create Binary Operator of Type BinaryOperator
-        BinaryOperator op = Util.create(operator.getKind(), BinaryOperator.class, Util.CREATE_BINARY_OPERATOR);
+        BinaryOperator op = Util.createBinaryOperator(operator.getKind());
         return new BinaryExpression(op, left, right);
     }
 
@@ -96,7 +96,7 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public Expression createPrimaryExpression(Token token) {
-        return Util.create(token, PrimaryExpression.class);
+        return Util.createPrimaryExpression(token);
     }
 
     @Override

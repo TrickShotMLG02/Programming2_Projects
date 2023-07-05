@@ -11,7 +11,6 @@ public class Identifier extends PrimaryExpression {
 
     @Override
     public java.lang.String toString() {
-        //TODO: IMPLEMENT ME
-        throw new UnsupportedOperationException("Not yet implemented");
+        return "Var_" + getToken().getText();
     }
 }

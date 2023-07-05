@@ -13,6 +13,7 @@ import tinycc.implementation.expression.UnaryExpression;
 import tinycc.implementation.expression.UnaryOperator;
 import tinycc.implementation.statement.Statement;
 import tinycc.implementation.statement.Statements.Block;
+import tinycc.implementation.statement.Statements.If;
 import tinycc.implementation.type.FunctionType;
 import tinycc.implementation.type.PointerType;
 import tinycc.implementation.type.Type;
@@ -43,8 +44,7 @@ public class ASTFactoryClass implements ASTFactory {
     @Override
     public Statement createIfStatement(Locatable loc, Expression condition, Statement consequence,
             Statement alternative) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createIfStatement'");
+        return new If(loc, condition, consequence, alternative);
     }
 
     @Override

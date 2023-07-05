@@ -2,6 +2,7 @@ package tinycc.implementation;
 
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
+import tinycc.implementation.expression.UnaryOperator;
 import tinycc.implementation.expression.BinaryOperators.And_And;
 import tinycc.implementation.expression.BinaryOperators.Asterisk;
 import tinycc.implementation.expression.BinaryOperators.Bang_Equal;
@@ -17,6 +18,10 @@ import tinycc.implementation.expression.BinaryOperators.Plus;
 import tinycc.implementation.expression.BinaryOperators.Slash;
 import tinycc.implementation.expression.PrimaryExpressions.Identifier;
 import tinycc.implementation.expression.PrimaryExpressions.Number;
+import tinycc.implementation.expression.UnaryOperators.Address;
+import tinycc.implementation.expression.UnaryOperators.Indirection;
+import tinycc.implementation.expression.UnaryOperators.Negation;
+import tinycc.implementation.expression.UnaryOperators.SizeOf;
 import tinycc.implementation.type.Type;
 import tinycc.implementation.type.BaseTypes.Char;
 import tinycc.implementation.type.BaseTypes.Int;
@@ -77,8 +82,6 @@ public class Util {
             return null;
     }
 
-
-
     public static BinaryOperator createBinaryOperator(TokenKind kind) {
         if (kind == TokenKind.AND_AND)
             return new And_And();
@@ -108,4 +111,19 @@ public class Util {
             return new Slash();
         else return null;
     }
+
+    public static UnaryOperator createUnaryOperator(Token token, Expression applicable) {
+        TokenKind kind = token.getKind();
+        if (kind == TokenKind.ASTERISK)
+            return new Indirection(applicable);
+        else if (kind == TokenKind.AND)
+            return new Address(applicable);
+        else if (kind == TokenKind.SIZEOF)
+            return new SizeOf(applicable);
+        else if (kind == TokenKind.BANG)
+            return new Negation(applicable);
+        else
+            return null;
+    }
+
 }

@@ -9,6 +9,7 @@ import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.expression.BinaryExpression;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
+import tinycc.implementation.expression.FunctionCall;
 import tinycc.implementation.expression.UnaryExpression;
 import tinycc.implementation.expression.UnaryOperator;
 import tinycc.implementation.statement.Statement;
@@ -87,8 +88,7 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public Expression createCallExpression(Token token, Expression callee, List<Expression> arguments) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createCallExpression'");
+        return new FunctionCall(token, callee, arguments);
     }
 
     @Override

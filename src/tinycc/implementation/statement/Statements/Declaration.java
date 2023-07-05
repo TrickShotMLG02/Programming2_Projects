@@ -15,7 +15,7 @@ public class Declaration extends Statement{
 
     @Override
     public String toString() {
-        // TODO: implement initial value somehow
+        // initial value is handled by ExternalDeclaration toString()
         return extDeclaration.toString();
     }
     

@@ -7,7 +7,7 @@ import tinycc.parser.Token;
 public class FunctionDeclaration extends ExternalDeclaration {
 
     public FunctionDeclaration(Type type, Token name) {
-        super(type, name);
+        super(type, name, null);
     }
     
 }

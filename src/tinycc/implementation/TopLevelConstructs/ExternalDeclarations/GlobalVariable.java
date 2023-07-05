@@ -7,7 +7,7 @@ import tinycc.parser.Token;
 public class GlobalVariable extends ExternalDeclaration {
 
     public GlobalVariable(Type type, Token name) {
-        super(type, name);
+        super(type, name, null);
     }
     
 }

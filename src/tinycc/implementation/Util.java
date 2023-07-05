@@ -49,8 +49,6 @@ public class Util {
         return formattedName;
     }
 
-
-
     /**
      * Function to create Object of type extracted from TokenKind
      * @param <T> return type specified by superclassType
@@ -127,7 +125,7 @@ public class Util {
             return null;
     }
 
-    public static ExternalDeclaration createExternalDeclaration(Type type, Token name) {
-        return new ExternalDeclaration(type, name);
+    public static ExternalDeclaration createExternalDeclaration(Type type, Token name, Expression init) {
+        return new ExternalDeclaration(type, name, init);
     }
 }

@@ -36,7 +36,7 @@ public class ASTFactoryClass implements ASTFactory {
     @Override
     public Statement createDeclarationStatement(Type type, Token name, Expression init) {
         // create declaration
-        ExternalDeclaration extDeclaration = Util.createExternalDeclaration(type, name);
+        ExternalDeclaration extDeclaration = Util.createExternalDeclaration(type, name, init);
         declarations.add(extDeclaration);
 
         // create statement and store declaration there
@@ -111,7 +111,7 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public void createExternalDeclaration(Type type, Token name) {
-        ExternalDeclaration decl = Util.createExternalDeclaration(type, name);
+        ExternalDeclaration decl = Util.createExternalDeclaration(type, name, null);
         declarations.add(decl);
     }
 

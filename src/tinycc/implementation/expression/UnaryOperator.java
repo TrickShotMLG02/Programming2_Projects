@@ -1,8 +1,14 @@
 package tinycc.implementation.expression;
 
-public class UnaryOperator {
+import tinycc.implementation.AllowedSignatureList;
+import tinycc.implementation.Signature;
+import tinycc.implementation.type.ObjectType;
 
-    Expression applicable;
+public abstract class UnaryOperator {
+
+    private Expression applicable;
+
+    protected AllowedSignatureList allowedSignatures = new AllowedSignatureList();
 
     public UnaryOperator(Expression applicable) {
         this.applicable = applicable;
@@ -16,4 +22,9 @@ public class UnaryOperator {
     public Expression getApplicable() {
         return applicable;
     }
+
+	public boolean isSignatureAllowed() {
+        ObjectType lOp = applicable.lOperand;
+		return allowedSignatures.checkSignature(new Signature(lOp.getClass(), null, null));
+	}
 }

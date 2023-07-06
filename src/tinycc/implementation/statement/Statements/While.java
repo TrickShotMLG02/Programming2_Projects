@@ -28,9 +28,10 @@ public class While extends Statement{
     @Override
     public void checkType(Diagnostic d, Scope scope) {
 
-        // check that type of expression is integertype
+        // TODO: check that type of expression is integertype
         if (!condition.checkType(d, scope).isIntegerType()) {
             // print error message since condition has invalid type
+            d.printError(loc, "", null);
         }
 
         body.checkType(d, scope);

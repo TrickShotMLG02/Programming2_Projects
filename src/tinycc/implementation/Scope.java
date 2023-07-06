@@ -43,9 +43,10 @@ public class Scope {
      * @throws IdAlreadyDeclared    If the identifier is already declared in this scope
      */
     public void add(String id, Declaration d) throws IdAlreadyDeclared {
-        if (table.containsKey(id))
+        if (table.containsKey(id)) {
             throw new IdAlreadyDeclared(id);
-            table.put(id, d);
+        }
+        table.put(id, d);
     }
 
     /**

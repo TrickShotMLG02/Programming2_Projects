@@ -23,5 +23,34 @@ public class FunctionType extends Type {
         // return new String consisting of FunctionType[ <returnType>,<param1,...,param2> ]
         return this.getClass().getSimpleName() + Arrays.toString(tmpTypes.toArray());
     }
+
+    @Override
+    public boolean isFunctionType() {
+        return true;
+    }
+
+    @Override
+    public boolean isIntegerType() {
+        return false;
+    }
+
+    @Override
+    public boolean isPointerType() {
+        return false;
+    }
+
+    @Override
+    public boolean isScalarType() {
+        return false;
+    }
+
+    @Override
+    public boolean isObjectType() {
+        return false;
+    }
     
+    @Override
+    public boolean isVoidType() {
+        return false;
+    }
 }

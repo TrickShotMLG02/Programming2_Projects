@@ -15,4 +15,39 @@ public class PointerType extends ScalarType {
     public String toString() {
         return "Pointer[" + pointsTo.toString() + "]";
     }
+
+    public Type getPointerType() {
+        return pointsTo;
+    }
+
+    @Override
+    public boolean isFunctionType() {
+        return false;
+    }
+
+    @Override
+    public boolean isIntegerType() {
+        return false;
+    }
+
+    @Override
+    public boolean isPointerType() {
+        return true;
+    }
+
+    @Override
+    public boolean isScalarType() {
+        return true;
+    }
+
+    @Override
+    public boolean isObjectType() {
+        return true;
+    }
+
+    @Override
+    public boolean isVoidType() {
+        return false;
+    }
+    
 }

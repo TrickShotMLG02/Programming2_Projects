@@ -17,4 +17,17 @@ public abstract class Type {
 	@Override
 	public abstract String toString();
 
+
+	public abstract boolean isFunctionType();
+	
+	public abstract boolean isIntegerType();
+
+	public abstract boolean isPointerType();
+
+	public abstract boolean isScalarType();
+
+	public abstract boolean isVoidType();
+
+	public abstract boolean isObjectType();
+
 }

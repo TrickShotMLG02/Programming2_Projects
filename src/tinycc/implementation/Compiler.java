@@ -1,6 +1,9 @@
 package tinycc.implementation;
 
+import java.util.List;
+
 import tinycc.diagnostic.Diagnostic;
+import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.parser.ASTFactory;
 import tinycc.parser.ASTFactoryClass;
 import tinycc.parser.Lexer;
@@ -65,6 +68,15 @@ public class Compiler {
 	 *          invoked only once in each instance of the compiler class.
 	 */
 	public void checkSemantics() {
+
+		List<ExternalDeclaration> delcarations;
+		delcarations = astFactory.getExternalDeclarations();
+
+		for (ExternalDeclaration decl : delcarations) {
+			
+		}
+		
+
 		throw new UnsupportedOperationException("TODO: implement this");
 	}
 

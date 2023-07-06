@@ -5,7 +5,10 @@ import java.util.List;
 import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.Function;
+import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.FunctionDeclaration;
+import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.GlobalVariable;
 import tinycc.implementation.statement.Statement;
+import tinycc.implementation.statement.Statements.Declaration;
 import tinycc.parser.ASTFactory;
 import tinycc.parser.ASTFactoryClass;
 import tinycc.parser.Lexer;
@@ -79,7 +82,7 @@ public class Compiler {
 		for (ExternalDeclaration decl : delcarations) {
 			
 			// check if declaration is a function
-			if (decl instanceof Function) {
+			if (decl.isFunction()) {
 				// typecast declaration to function
 				Function fun = (Function) decl;
 				// grab function body
@@ -87,15 +90,45 @@ public class Compiler {
 				// checkType on function body
 				functionBody.checkType(diagnostic, s);
 			}
-			else if (decl.getInitExpression() != null) {
-				//if (decl.getType().equals(decl.getInitExpression().checkType(diagnostic, s)));
+			else if (decl.isFunctionDeclaration()) {
+				
+				// typecast declaration to function declaration
+				FunctionDeclaration fun = (FunctionDeclaration) decl;
+
+				try {
+					// check if function was declared in scope
+					Declaration scopeDec = s.lookup(fun.getName().getText());
+					
+					// check type of declaration
+					scopeDec.checkType(diagnostic, s);
+
+					// TODO: maybe check if type of declaration is equal to type from scope declaration
+
+				} catch (IdUndeclared e) {
+					// Identifier not found in any scope
+					e.printStackTrace();
+				}
+
 			}
+			else if (decl.isGlobalVariable()) {
 
-			// TODO: check if externaldeclaration is function -> if so, check for function body
-			// check for functiondefinition -> check if it was declared in scope
-			// check for globalvariable -> check if it was declared in scop
+				// typecast declaration to global variable
+				GlobalVariable var = (GlobalVariable) decl;
 
-			// TODO: make externalDeclaration creation in ASTFactory to specific type since i want to make external declaration abstract
+				try {
+					// check if variable was declared in scope
+					Declaration scopeDec = s.lookup(var.getName().getText());
+					
+					// check type of declaration
+					scopeDec.checkType(diagnostic, s);
+
+					// TODO: maybe check if type of declaration is equal to type from scope declaration
+
+				} catch (IdUndeclared e) {
+					// Identifier not found in any scope
+					e.printStackTrace();
+				}
+			}
 		}
 		
 

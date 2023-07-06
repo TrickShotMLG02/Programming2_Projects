@@ -22,7 +22,6 @@ import tinycc.implementation.type.Type;
 
 public class ASTFactoryClass implements ASTFactory {
 
-    // TODO: Maybe use hashset or kv map for easier use and avoiding double declaration of same variable name
     private List<ExternalDeclaration> declarations = new ArrayList<ExternalDeclaration>();
     
 

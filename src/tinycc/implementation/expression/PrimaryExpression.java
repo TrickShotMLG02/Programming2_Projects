@@ -1,8 +1,11 @@
 package tinycc.implementation.expression;
 
+import tinycc.diagnostic.Diagnostic;
+import tinycc.implementation.Scope;
+import tinycc.implementation.type.Type;
 import tinycc.parser.Token;
 
-public class PrimaryExpression extends Expression {
+public abstract class PrimaryExpression extends Expression {
 
     private Token token;
 
@@ -17,6 +20,12 @@ public class PrimaryExpression extends Expression {
 
     public Token getToken() {
         return token;
+    }
+
+    @Override
+    public Type checkType(Diagnostic d, Scope s) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'checkType'");
     }
     
 }

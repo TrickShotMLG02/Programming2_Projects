@@ -1,8 +1,12 @@
 package tinycc.implementation.expression;
 
-public class UnaryOperator {
+import tinycc.diagnostic.Diagnostic;
+import tinycc.implementation.Scope;
+import tinycc.implementation.type.Type;
 
-    Expression applicable;
+public abstract class UnaryOperator {
+
+    private Expression applicable;
 
     public UnaryOperator(Expression applicable) {
         this.applicable = applicable;
@@ -16,4 +20,9 @@ public class UnaryOperator {
     public Expression getApplicable() {
         return applicable;
     }
+
+    /*
+     * Compute the resulting type based on the given expression
+     */
+    public abstract Type checkType(Diagnostic d, Scope s);
 }

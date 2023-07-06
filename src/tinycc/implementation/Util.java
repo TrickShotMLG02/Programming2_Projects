@@ -1,9 +1,15 @@
 package tinycc.implementation;
 
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
+import tinycc.implementation.expression.BinaryExpression;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.expression.UnaryOperator;
+import tinycc.implementation.expression.BinaryExpressions.AddExpression;
+import tinycc.implementation.expression.BinaryExpressions.AssignExpression;
+import tinycc.implementation.expression.BinaryExpressions.DivisionExpression;
+import tinycc.implementation.expression.BinaryExpressions.MultiplicationExpression;
+import tinycc.implementation.expression.BinaryExpressions.SubtractExpression;
 import tinycc.implementation.expression.BinaryOperators.Comp_And;
 import tinycc.implementation.expression.BinaryOperators.Multiplication;
 import tinycc.implementation.expression.BinaryOperators.Comp_Unequal;
@@ -109,6 +115,39 @@ public class Util {
         else if (kind == TokenKind.SLASH)
             return new Division();
         else return null;
+    }
+
+    public static BinaryExpression createBinaryExpression(TokenKind kind, Expression left, Expression right) {
+        BinaryOperator op = createBinaryOperator(kind);
+
+        if (kind == TokenKind.AND_AND)
+            return null;
+        else if (kind == TokenKind.ASTERISK)
+            return new MultiplicationExpression(op, left, right);
+        else if (kind == TokenKind.BANG_EQUAL)
+            return null;
+        else if (kind == TokenKind.EQUAL_EQUAL)
+            return null;
+        else if (kind == TokenKind.EQUAL)
+            return new AssignExpression(op, left, right);
+        else if (kind == TokenKind.GREATER_EQUAL)
+            return null;
+        else if (kind == TokenKind.GREATER)
+            return null;
+        else if (kind == TokenKind.LESS_EQUAL)
+            return null;
+        else if (kind == TokenKind.LESS)
+            return null;
+        else if (kind == TokenKind.MINUS)
+            return new SubtractExpression(op, left, right);
+        else if (kind == TokenKind.PIPE_PIPE)
+            return null;
+        else if (kind == TokenKind.PLUS)
+            return new AddExpression(op, left, right);
+        else if (kind == TokenKind.SLASH)
+            return new DivisionExpression(op, left, right);
+        else return null;
+
     }
 
     public static UnaryOperator createUnaryOperator(Token token, Expression applicable) {

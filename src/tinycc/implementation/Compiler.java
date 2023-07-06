@@ -4,6 +4,8 @@ import java.util.List;
 
 import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
+import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.Function;
+import tinycc.implementation.statement.Statement;
 import tinycc.parser.ASTFactory;
 import tinycc.parser.ASTFactoryClass;
 import tinycc.parser.Lexer;
@@ -75,9 +77,25 @@ public class Compiler {
 		delcarations = astFactory.getExternalDeclarations();
 
 		for (ExternalDeclaration decl : delcarations) {
-			if (decl.getInitExpression() != null) {
-				if (decl.getType().equals(decl.getInitExpression().checkType(diagnostic, s)));
+			
+			// check if declaration is a function
+			if (decl instanceof Function) {
+				// typecast declaration to function
+				Function fun = (Function) decl;
+				// grab function body
+				Statement functionBody = fun.getBody();
+				// checkType on function body
+				functionBody.checkType(diagnostic, s);
 			}
+			else if (decl.getInitExpression() != null) {
+				//if (decl.getType().equals(decl.getInitExpression().checkType(diagnostic, s)));
+			}
+
+			// TODO: check if externaldeclaration is function -> if so, check for function body
+			// check for functiondefinition -> check if it was declared in scope
+			// check for globalvariable -> check if it was declared in scop
+
+			// TODO: make externalDeclaration creation in ASTFactory to specific type since i want to make external declaration abstract
 		}
 		
 

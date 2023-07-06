@@ -18,6 +18,8 @@ import tinycc.mipsasmgen.MipsAsmGen;
  */
 public class Compiler {
 
+	private ASTFactoryClass astFactory;
+
 	Diagnostic diagnostic;
 
 	/**
@@ -28,6 +30,7 @@ public class Compiler {
 	 */
 	public Compiler(final Diagnostic diagnostic) {
 		this.diagnostic = diagnostic;
+		astFactory = new ASTFactoryClass();
 	}
 
 	/**
@@ -37,7 +40,7 @@ public class Compiler {
 	 * @see ASTFactory
 	 */
 	public ASTFactory getASTFactory() {
-		return new ASTFactoryClass();
+		return astFactory;
 	}
 
 	/**

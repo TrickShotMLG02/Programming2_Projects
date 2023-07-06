@@ -19,6 +19,14 @@ public class UnaryExpression extends Expression {
         return "Unary_" + operator + "[" + exp + "]";
     }
 
+    public Expression getExpression() {
+        return exp;
+    }
+
+    public UnaryOperator getOperator() {
+        return operator;
+    }
+
     @Override
     public Type checkType(Diagnostic d, Scope s) {
         

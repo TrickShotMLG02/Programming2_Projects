@@ -192,8 +192,4 @@ public class Util {
         else
             return null;
     }
-
-    public static ExternalDeclaration createExternalDeclaration(Type type, Token name, Expression init) {
-        return new ExternalDeclaration(type, name, init);
-    }
 }

@@ -4,7 +4,7 @@ import tinycc.implementation.expression.Expression;
 import tinycc.implementation.type.Type;
 import tinycc.parser.Token;
 
-public class ExternalDeclaration {
+public abstract class ExternalDeclaration {
     
     Type type;
     Token name;

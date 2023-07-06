@@ -6,10 +6,18 @@ import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.expression.UnaryOperator;
 import tinycc.implementation.expression.BinaryExpressions.AddExpression;
+import tinycc.implementation.expression.BinaryExpressions.AndExpression;
 import tinycc.implementation.expression.BinaryExpressions.AssignExpression;
 import tinycc.implementation.expression.BinaryExpressions.DivisionExpression;
+import tinycc.implementation.expression.BinaryExpressions.EqualsExpression;
+import tinycc.implementation.expression.BinaryExpressions.GreaterEqualExpression;
+import tinycc.implementation.expression.BinaryExpressions.GreaterExpression;
+import tinycc.implementation.expression.BinaryExpressions.LessEqualExpression;
+import tinycc.implementation.expression.BinaryExpressions.LessExpression;
 import tinycc.implementation.expression.BinaryExpressions.MultiplicationExpression;
+import tinycc.implementation.expression.BinaryExpressions.OrExpression;
 import tinycc.implementation.expression.BinaryExpressions.SubtractExpression;
+import tinycc.implementation.expression.BinaryExpressions.UnequalExpression;
 import tinycc.implementation.expression.BinaryOperators.Comp_And;
 import tinycc.implementation.expression.BinaryOperators.Multiplication;
 import tinycc.implementation.expression.BinaryOperators.Comp_Unequal;
@@ -121,27 +129,27 @@ public class Util {
         BinaryOperator op = createBinaryOperator(kind);
 
         if (kind == TokenKind.AND_AND)
-            return null;
+            return new AndExpression(op, left, right);
         else if (kind == TokenKind.ASTERISK)
             return new MultiplicationExpression(op, left, right);
         else if (kind == TokenKind.BANG_EQUAL)
-            return null;
+            return new UnequalExpression(op, left, right);
         else if (kind == TokenKind.EQUAL_EQUAL)
-            return null;
+            return new EqualsExpression(op, left, right);
         else if (kind == TokenKind.EQUAL)
             return new AssignExpression(op, left, right);
         else if (kind == TokenKind.GREATER_EQUAL)
-            return null;
+            return new GreaterEqualExpression(op, left, right);
         else if (kind == TokenKind.GREATER)
-            return null;
+            return new GreaterExpression(op, left, right);
         else if (kind == TokenKind.LESS_EQUAL)
-            return null;
+            return new LessEqualExpression(op, left, right);
         else if (kind == TokenKind.LESS)
-            return null;
+            return new LessExpression(op, left, right);
         else if (kind == TokenKind.MINUS)
             return new SubtractExpression(op, left, right);
         else if (kind == TokenKind.PIPE_PIPE)
-            return null;
+            return new OrExpression(op, left, right);
         else if (kind == TokenKind.PLUS)
             return new AddExpression(op, left, right);
         else if (kind == TokenKind.SLASH)

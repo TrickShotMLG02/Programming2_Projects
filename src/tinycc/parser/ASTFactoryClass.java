@@ -100,8 +100,7 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public Expression createUnaryExpression(Token operator, boolean postfix, Expression operand) {
-        UnaryOperator op = Util.createUnaryOperator(operator, operand);
-        return new UnaryExpression(op, operand);
+        return Util.createUnaryExpression(operator, operand);
     }
 
     @Override

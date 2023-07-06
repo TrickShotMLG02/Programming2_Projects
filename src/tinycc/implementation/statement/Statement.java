@@ -1,5 +1,8 @@
 package tinycc.implementation.statement;
 
+import tinycc.diagnostic.Diagnostic;
+import tinycc.implementation.Scope;
+
 /**
  * The main statement class (see project description)
  *
@@ -17,4 +20,5 @@ public abstract class Statement {
 	@Override
 	public abstract String toString();
 
+	public abstract void checkType(Diagnostic d, Scope s);
 }

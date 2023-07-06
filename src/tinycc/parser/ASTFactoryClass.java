@@ -7,6 +7,8 @@ import tinycc.diagnostic.Locatable;
 import tinycc.implementation.Util;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.Function;
+import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.FunctionDeclaration;
+import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.GlobalVariable;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.expression.FunctionCall;
 import tinycc.implementation.statement.Statement;
@@ -32,12 +34,12 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public Statement createDeclarationStatement(Type type, Token name, Expression init) {
-        // create declaration
-        ExternalDeclaration extDeclaration = Util.createExternalDeclaration(type, name, init);
-        declarations.add(extDeclaration);
+        // create variable declaration
+        GlobalVariable variableDeclaration = new GlobalVariable(type, name, init);
+        declarations.add(variableDeclaration);
 
         // create statement and store declaration there
-        return new Declaration(extDeclaration, init);
+        return new Declaration(variableDeclaration, init);
     }
 
     @Override
@@ -105,13 +107,13 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public void createExternalDeclaration(Type type, Token name) {
-        ExternalDeclaration decl = Util.createExternalDeclaration(type, name, null);
+        FunctionDeclaration decl = new FunctionDeclaration(type, name);
         declarations.add(decl);
     }
 
     @Override
     public void createFunctionDefinition(Type type, Token name, List<Token> parameterNames, Statement body) {
-        ExternalDeclaration dec = new Function(type, name, parameterNames, body);
+        Function dec = new Function(type, name, parameterNames, body);
         declarations.add(dec);
     }
     

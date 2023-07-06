@@ -1,6 +1,5 @@
 package tinycc.implementation;
 
-import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.expression.BinaryExpression;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;

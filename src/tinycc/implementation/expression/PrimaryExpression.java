@@ -2,6 +2,8 @@ package tinycc.implementation.expression;
 
 import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.Scope;
+import tinycc.implementation.Util;
+import tinycc.implementation.statement.Statements.Declaration;
 import tinycc.implementation.type.Type;
 import tinycc.parser.Token;
 
@@ -24,8 +26,16 @@ public abstract class PrimaryExpression extends Expression {
 
     @Override
     public Type checkType(Diagnostic d, Scope s) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'checkType'");
+        // lookup token in scope to check if it was declared previously
+        // TODO: make sure this works
+        try {
+            Declaration decl = s.lookup(token.getInputName());
+            return Util.createType(token.getKind());
+        } catch (Exception e) {
+            d.printError(token, "", null);
+            return null;
+        }
+
     }
     
 }

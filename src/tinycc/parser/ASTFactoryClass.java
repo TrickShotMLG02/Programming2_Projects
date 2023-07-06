@@ -83,8 +83,7 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public Expression createBinaryExpression(Token operator, Expression left, Expression right) {
-        BinaryOperator op = Util.createBinaryOperator(operator.getKind());
-        return new BinaryExpression(op, left, right);
+        return Util.createBinaryExpression(operator.getKind(), left, right);
     }
 
     @Override

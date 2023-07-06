@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import tinycc.diagnostic.Diagnostic;
+import tinycc.implementation.Scope;
+import tinycc.implementation.type.Type;
 import tinycc.parser.Token;
 
 public class FunctionCall extends Expression {
@@ -25,6 +28,12 @@ public class FunctionCall extends Expression {
         tmpExp.addAll(arguments);
 
         return "Call" + Arrays.toString(tmpExp.toArray());
+    }
+
+    @Override
+    public Type checkType(Diagnostic d, Scope s) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'checkType'");
     }
     
 }

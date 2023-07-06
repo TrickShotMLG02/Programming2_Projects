@@ -4,19 +4,19 @@ import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.expression.UnaryOperator;
-import tinycc.implementation.expression.BinaryOperators.And_And;
-import tinycc.implementation.expression.BinaryOperators.Asterisk;
-import tinycc.implementation.expression.BinaryOperators.Bang_Equal;
-import tinycc.implementation.expression.BinaryOperators.Equal;
-import tinycc.implementation.expression.BinaryOperators.Equal_Equal;
-import tinycc.implementation.expression.BinaryOperators.Greater;
-import tinycc.implementation.expression.BinaryOperators.Greater_Equal;
-import tinycc.implementation.expression.BinaryOperators.Less;
-import tinycc.implementation.expression.BinaryOperators.Less_Equal;
+import tinycc.implementation.expression.BinaryOperators.Comp_And;
+import tinycc.implementation.expression.BinaryOperators.Multiplication;
+import tinycc.implementation.expression.BinaryOperators.Comp_Unequal;
+import tinycc.implementation.expression.BinaryOperators.Assign;
+import tinycc.implementation.expression.BinaryOperators.Comp_Equals;
+import tinycc.implementation.expression.BinaryOperators.Comp_Greater;
+import tinycc.implementation.expression.BinaryOperators.Comp_GreaterEqual;
+import tinycc.implementation.expression.BinaryOperators.Comp_Less;
+import tinycc.implementation.expression.BinaryOperators.Comp_LessEqual;
 import tinycc.implementation.expression.BinaryOperators.Minus;
-import tinycc.implementation.expression.BinaryOperators.Pipe_Pipe;
+import tinycc.implementation.expression.BinaryOperators.Comp_Or;
 import tinycc.implementation.expression.BinaryOperators.Plus;
-import tinycc.implementation.expression.BinaryOperators.Slash;
+import tinycc.implementation.expression.BinaryOperators.Division;
 import tinycc.implementation.expression.PrimaryExpressions.Identifier;
 import tinycc.implementation.expression.PrimaryExpressions.Number;
 import tinycc.implementation.expression.UnaryOperators.Address;
@@ -83,31 +83,31 @@ public class Util {
 
     public static BinaryOperator createBinaryOperator(TokenKind kind) {
         if (kind == TokenKind.AND_AND)
-            return new And_And();
+            return new Comp_And();
         else if (kind == TokenKind.ASTERISK)
-            return new Asterisk();
+            return new Multiplication();
         else if (kind == TokenKind.BANG_EQUAL)
-            return new Bang_Equal();
+            return new Comp_Unequal();
         else if (kind == TokenKind.EQUAL_EQUAL)
-            return new Equal_Equal();
+            return new Comp_Equals();
         else if (kind == TokenKind.EQUAL)
-            return new Equal();
+            return new Assign();
         else if (kind == TokenKind.GREATER_EQUAL)
-            return new Greater_Equal();
+            return new Comp_GreaterEqual();
         else if (kind == TokenKind.GREATER)
-            return new Greater();
+            return new Comp_Greater();
         else if (kind == TokenKind.LESS_EQUAL)
-            return new Less_Equal();
+            return new Comp_LessEqual();
         else if (kind == TokenKind.LESS)
-            return new Less();
+            return new Comp_Less();
         else if (kind == TokenKind.MINUS)
             return new Minus();
         else if (kind == TokenKind.PIPE_PIPE)
-            return new Pipe_Pipe();
+            return new Comp_Or();
         else if (kind == TokenKind.PLUS)
             return new Plus();
         else if (kind == TokenKind.SLASH)
-            return new Slash();
+            return new Division();
         else return null;
     }
 

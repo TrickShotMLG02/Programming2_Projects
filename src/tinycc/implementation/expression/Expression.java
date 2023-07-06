@@ -1,5 +1,9 @@
 package tinycc.implementation.expression;
 
+import tinycc.diagnostic.Diagnostic;
+import tinycc.implementation.Scope;
+import tinycc.implementation.type.Type;
+
 /**
  * The main expression class (see project description)
  *
@@ -17,4 +21,5 @@ public abstract class Expression {
 	@Override
 	public abstract String toString();
 
+	public abstract Type checkType(Diagnostic d, Scope s);
 }

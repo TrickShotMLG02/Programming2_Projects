@@ -136,8 +136,22 @@ public class Compiler {
 
 					// TODO: maybe check if type of declaration is equal to type from scope declaration
 
-				} catch (IdUndeclared e) {
-					// Identifier not found in any scope
+				} catch (Exception e) {
+					try {
+						// Identifier not found in any scope, thus declare it
+						s.add(fun.getName().getInputName(), new Declaration(decl, decl.getInitExpression()));
+
+						// check if function was declared in scope
+						Declaration scopeDec = s.lookup(fun.getName().getInputName());
+
+						// check type of declaration
+						scopeDec.checkType(diagnostic, s);
+
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
 					e.printStackTrace();
 				}
 
@@ -157,7 +171,23 @@ public class Compiler {
 					// TODO: maybe check if type of declaration is equal to type from scope declaration
 
 				} catch (IdUndeclared e) {
-					// Identifier not found in any scope
+					
+					// Identifier not found in any scope, thus declare it
+					try {
+						// Identifier not found in any scope, thus declare it
+						s.add(var.getName().getInputName(), new Declaration(decl, decl.getInitExpression()));
+
+						// check if function was declared in scope
+						Declaration scopeDec = s.lookup(var.getName().getInputName());
+
+						// check type of declaration
+						scopeDec.checkType(diagnostic, s);
+						
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
 					e.printStackTrace();
 				}
 			}

@@ -29,17 +29,6 @@ public class UnaryExpression extends Expression {
 
     @Override
     public Type checkType(Diagnostic d, Scope s) {
-        
-        // run checkType on exp
-        Type expType = exp.checkType(d, s);
-
-        // grab type of operator
-        Type operatorType = operator.checkType(d, s);
-
-        // check if type of exp is compatible with type of operator
-        // TODO: implement me
-
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'checkType'");
     }
     

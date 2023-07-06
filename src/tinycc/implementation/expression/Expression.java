@@ -3,6 +3,7 @@ package tinycc.implementation.expression;
 import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.Scope;
 import tinycc.implementation.type.Type;
+import tinycc.parser.Token;
 
 /**
  * The main expression class (see project description)
@@ -22,4 +23,6 @@ public abstract class Expression {
 	public abstract String toString();
 
 	public abstract Type checkType(Diagnostic d, Scope s);
+
+	public abstract Token getToken();
 }

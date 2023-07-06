@@ -129,35 +129,36 @@ public class Util {
         else return null;
     }
 
-    public static BinaryExpression createBinaryExpression(TokenKind kind, Expression left, Expression right) {
+    public static BinaryExpression createBinaryExpression(Token token, Expression left, Expression right) {
+        TokenKind kind = token.getKind();
         BinaryOperator op = createBinaryOperator(kind);
 
         if (kind == TokenKind.AND_AND)
-            return new AndExpression(op, left, right);
+            return new AndExpression(token, op, left, right);
         else if (kind == TokenKind.ASTERISK)
-            return new MultiplicationExpression(op, left, right);
+            return new MultiplicationExpression(token, op, left, right);
         else if (kind == TokenKind.BANG_EQUAL)
-            return new UnequalExpression(op, left, right);
+            return new UnequalExpression(token, op, left, right);
         else if (kind == TokenKind.EQUAL_EQUAL)
-            return new EqualsExpression(op, left, right);
+            return new EqualsExpression(token, op, left, right);
         else if (kind == TokenKind.EQUAL)
-            return new AssignExpression(op, left, right);
+            return new AssignExpression(token, op, left, right);
         else if (kind == TokenKind.GREATER_EQUAL)
-            return new GreaterEqualExpression(op, left, right);
+            return new GreaterEqualExpression(token, op, left, right);
         else if (kind == TokenKind.GREATER)
-            return new GreaterExpression(op, left, right);
+            return new GreaterExpression(token, op, left, right);
         else if (kind == TokenKind.LESS_EQUAL)
-            return new LessEqualExpression(op, left, right);
+            return new LessEqualExpression(token, op, left, right);
         else if (kind == TokenKind.LESS)
-            return new LessExpression(op, left, right);
+            return new LessExpression(token, op, left, right);
         else if (kind == TokenKind.MINUS)
-            return new SubtractExpression(op, left, right);
+            return new SubtractExpression(token, op, left, right);
         else if (kind == TokenKind.PIPE_PIPE)
-            return new OrExpression(op, left, right);
+            return new OrExpression(token, op, left, right);
         else if (kind == TokenKind.PLUS)
-            return new AddExpression(op, left, right);
+            return new AddExpression(token, op, left, right);
         else if (kind == TokenKind.SLASH)
-            return new DivisionExpression(op, left, right);
+            return new DivisionExpression(token, op, left, right);
         else return null;
 
     }
@@ -181,13 +182,13 @@ public class Util {
         UnaryOperator op = createUnaryOperator(token);
 
         if (kind == TokenKind.ASTERISK)
-            return new IndirectionExpression(op, applicable);
+            return new IndirectionExpression(token, op, applicable);
         else if (kind == TokenKind.AND)
-            return new AddressExpression(op, applicable);
+            return new AddressExpression(token, op, applicable);
         else if (kind == TokenKind.SIZEOF)
-            return new SizeOfExpression(op, applicable);
+            return new SizeOfExpression(token, op, applicable);
         else if (kind == TokenKind.BANG)
-            return new NegationExpression(op, applicable);
+            return new NegationExpression(token, op, applicable);
         else
             return null;
     }

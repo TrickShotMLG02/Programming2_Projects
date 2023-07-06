@@ -7,11 +7,12 @@ import tinycc.implementation.expression.UnaryExpression;
 import tinycc.implementation.expression.UnaryOperator;
 import tinycc.implementation.type.PointerType;
 import tinycc.implementation.type.Type;
+import tinycc.parser.Token;
 
 public class IndirectionExpression extends UnaryExpression {
 
-    public IndirectionExpression(UnaryOperator operator, Expression exp) {
-        super(operator, exp);
+    public IndirectionExpression(Token token, UnaryOperator operator, Expression exp) {
+        super(token, operator, exp);
     }
 
     @Override
@@ -28,8 +29,7 @@ public class IndirectionExpression extends UnaryExpression {
             return pType.getPointerType();
         }
         else {
-            // TODO: print error
-            //d.printError(null, null, null);
+            d.printError(getExpression().getToken(), "", null);
             return null;
         }
     }

@@ -6,11 +6,12 @@ import tinycc.implementation.expression.Expression;
 import tinycc.implementation.expression.UnaryExpression;
 import tinycc.implementation.expression.UnaryOperator;
 import tinycc.implementation.type.Type;
+import tinycc.parser.Token;
 
 public class AddressExpression extends UnaryExpression {
 
-    public AddressExpression(UnaryOperator operator, Expression exp) {
-        super(operator, exp);
+    public AddressExpression(Token token, UnaryOperator operator, Expression exp) {
+        super(token, operator, exp);
     }
 
     @Override

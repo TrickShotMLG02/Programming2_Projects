@@ -7,11 +7,12 @@ import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.type.IntegerType;
 import tinycc.implementation.type.Type;
+import tinycc.parser.Token;
 
 public class MultiplicationExpression extends BinaryExpression {
 
-    public MultiplicationExpression(BinaryOperator operator, Expression left, Expression right) {
-        super(operator, left, right);
+    public MultiplicationExpression(Token token, BinaryOperator operator, Expression left, Expression right) {
+        super(token, operator, left, right);
     }
 
     @Override
@@ -20,11 +21,11 @@ public class MultiplicationExpression extends BinaryExpression {
         Type typeRight = getRight().checkType(d, s);
 
         if (!typeLeft.isIntegerType()) {
-            //d.printError(this, "...");
+            d.printError(getLeft().getToken(), "", null);
         }
         
         if (!typeRight.isIntegerType()) {
-            //d.printError(this, "...");
+            d.printError(getRight().getToken(), "", null);
         }
 
         return new IntegerType();

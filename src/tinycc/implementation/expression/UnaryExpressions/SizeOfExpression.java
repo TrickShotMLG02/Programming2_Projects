@@ -7,11 +7,12 @@ import tinycc.implementation.expression.UnaryExpression;
 import tinycc.implementation.expression.UnaryOperator;
 import tinycc.implementation.type.Type;
 import tinycc.implementation.type.BaseTypes.Int;
+import tinycc.parser.Token;
 
 public class SizeOfExpression extends UnaryExpression {
 
-    public SizeOfExpression(UnaryOperator operator, Expression exp) {
-        super(operator, exp);
+    public SizeOfExpression(Token token, UnaryOperator operator, Expression exp) {
+        super(token, operator, exp);
     }
 
     @Override
@@ -26,8 +27,7 @@ public class SizeOfExpression extends UnaryExpression {
             return new Int();
         }
         else {
-            // TODO: print error
-            //d.printError(null, null, null);
+            d.printError(getExpression().getToken(), "", null);
             return null;
         }
     }

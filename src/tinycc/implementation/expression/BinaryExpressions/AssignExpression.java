@@ -7,11 +7,12 @@ import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.type.ScalarType;
 import tinycc.implementation.type.Type;
+import tinycc.parser.Token;
 
 public class AssignExpression extends BinaryExpression {
 
-    public AssignExpression(BinaryOperator operator, Expression left, Expression right) {
-        super(operator, left, right);
+    public AssignExpression(Token token, BinaryOperator operator, Expression left, Expression right) {
+        super(token, operator, left, right);
     }
 
     @Override

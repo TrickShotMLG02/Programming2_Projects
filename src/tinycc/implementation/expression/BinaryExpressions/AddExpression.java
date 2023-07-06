@@ -8,11 +8,12 @@ import tinycc.implementation.expression.Expression;
 import tinycc.implementation.type.IntegerType;
 import tinycc.implementation.type.PointerType;
 import tinycc.implementation.type.Type;
+import tinycc.parser.Token;
 
 public class AddExpression extends BinaryExpression {
 
-    public AddExpression(BinaryOperator operator, Expression left, Expression right) {
-        super(operator, left, right);
+    public AddExpression(Token token, BinaryOperator operator, Expression left, Expression right) {
+        super(token, operator, left, right);
     }
 
     @Override
@@ -21,16 +22,13 @@ public class AddExpression extends BinaryExpression {
         Type typeRight = getRight().checkType(d, s);
 
         if (!typeLeft.isIntegerType() && !typeLeft.isPointerType()) {
-            // TODO: print error
-            //d.printError(this, "...");
+            d.printError(getLeft().getToken(), "", null);
         }
         if (!typeRight.isIntegerType() && !typeRight.isPointerType()) {
-            // TODO: print error
-            //d.printError(this, "...");
+            d.printError(getRight().getToken(), "", null);
         }
         if (typeLeft.isPointerType() && typeRight.isPointerType()) {
-            // TODO: print error since only (pointer and int, int and pointer, int and int) are allowed
-            //d.printError(this, "...");
+            d.printError(getLeft().getToken(), "", null);
         }
         
         // check which rule applies

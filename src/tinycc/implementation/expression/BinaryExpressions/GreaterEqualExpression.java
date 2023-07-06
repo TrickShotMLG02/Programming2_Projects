@@ -7,11 +7,12 @@ import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.type.IntegerType;
 import tinycc.implementation.type.Type;
+import tinycc.parser.Token;
 
 public class GreaterEqualExpression extends BinaryExpression {
 
-    public GreaterEqualExpression(BinaryOperator operator, Expression left, Expression right) {
-        super(operator, left, right);
+    public GreaterEqualExpression(Token token, BinaryOperator operator, Expression left, Expression right) {
+        super(token, operator, left, right);
     }
 
     @Override

@@ -8,11 +8,12 @@ import tinycc.implementation.expression.Expression;
 import tinycc.implementation.type.IntegerType;
 import tinycc.implementation.type.PointerType;
 import tinycc.implementation.type.Type;
+import tinycc.parser.Token;
 
 public class SubtractExpression extends BinaryExpression{
 
-    public SubtractExpression(BinaryOperator operator, Expression left, Expression right) {
-        super(operator, left, right);
+    public SubtractExpression(Token token, BinaryOperator operator, Expression left, Expression right) {
+        super(token, operator, left, right);
     }
 
     @Override

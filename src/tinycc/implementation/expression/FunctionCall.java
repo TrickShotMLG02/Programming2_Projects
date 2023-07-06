@@ -35,5 +35,10 @@ public class FunctionCall extends Expression {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'checkType'");
     }
+
+    @Override
+    public Token getToken() {
+        return token;
+    }
     
 }

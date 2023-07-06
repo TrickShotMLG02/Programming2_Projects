@@ -7,6 +7,7 @@ import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.type.IntegerType;
 import tinycc.implementation.type.Type;
+import tinycc.parser.Token;
 
 public class AndExpression extends BinaryExpression {
 
@@ -16,8 +17,8 @@ public class AndExpression extends BinaryExpression {
      * @param left
      * @param right
      */
-    public AndExpression(BinaryOperator operator, Expression left, Expression right) {
-        super(operator, left, right);
+    public AndExpression(Token token, BinaryOperator operator, Expression left, Expression right) {
+        super(token, operator, left, right);
     }   
 
     @Override

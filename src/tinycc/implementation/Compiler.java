@@ -69,15 +69,19 @@ public class Compiler {
 	 */
 	public void checkSemantics() {
 
+		Scope s = new Scope();
+
 		List<ExternalDeclaration> delcarations;
 		delcarations = astFactory.getExternalDeclarations();
 
 		for (ExternalDeclaration decl : delcarations) {
-			
+			if (decl.getInitExpression() != null) {
+				if (decl.getType().equals(decl.getInitExpression().checkType(diagnostic, s)));
+			}
 		}
 		
 
-		throw new UnsupportedOperationException("TODO: implement this");
+		//throw new UnsupportedOperationException("TODO: implement this");
 	}
 
 	/**

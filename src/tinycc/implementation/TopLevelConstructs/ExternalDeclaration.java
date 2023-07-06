@@ -32,4 +32,8 @@ public class ExternalDeclaration {
         return name;
     }
 
+    public Expression getInitExpression() {
+        return init;
+    }
+
 }

@@ -9,10 +9,12 @@ import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.FunctionDec
 import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.GlobalVariable;
 import tinycc.implementation.statement.Statement;
 import tinycc.implementation.statement.Statements.Declaration;
+import tinycc.implementation.type.Type;
 import tinycc.parser.ASTFactory;
 import tinycc.parser.ASTFactoryClass;
 import tinycc.parser.Lexer;
 import tinycc.parser.Parser;
+import tinycc.parser.Token;
 import tinycc.logic.Formula;
 import tinycc.mipsasmgen.MipsAsmGen;
 
@@ -85,10 +87,40 @@ public class Compiler {
 			if (decl.isFunction()) {
 				// typecast declaration to function
 				Function fun = (Function) decl;
+
+				// create new scope for function
+				Scope functionScope = s.newNestedScope();
+
+				// grab function parameters
+				List<Token> parameters = fun.getParameterNames();
+
+				// iterate over all parameters of function
+				for (Token t : parameters) {
+
+					// store name of identifier
+					String parameterName = t.getText();
+
+					// grab type of identifier
+					Type paramType = Util.createType(t.getKind());
+
+					// create declaration of parameter
+					Statement d = getASTFactory().createDeclarationStatement(paramType, t, null);
+
+					try {
+						// add declaration to function scope
+						functionScope.add(parameterName, (Declaration) d);
+
+					} catch (IdAlreadyDeclared e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
 				// grab function body
 				Statement functionBody = fun.getBody();
-				// checkType on function body
-				functionBody.checkType(diagnostic, s);
+
+				// checkType on function body in current function scope
+				functionBody.checkType(diagnostic, functionScope);
 			}
 			else if (decl.isFunctionDeclaration()) {
 				

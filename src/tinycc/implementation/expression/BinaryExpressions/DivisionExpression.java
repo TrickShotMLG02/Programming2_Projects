@@ -21,11 +21,11 @@ public class DivisionExpression extends BinaryExpression {
         Type typeRight = getRight().checkType(d, s);
 
         if (!typeLeft.isIntegerType()) {
-            //d.printError(this, "...");
+            d.printError(getLeft().getToken(), "", null);
         }
         
         if (!typeRight.isIntegerType()) {
-            //d.printError(this, "...");
+            d.printError(getRight().getToken(), "", null);
         }
 
         return new IntegerType();

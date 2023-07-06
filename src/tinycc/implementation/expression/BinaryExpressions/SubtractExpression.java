@@ -22,12 +22,10 @@ public class SubtractExpression extends BinaryExpression{
         Type typeRight = getRight().checkType(d, s);
 
         if (!typeLeft.isIntegerType() && !typeLeft.isPointerType()) {
-            // TODO: print error
-            //d.printError(this, "...");
+            d.printError(getLeft().getToken(), "", null);
         }
         if (!typeRight.isIntegerType() && !typeRight.isPointerType()) {
-            // TODO: print error
-            //d.printError(this, "...");
+            d.printError(getRight().getToken(), "", null);
         }
         
         // check which rule applies

@@ -98,7 +98,7 @@ public class Compiler {
 				for (Token t : parameters) {
 
 					// store name of identifier
-					String parameterName = t.getText();
+					String parameterName = t.getInputName();
 
 					// grab type of identifier
 					Type paramType = Util.createType(t.getKind());
@@ -129,7 +129,7 @@ public class Compiler {
 
 				try {
 					// check if function was declared in scope
-					Declaration scopeDec = s.lookup(fun.getName().getText());
+					Declaration scopeDec = s.lookup(fun.getName().getInputName());
 					
 					// check type of declaration
 					scopeDec.checkType(diagnostic, s);
@@ -149,7 +149,7 @@ public class Compiler {
 
 				try {
 					// check if variable was declared in scope
-					Declaration scopeDec = s.lookup(var.getName().getText());
+					Declaration scopeDec = s.lookup(var.getName().getInputName());
 					
 					// check type of declaration
 					scopeDec.checkType(diagnostic, s);

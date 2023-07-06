@@ -1,6 +1,10 @@
 package tinycc.implementation.expression;
 
-public class BinaryExpression extends Expression{
+import tinycc.diagnostic.Diagnostic;
+import tinycc.implementation.Scope;
+import tinycc.implementation.type.Type;
+
+public class BinaryExpression extends Expression {
 
     private BinaryOperator operator;
     private Expression left;
@@ -15,6 +19,20 @@ public class BinaryExpression extends Expression{
     @Override
     public String toString() {
         return "Binary_" + operator + "[" + left + "," + right + "]";
+    }
+
+    @Override
+    public Type checkType(Diagnostic d, Scope s) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'checkType'");
+    }
+
+    public Expression getLeft() {
+        return left;
+    }
+
+    public Expression getRight() {
+        return right;
     }
     
 }

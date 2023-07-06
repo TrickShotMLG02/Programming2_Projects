@@ -4,6 +4,7 @@ import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.expression.BinaryExpression;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
+import tinycc.implementation.expression.UnaryExpression;
 import tinycc.implementation.expression.UnaryOperator;
 import tinycc.implementation.expression.BinaryExpressions.AddExpression;
 import tinycc.implementation.expression.BinaryExpressions.AndExpression;
@@ -33,6 +34,10 @@ import tinycc.implementation.expression.BinaryOperators.Plus;
 import tinycc.implementation.expression.BinaryOperators.Division;
 import tinycc.implementation.expression.PrimaryExpressions.Identifier;
 import tinycc.implementation.expression.PrimaryExpressions.Number;
+import tinycc.implementation.expression.UnaryExpressions.AddressExpression;
+import tinycc.implementation.expression.UnaryExpressions.IndirectionExpression;
+import tinycc.implementation.expression.UnaryExpressions.NegationExpression;
+import tinycc.implementation.expression.UnaryExpressions.SizeOfExpression;
 import tinycc.implementation.expression.UnaryOperators.Address;
 import tinycc.implementation.expression.UnaryOperators.Indirection;
 import tinycc.implementation.expression.UnaryOperators.Negation;
@@ -158,16 +163,32 @@ public class Util {
 
     }
 
-    public static UnaryOperator createUnaryOperator(Token token, Expression applicable) {
+    public static UnaryOperator createUnaryOperator(Token token) {
         TokenKind kind = token.getKind();
         if (kind == TokenKind.ASTERISK)
-            return new Indirection(applicable);
+            return new Indirection();
         else if (kind == TokenKind.AND)
-            return new Address(applicable);
+            return new Address();
         else if (kind == TokenKind.SIZEOF)
-            return new SizeOf(applicable);
+            return new SizeOf();
         else if (kind == TokenKind.BANG)
-            return new Negation(applicable);
+            return new Negation();
+        else
+            return null;
+    }
+
+    public static UnaryExpression createUnaryExpression(Token token, Expression applicable) {
+        TokenKind kind = token.getKind();
+        UnaryOperator op = createUnaryOperator(token);
+
+        if (kind == TokenKind.ASTERISK)
+            return new IndirectionExpression(op, applicable);
+        else if (kind == TokenKind.AND)
+            return new AddressExpression(op, applicable);
+        else if (kind == TokenKind.SIZEOF)
+            return new SizeOfExpression(op, applicable);
+        else if (kind == TokenKind.BANG)
+            return new NegationExpression(op, applicable);
         else
             return null;
     }

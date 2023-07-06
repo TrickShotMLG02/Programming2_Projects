@@ -30,5 +30,22 @@ public class Function extends ExternalDeclaration {
     public Statement getBody() {
         return body;
     }
+
+    @Override
+    public boolean isFunction() {
+        return true;
+    }
+
+    @Override
+    public boolean isFunctionDeclaration() {
+        return false;
+    }
+
+    @Override
+    public boolean isGlobalVariable() {
+        return false;
+    }
+    
+
     
 }

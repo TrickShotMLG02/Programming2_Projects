@@ -36,4 +36,16 @@ public class ExternalDeclaration {
         return init;
     }
 
+    public boolean isFunction() {
+        return false;
+    }
+
+    public boolean isFunctionDeclaration() {
+        return false;
+    }
+
+    public boolean isGlobalVariable() {
+        return false;
+    }
+
 }

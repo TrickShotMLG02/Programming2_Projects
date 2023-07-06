@@ -1,7 +1,5 @@
 package tinycc.implementation.expression;
 
-import tinycc.implementation.type.ObjectType;
-
 /**
  * The main expression class (see project description)
  *
@@ -9,10 +7,6 @@ import tinycc.implementation.type.ObjectType;
  * modified.
  */
 public abstract class Expression {
-
-	public ObjectType lOperand;
-	public ObjectType rOperand;
-	public ObjectType resultOperand;
 
 	/**
 	 * Creates a string representation of this expression.

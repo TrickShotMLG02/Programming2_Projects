@@ -1,18 +1,10 @@
 package tinycc.implementation;
 
-import java.util.HashMap;
-import java.util.List;
-
 import tinycc.diagnostic.Diagnostic;
-import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
-import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.Function;
-import tinycc.implementation.statement.Statement;
-import tinycc.implementation.statement.Statements.Block;
 import tinycc.parser.ASTFactory;
 import tinycc.parser.ASTFactoryClass;
 import tinycc.parser.Lexer;
 import tinycc.parser.Parser;
-import tinycc.parser.Token;
 import tinycc.logic.Formula;
 import tinycc.mipsasmgen.MipsAsmGen;
 
@@ -70,34 +62,6 @@ public class Compiler {
 	 *          invoked only once in each instance of the compiler class.
 	 */
 	public void checkSemantics() {
-
-		// we can typecast, since we know that ASTFactoyClass extends ASTFactory
-		ASTFactoryClass ast = (ASTFactoryClass) getASTFactory();
-		// declarations list contains our complete program which should be checked.
-		List<ExternalDeclaration> declarations = ast.getExternalDeclarations();
-
-		// create new hashmap to keep track of already present identifiers
-		HashMap<String, ExternalDeclaration> uniqueDeclarations = new HashMap<String, ExternalDeclaration>();
-
-		for (ExternalDeclaration declaration : declarations) {
-			String declerationName = declaration.getName().getText();
-			
-			// check if it is a function
-			if (declaration instanceof Function) {
-				// typecast and extract body
-				Function function = (Function) declaration;
-				Statement functionBody = function.getBody();
-
-				// check if body is a block, if so, recursively check for those too
-				if (functionBody instanceof Block) {
-					
-				}
-			}
-
-			// otherwise check all other things
-
-		}
-
 		throw new UnsupportedOperationException("TODO: implement this");
 	}
 

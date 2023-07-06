@@ -3,6 +3,7 @@ package tinycc.implementation.statement.Statements;
 import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.Scope;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
+import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.GlobalVariable;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.statement.Statement;
 import tinycc.implementation.type.Type;
@@ -25,12 +26,26 @@ public class Declaration extends Statement{
     @Override
     public void checkType(Diagnostic d, Scope s) {
         // check that expression type and type oof external declaration are equal
+        Type initType = null;
+        if (init != null) {
+            initType = init.checkType(d, s);
+        }
 
-        Type initType = init.checkType(d, s);
         Type extDeclType = extDeclaration.getType();
 
         if (!initType.equals(extDeclType)) {
             // print error, since init type and declaration type are not equal
+        }
+
+        // since extDeclaration is of type GlobalVariable
+        GlobalVariable var = (GlobalVariable) extDeclaration;
+
+        // add var to scope
+        try {
+            s.add(var.getName().getInputName(), this);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
     

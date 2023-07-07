@@ -34,6 +34,7 @@ public class If extends Statement{
         // check that condition is integertype
         if (!condition.checkType(d, s).isIntegerType()) {
             // print error since invalid condition type
+            d.printError(loc, "invalid condition");
         }
 
         consequence.checkType(d, s);

@@ -2,11 +2,8 @@ package tinycc.implementation.expression.PrimaryExpressions;
 
 import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.Scope;
-import tinycc.implementation.Util;
-import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.GlobalVariable;
 import tinycc.implementation.expression.PrimaryExpression;
 import tinycc.implementation.statement.Statements.Declaration;
-import tinycc.implementation.type.IntegerType;
 import tinycc.implementation.type.Type;
 import tinycc.parser.Token;
 
@@ -33,7 +30,7 @@ public class Identifier extends PrimaryExpression {
         } catch (Exception e) {
 
             // identifier not declared
-            d.printError(getToken(), "identifier not declared", null);
+            d.printError(getToken(), "identifier not declared");
             return null;
 
         }

@@ -26,7 +26,7 @@ public class AddressExpression extends UnaryExpression {
             return new PointerType(applicableType);
         }
         else {
-            d.printError(getToken(), "Type not complete", null);
+            d.printError(getToken(), "Type not complete");
             return null;
         }
     }

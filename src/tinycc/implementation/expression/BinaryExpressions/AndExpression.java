@@ -5,8 +5,8 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.expression.BinaryExpression;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
-import tinycc.implementation.type.IntegerType;
 import tinycc.implementation.type.Type;
+import tinycc.implementation.type.BaseTypes.Int;
 import tinycc.parser.Token;
 
 public class AndExpression extends BinaryExpression {
@@ -27,13 +27,13 @@ public class AndExpression extends BinaryExpression {
         Type typeRight = getRight().checkType(d, s);
 
         if (!typeLeft.isScalarType()) {
-            d.printError(getLeft().getToken(), "", null);
+            d.printError(getLeft().getToken(), "");
         }
         
         if (!typeRight.isScalarType()) {
-            d.printError(getRight().getToken(), "", null);
+            d.printError(getRight().getToken(), "");
         }
 
-        return new IntegerType();
+        return new Int();
     }
 }

@@ -13,6 +13,7 @@ public class Plus extends BinaryOperator {
 
     @Override
     public Type checkType(Diagnostic d, Scope s) {
+        d.printError(null, "will be null");
         return null;
     }
 }

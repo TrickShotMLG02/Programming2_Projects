@@ -5,8 +5,8 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.expression.BinaryExpression;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
-import tinycc.implementation.type.IntegerType;
 import tinycc.implementation.type.Type;
+import tinycc.implementation.type.BaseTypes.Int;
 import tinycc.parser.Token;
 
 public class LessEqualExpression extends BinaryExpression {
@@ -21,19 +21,19 @@ public class LessEqualExpression extends BinaryExpression {
         Type typeRight = getRight().checkType(d, s);
 
          if (!typeLeft.isIntegerType() && !typeLeft.isPointerType()) {
-            d.printError(getLeft().getToken(), "", null);
+            d.printError(getLeft().getToken(), "");
         }
         if (!typeRight.isIntegerType() && !typeRight.isPointerType()) {
-            d.printError(getRight().getToken(), "", null);
+            d.printError(getRight().getToken(), "");
         }
 
         // check for type equality (pointer, pointer or int, int)
         if (typeLeft.equals(typeRight)) {
-            return new IntegerType();
+            return new Int();
         }
 
         // otherwise print error since types not identical
-
+        d.printError(getToken(), "will be null");
         return null;
     }
 }

@@ -32,4 +32,8 @@ public abstract class Type {
 
 	public abstract boolean isComplete();
 
+	@Override
+	public boolean equals(Object other) {
+		return other.getClass() == this.getClass();
+	}
 }

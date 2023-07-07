@@ -54,5 +54,14 @@ public class PointerType extends ScalarType {
     public boolean isComplete() {
         return true;
     }
-    
+
+    @Override
+    public boolean equals(Object other) {
+        if (other.getClass() == this.getClass()) {
+            // check if pointer types are equal
+            PointerType ptrTypeOther = (PointerType) other;
+            return this.getPointerType().getClass() == ptrTypeOther.getPointerType().getClass();
+        }
+        return false;
+    }
 }

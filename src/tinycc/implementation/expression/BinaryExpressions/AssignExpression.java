@@ -5,6 +5,7 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.expression.BinaryExpression;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
+import tinycc.implementation.type.IntegerType;
 import tinycc.implementation.type.ScalarType;
 import tinycc.implementation.type.Type;
 import tinycc.parser.Token;
@@ -30,7 +31,14 @@ public class AssignExpression extends BinaryExpression {
         }
 
         if (getLeft().isLValue()) {
-            return new ScalarType();
+            // check if integer type was assigned
+            if (typeRight.isIntegerType()) {
+                // return integer type, since integer type was assigned
+                return new IntegerType();
+            } else {
+                // no integer type was assigned, thus return scalar type
+                return new ScalarType();
+            }
         }
         else {
             d.printError(getLeft().getToken(), "Not L-Value");

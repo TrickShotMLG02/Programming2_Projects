@@ -1,0 +1,11 @@
+Conditions: The type of a condition (if, while, ...) has to be scalar.
+
+Null pointer: A null pointer constant is an integer constant with the value 0.
+
+Automatic conversion: Operands of type char are, except when used as operand for & and sizeof, automatically converted to int before performing the operation.
+
+If one operand of an operation is invalid, the position of the operator shall be output
+
+
+
+Check if anything should be added to scope in AssignExpression

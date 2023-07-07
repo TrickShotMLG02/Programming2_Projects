@@ -6,6 +6,7 @@ import java.util.List;
 
 import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.Scope;
+import tinycc.implementation.type.FunctionType;
 import tinycc.implementation.type.Type;
 import tinycc.parser.Token;
 
@@ -32,8 +33,42 @@ public class FunctionCall extends Expression {
 
     @Override
     public Type checkType(Diagnostic d, Scope s) {
+
+        // check if function is declared
+        Type calleeType = callee.checkType(d, s);
+
+        // check if it not is a function type
+        if (!calleeType.isFunctionType()) {
+            d.printError(token, "function not defined");
+        }
+
+        // typecast to function type, since we know it is a function
+        FunctionType calleeFunType = (FunctionType) calleeType;
+        
+        // check amount of parameters
+        if (arguments.size() != calleeFunType.getParams().size()) {
+            d.printError(token, "unequal amount of parameters");
+        }
+
+        // iterate over all parameters
+        for (int i = 0; i < arguments.size(); i++) {
+            // grab argument from current call and extract type
+            Expression arg = arguments.get(i);
+            Type argType = arg.checkType(d, s);
+
+            // grab type of current arg in callee args
+            Type calleeArg = calleeFunType.getParams().get(i);
+
+            // check if both types are different
+            if (!argType.equals(calleeArg)) {
+                d.printError(arg.getToken(), "Invalid parameter type - expected: " + calleeArg + " but was " + argType);
+            }
+        }
+
+        return calleeFunType.getReturnType();
+
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'checkType'");
+        //throw new UnsupportedOperationException("Unimplemented method 'checkType'");
     }
 
     @Override

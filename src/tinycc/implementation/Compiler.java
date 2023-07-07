@@ -7,14 +7,17 @@ import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.Function;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.FunctionDeclaration;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.GlobalVariable;
+import tinycc.implementation.expression.Expression;
 import tinycc.implementation.statement.Statement;
 import tinycc.implementation.statement.Statements.Declaration;
+import tinycc.implementation.type.IntegerType;
 import tinycc.implementation.type.Type;
 import tinycc.parser.ASTFactory;
 import tinycc.parser.ASTFactoryClass;
 import tinycc.parser.Lexer;
 import tinycc.parser.Parser;
 import tinycc.parser.Token;
+import tinycc.parser.TokenKind;
 import tinycc.logic.Formula;
 import tinycc.mipsasmgen.MipsAsmGen;
 
@@ -98,10 +101,17 @@ public class Compiler {
 				for (Token t : parameters) {
 
 					// store name of identifier
-					String parameterName = t.getInputName();
+					String parameterName = t.getText();
 
-					// grab type of identifier
-					Type paramType = Util.createType(t.getKind());
+					// grab kind of identifier
+					TokenKind kind = t.getKind();
+
+					// create primary expression
+					Expression paramIdentifier = Util.createPrimaryExpression(t);
+
+					// grab type of parameter
+					// TODO: cant just be integer i guess
+					Type paramType = new IntegerType();
 
 					// create declaration of parameter
 					Statement d = getASTFactory().createDeclarationStatement(paramType, t, null);
@@ -128,21 +138,19 @@ public class Compiler {
 				FunctionDeclaration fun = (FunctionDeclaration) decl;
 
 				try {
-					// check if function was declared in scope
-					Declaration scopeDec = s.lookup(fun.getName().getInputName());
+					// Identifier not found in any scope, thus declare it
+					String identifier = fun.getToken().getText();
+					s.add(identifier, new Declaration(decl, decl.getInitExpression()));
+
 					
-					// check type of declaration
-					scopeDec.checkType(diagnostic, s);
 
 					// TODO: maybe check if type of declaration is equal to type from scope declaration
 
 				} catch (Exception e) {
 					try {
-						// Identifier not found in any scope, thus declare it
-						s.add(fun.getName().getInputName(), new Declaration(decl, decl.getInitExpression()));
-
+						
 						// check if function was declared in scope
-						Declaration scopeDec = s.lookup(fun.getName().getInputName());
+						Declaration scopeDec = s.lookup(fun.getToken().getText());
 
 						// check type of declaration
 						scopeDec.checkType(diagnostic, s);
@@ -163,7 +171,7 @@ public class Compiler {
 
 				try {
 					// check if variable was declared in scope
-					Declaration scopeDec = s.lookup(var.getName().getInputName());
+					Declaration scopeDec = s.lookup(var.getToken().getText());
 					
 					// check type of declaration
 					scopeDec.checkType(diagnostic, s);
@@ -175,10 +183,11 @@ public class Compiler {
 					// Identifier not found in any scope, thus declare it
 					try {
 						// Identifier not found in any scope, thus declare it
-						s.add(var.getName().getInputName(), new Declaration(decl, decl.getInitExpression()));
+						String identifier = var.getToken().getText();
+						s.add(identifier, new Declaration(decl, decl.getInitExpression()));
 
 						// check if function was declared in scope
-						Declaration scopeDec = s.lookup(var.getName().getInputName());
+						Declaration scopeDec = s.lookup(var.getToken().getText());
 
 						// check type of declaration
 						scopeDec.checkType(diagnostic, s);
@@ -187,8 +196,6 @@ public class Compiler {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-
-					e.printStackTrace();
 				}
 			}
 		}

@@ -3,7 +3,9 @@ package tinycc.implementation.expression.PrimaryExpressions;
 import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.Scope;
 import tinycc.implementation.expression.PrimaryExpression;
+import tinycc.implementation.type.PointerType;
 import tinycc.implementation.type.Type;
+import tinycc.implementation.type.BaseTypes.Char;
 import tinycc.parser.Token;
 
 public class String extends PrimaryExpression {
@@ -19,7 +21,6 @@ public class String extends PrimaryExpression {
 
     @Override
     public Type checkType(Diagnostic d, Scope s) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'checkType'");
+        return new PointerType(new Char());
     }
 }

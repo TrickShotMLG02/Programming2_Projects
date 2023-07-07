@@ -53,4 +53,9 @@ public class FunctionType extends Type {
     public boolean isVoidType() {
         return false;
     }
+
+    @Override
+    public boolean isComplete() {
+        return false;
+    }
 }

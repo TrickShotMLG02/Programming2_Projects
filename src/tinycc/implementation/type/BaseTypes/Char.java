@@ -33,5 +33,10 @@ public class Char extends IntegerType {
     public boolean isVoidType() {
         return false;
     }
+
+    @Override
+    public boolean isComplete() {
+        return true;
+    }
     
 }

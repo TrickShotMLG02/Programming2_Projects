@@ -33,4 +33,12 @@ public class Void extends ObjectType {
     public boolean isVoidType() {
         return true;
     }
+
+    @Override
+    public boolean isComplete() {
+
+        return false;
+    }
+
+    
 }

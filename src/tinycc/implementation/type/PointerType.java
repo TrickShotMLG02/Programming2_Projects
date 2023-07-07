@@ -49,5 +49,10 @@ public class PointerType extends ScalarType {
     public boolean isVoidType() {
         return false;
     }
+
+    @Override
+    public boolean isComplete() {
+        return true;
+    }
     
 }

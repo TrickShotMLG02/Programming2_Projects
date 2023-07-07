@@ -30,4 +30,6 @@ public abstract class Type {
 
 	public abstract boolean isObjectType();
 
+	public abstract boolean isComplete();
+
 }

@@ -31,5 +31,9 @@ public class ScalarType extends ObjectType {
     public boolean isObjectType() {
         return true;
     }
-    
+
+    @Override
+    public boolean isComplete() {
+        return true;
+    }
 }

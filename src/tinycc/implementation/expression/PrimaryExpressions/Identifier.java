@@ -28,11 +28,9 @@ public class Identifier extends PrimaryExpression {
             // return the type of the declaration
             return decl.getExternalDeclaration().getType();
         } catch (Exception e) {
-
             // identifier not declared
-            d.printError(getToken(), "identifier not declared");
+            d.printError(getToken(), "identifier not declared " + getToken().getText());
             return null;
-
         }
     }
 

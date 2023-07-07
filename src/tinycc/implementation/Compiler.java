@@ -1,23 +1,21 @@
 package tinycc.implementation;
 
+import java.util.ArrayList;
 import java.util.List;
-
 import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.Function;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.FunctionDeclaration;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.GlobalVariable;
-import tinycc.implementation.expression.Expression;
 import tinycc.implementation.statement.Statement;
 import tinycc.implementation.statement.Statements.Declaration;
-import tinycc.implementation.type.IntegerType;
+import tinycc.implementation.type.FunctionType;
 import tinycc.implementation.type.Type;
 import tinycc.parser.ASTFactory;
 import tinycc.parser.ASTFactoryClass;
 import tinycc.parser.Lexer;
 import tinycc.parser.Parser;
 import tinycc.parser.Token;
-import tinycc.parser.TokenKind;
 import tinycc.logic.Formula;
 import tinycc.mipsasmgen.MipsAsmGen;
 
@@ -81,8 +79,7 @@ public class Compiler {
 
 		Scope s = new Scope();
 
-		List<ExternalDeclaration> delcarations;
-		delcarations = astFactory.getExternalDeclarations();
+		List<ExternalDeclaration> delcarations = new ArrayList<>(astFactory.getExternalDeclarations());
 
 		for (ExternalDeclaration decl : delcarations) {
 			
@@ -97,33 +94,43 @@ public class Compiler {
 				// grab function parameters
 				List<Token> parameters = fun.getParameterNames();
 
+				int paramIdx = 0;
+
 				// iterate over all parameters of function
 				for (Token t : parameters) {
 
-					// store name of identifier
+					// store name of parameter
 					String parameterName = t.getText();
 
-					// grab kind of identifier
-					TokenKind kind = t.getKind();
+					// grab the type of the function as FunctionType (since it is a function)
+					FunctionType funType = (FunctionType) fun.getType();
 
-					// create primary expression
-					Expression paramIdentifier = Util.createPrimaryExpression(t);
+					// grab the list of all function parameter types
+					List<Type> funParamTypes = funType.getParams();
 
-					// grab type of parameter
-					// TODO: cant just be integer i guess
-					Type paramType = new IntegerType();
+					//grab the respective type for current parameter index
+					Type paramType = funParamTypes.get(paramIdx);
 
-					// create declaration of parameter
+					// create declaration of parameter with given type
 					Statement d = getASTFactory().createDeclarationStatement(paramType, t, null);
 
 					try {
 						// add declaration to function scope
 						functionScope.add(parameterName, (Declaration) d);
-
 					} catch (IdAlreadyDeclared e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+
+					// move to next parameter
+					paramIdx++;
+				}
+
+				// create declaration for function and add it to parent scope
+				Statement f = getASTFactory().createDeclarationStatement(fun.getType(), fun.getToken(), null);
+				try {
+					s.add(fun.getToken().getText(), (Declaration) f);
+				} catch (IdAlreadyDeclared e) {
+					e.printStackTrace();
 				}
 
 				// grab function body

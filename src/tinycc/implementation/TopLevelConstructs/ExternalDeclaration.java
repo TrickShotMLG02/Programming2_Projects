@@ -28,7 +28,7 @@ public abstract class ExternalDeclaration {
         return type;
     }
 
-    public Token getName() {
+    public Token getToken() {
         return name;
     }
 

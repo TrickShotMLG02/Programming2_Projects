@@ -21,10 +21,10 @@ public class LessExpression extends BinaryExpression {
         Type typeRight = getRight().checkType(d, s);
 
         if (!typeLeft.isIntegerType() && !typeLeft.isPointerType()) {
-            d.printError(getLeft().getToken(), typeLeft.toString());
+            d.printError(getLeft().getToken(), "type left is " + typeLeft.toString());
         }
         if (!typeRight.isIntegerType() && !typeRight.isPointerType()) {
-            d.printError(getRight().getToken(), "sas");
+            d.printError(getRight().getToken(), "type right is " + typeRight.toString());
         }
 
         // check for type equality (pointer, pointer or int, int)

@@ -32,8 +32,8 @@ public class AssignExpression extends BinaryExpression {
         if (getLeft().isLValue()) {
             // check if integer type was assigned
             if (typeRight.isIntegerType()) {
-                // return type of right expression, since we assign a value from right to var of left
-                return typeRight;
+                // return type of left expression, since we assign a value from right to var of left and thus the type of the left side is important
+                return typeLeft;
             } else {
                 // no integer type was assigned, thus return scalar type
                 return new ScalarType();

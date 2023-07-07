@@ -3,8 +3,10 @@ package tinycc.implementation.expression.PrimaryExpressions;
 import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.Scope;
 import tinycc.implementation.Util;
+import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.GlobalVariable;
 import tinycc.implementation.expression.PrimaryExpression;
 import tinycc.implementation.statement.Statements.Declaration;
+import tinycc.implementation.type.IntegerType;
 import tinycc.implementation.type.Type;
 import tinycc.parser.Token;
 
@@ -24,13 +26,21 @@ public class Identifier extends PrimaryExpression {
         // check if token was declared earlier in scope
         try {
             // grab declaration from scope
-            Declaration decl = s.lookup(getToken().getInputName());
+            Declaration decl = s.lookup(getToken().getText());
 
             // return the type of the declaration
-            return Util.createType(getToken().getKind());
+            return decl.getExternalDeclaration().getType();
         } catch (Exception e) {
-            d.printError(getToken(), "", null);
+
+            // identifier not declared
+            d.printError(getToken(), "identifier not declared", null);
             return null;
+
         }
     }
+
+    @Override
+    public boolean isLValue() {
+        return true;
+    } 
 }

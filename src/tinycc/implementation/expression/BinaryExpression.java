@@ -41,5 +41,9 @@ public class BinaryExpression extends Expression {
     public Token getToken() {
         return token;
     }
-    
+
+    @Override
+    public boolean isLValue() {
+        return false;
+    } 
 }

@@ -25,4 +25,6 @@ public abstract class Expression {
 	public abstract Type checkType(Diagnostic d, Scope s);
 
 	public abstract Token getToken();
+
+	public abstract boolean isLValue();
 }

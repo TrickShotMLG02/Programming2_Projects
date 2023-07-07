@@ -39,5 +39,10 @@ public class UnaryExpression extends Expression {
     public Token getToken() {
         return token;
     }
+
+    @Override
+    public boolean isLValue() {
+        return false;
+    }
     
 }

@@ -40,5 +40,9 @@ public class FunctionCall extends Expression {
     public Token getToken() {
         return token;
     }
-    
+
+    @Override
+    public boolean isLValue() {
+        return false;
+    }
 }

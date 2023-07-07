@@ -271,7 +271,7 @@ public class CornellBoxMirror {
 
         // mirror cube
         {
-            final Shader shader = new Mirror(1);
+            final Shader shader = new Mirror(10, 20);
             // final Shader shader = ShaderFactory.createPhong(yellow, ambient, 1.0f, 0.2f,
             // 5);
 

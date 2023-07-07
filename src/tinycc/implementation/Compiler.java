@@ -118,7 +118,7 @@ public class Compiler {
 						// add declaration to function scope
 						functionScope.add(parameterName, (Declaration) d);
 					} catch (IdAlreadyDeclared e) {
-						e.printStackTrace();
+						//e.printStackTrace();
 					}
 
 					// move to next parameter
@@ -130,7 +130,7 @@ public class Compiler {
 				try {
 					s.add(fun.getToken().getText(), (Declaration) f);
 				} catch (IdAlreadyDeclared e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 
 				// grab function body
@@ -178,6 +178,7 @@ public class Compiler {
 
 				try {
 					// check if variable was declared in scope
+					String t = var.getToken().getText();
 					Declaration scopeDec = s.lookup(var.getToken().getText());
 					
 					// check type of declaration

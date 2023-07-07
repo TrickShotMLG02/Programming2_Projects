@@ -107,8 +107,15 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public void createExternalDeclaration(Type type, Token name) {
-        FunctionDeclaration decl = new FunctionDeclaration(type, name);
-        declarations.add(decl);
+
+        // it is a variable if it is of type scalar
+        if (type.isScalarType()) {
+            createDeclarationStatement(type, name, null);
+        }
+        else {
+            FunctionDeclaration decl = new FunctionDeclaration(type, name);
+            declarations.add(decl);
+        }  
     }
 
     @Override

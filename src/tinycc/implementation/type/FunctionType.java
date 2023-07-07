@@ -24,6 +24,14 @@ public class FunctionType extends Type {
         return this.getClass().getSimpleName() + Arrays.toString(tmpTypes.toArray());
     }
 
+    public Type getReturnType() {
+        return returnType;
+    }
+
+    public List<Type> getParams() {
+        return params;
+    }
+
     @Override
     public boolean isFunctionType() {
         return true;

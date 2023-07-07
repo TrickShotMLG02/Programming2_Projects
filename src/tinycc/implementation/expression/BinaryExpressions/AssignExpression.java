@@ -17,7 +17,6 @@ public class AssignExpression extends BinaryExpression {
 
     @Override
     public Type checkType(Diagnostic d, Scope s) {
-        // TODO: find out why type left is null
         Type typeLeft = getLeft().checkType(d, s);
         Type typeRight = getRight().checkType(d, s);
 

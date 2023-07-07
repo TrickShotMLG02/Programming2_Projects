@@ -66,9 +66,6 @@ public class FunctionCall extends Expression {
         }
 
         return calleeFunType.getReturnType();
-
-        // TODO Auto-generated method stub
-        //throw new UnsupportedOperationException("Unimplemented method 'checkType'");
     }
 
     @Override

@@ -19,7 +19,6 @@ public class Function extends ExternalDeclaration {
 
     @Override
     public String toString() {
-        // TODO: Implement toString method
         return getType().toString();
     }
 

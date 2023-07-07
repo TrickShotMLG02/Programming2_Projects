@@ -149,10 +149,6 @@ public class Compiler {
 					String identifier = fun.getToken().getText();
 					s.add(identifier, new Declaration(decl, decl.getInitExpression()));
 
-					
-
-					// TODO: maybe check if type of declaration is equal to type from scope declaration
-
 				} catch (Exception e) {
 					try {
 						
@@ -163,7 +159,6 @@ public class Compiler {
 						scopeDec.checkType(diagnostic, s);
 
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 
@@ -201,7 +196,6 @@ public class Compiler {
 						scopeDec.checkType(diagnostic, s);
 						
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}

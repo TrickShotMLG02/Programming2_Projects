@@ -16,8 +16,6 @@ public class ExpressionStatement extends Statement {
         this.expression = expression;
     }
 
-    // TODO: Implement ExpressionStatement
-
     @Override
     public String toString() {
         return expression.toString();

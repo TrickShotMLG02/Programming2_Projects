@@ -5,9 +5,9 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.expression.BinaryExpression;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
-import tinycc.implementation.type.IntegerType;
 import tinycc.implementation.type.PointerType;
 import tinycc.implementation.type.Type;
+import tinycc.implementation.type.BaseTypes.Int;
 import tinycc.parser.Token;
 
 public class AddExpression extends BinaryExpression {
@@ -22,32 +22,43 @@ public class AddExpression extends BinaryExpression {
         Type typeRight = getRight().checkType(d, s);
 
         if (!typeLeft.isIntegerType() && !typeLeft.isPointerType()) {
-            d.printError(getLeft().getToken(), "", null);
+            d.printError(getLeft().getToken(), "");
         }
         if (!typeRight.isIntegerType() && !typeRight.isPointerType()) {
-            d.printError(getRight().getToken(), "", null);
+            d.printError(getRight().getToken(), "");
         }
         if (typeLeft.isPointerType() && typeRight.isPointerType()) {
-            d.printError(getLeft().getToken(), "", null);
+            d.printError(getToken(), "");
         }
         
         // check which rule applies
         if (typeLeft.isIntegerType() && typeRight.isIntegerType()) {
-            return new IntegerType();
+            return new Int();
         }
 
         if (typeLeft.isIntegerType() && typeRight.isPointerType()) {
-            // return new pointer
-            return new PointerType(getRight().checkType(d, s));
+            if (typeRight.isComplete()) {
+                // return new pointer
+                return new PointerType(getRight().checkType(d, s));
+            }
+            else {
+                d.printError(getRight().getToken(), "Not complete pointer type");
+            }
         }
 
         if (typeLeft.isPointerType() && typeRight.isIntegerType()) {
-            // return new pointer
-            return new PointerType(getLeft().checkType(d, s));
+            if (typeLeft.isComplete()) {
+                // return new pointer
+                return new PointerType(getRight().checkType(d, s));
+            }
+            else {
+                d.printError(getLeft().getToken(), "Not complete pointer type");
+            }
         }
 
         // shouldn't reach this case
         // print error here
+        d.printError(getToken(), "will be null");
         return null;     
     }
 }

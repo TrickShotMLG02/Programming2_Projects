@@ -17,17 +17,24 @@ public class AssignExpression extends BinaryExpression {
 
     @Override
     public Type checkType(Diagnostic d, Scope s) {
+        // TODO: find out why type left is null
         Type typeLeft = getLeft().checkType(d, s);
         Type typeRight = getRight().checkType(d, s);
 
         if (!typeLeft.isScalarType()) {
-            d.printError(getLeft().getToken(), "", null);
+            d.printError(getLeft().getToken(), "Not a scalar type");
         }
         
         if (!typeRight.isScalarType()) {
-            d.printError(getRight().getToken(), "", null);
+            d.printError(getRight().getToken(), "Not a scalar type");
         }
 
-        return new ScalarType();
+        if (getLeft().isLValue()) {
+            return new ScalarType();
+        }
+        else {
+            d.printError(getLeft().getToken(), "Not L-Value");
+            return null;
+        }
     }
 }

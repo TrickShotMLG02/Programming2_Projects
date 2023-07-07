@@ -33,20 +33,20 @@ public class Declaration extends Statement{
 
         Type extDeclType = extDeclaration.getType();
 
-        if (!initType.equals(extDeclType)) {
-            // print error, since init type and declaration type are not equal
-        }
+        if (init != null) {
+            if (!initType.equals(extDeclType)) {
+                // print error, since init type and declaration type are not equal
 
-        // since extDeclaration is of type GlobalVariable
-        GlobalVariable var = (GlobalVariable) extDeclaration;
 
-        // add var to scope
-        try {
-            s.add(var.getName().getInputName(), this);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+                if (extDeclaration.isGlobalVariable()) {
+                    GlobalVariable var = (GlobalVariable) extDeclaration;
+                    d.printError(var.getToken(), "invalid type");
+                }
+            }
         }
     }
-    
+
+    public ExternalDeclaration getExternalDeclaration() {
+        return extDeclaration;
+    }
 }

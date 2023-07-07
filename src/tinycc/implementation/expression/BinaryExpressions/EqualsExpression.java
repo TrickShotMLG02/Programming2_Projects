@@ -5,8 +5,8 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.expression.BinaryExpression;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
-import tinycc.implementation.type.IntegerType;
 import tinycc.implementation.type.Type;
+import tinycc.implementation.type.BaseTypes.Int;
 import tinycc.parser.Token;
 
 public class EqualsExpression extends BinaryExpression {
@@ -20,20 +20,28 @@ public class EqualsExpression extends BinaryExpression {
         Type typeLeft = getLeft().checkType(d, s);
         Type typeRight = getRight().checkType(d, s);
 
-         if (!typeLeft.isIntegerType() && !typeLeft.isPointerType()) {
-            d.printError(getLeft().getToken(), "", null);
+        if (!typeLeft.isIntegerType() && !typeLeft.isPointerType()) {
+            d.printError(getLeft().getToken(), "");
         }
+        
         if (!typeRight.isIntegerType() && !typeRight.isPointerType()) {
-            d.printError(getRight().getToken(), "", null);
+            d.printError(getRight().getToken(), "");
         }
 
-        // check for type equality (pointer, pointer or int, int)
-        if (typeLeft.equals(typeRight)) {
-            return new IntegerType();
+        // check if both types are integer types
+        if (typeLeft.isIntegerType() && typeRight.isIntegerType()) {
+            return new Int();
         }
 
-        // otherwise print error since types not identical
+        // check if pointers types and they are equal
+        if (typeLeft.isPointerType() && typeRight.isPointerType() && typeLeft.equals(typeRight)) {
+            return new Int();
+        }
 
-        return null;
+        // TODO: check void pointer and null pointer constant
+
+
+
+        return new Int();
     }
 }

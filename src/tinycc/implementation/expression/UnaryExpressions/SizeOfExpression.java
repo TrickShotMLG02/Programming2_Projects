@@ -32,7 +32,7 @@ public class SizeOfExpression extends UnaryExpression {
 
                 // check if it is a pointer to char, print error
                 if (pType.getPointerType() instanceof Char) {
-                    d.printError(getToken(), "Type was string literal", null);
+                    d.printError(getToken(), "Type was string literal");
                 }
             }
 
@@ -49,10 +49,10 @@ public class SizeOfExpression extends UnaryExpression {
                 return new Int();
             }
 
-            d.printError(getToken(), "not a string literal", null);
+            d.printError(getToken(), "not a string literal");
             return null;
         } else {
-            d.printError(getExpression().getToken(), "will be null", null);
+            d.printError(getExpression().getToken(), "will be null");
             return null;
         }
     }

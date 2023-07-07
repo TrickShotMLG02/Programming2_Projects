@@ -36,7 +36,7 @@ public class Declaration extends Statement{
         if (init != null) {
             if (!initType.equals(extDeclType)) {
                 // print error, since init type and declaration type are not equal
-
+                d.printError(init.getToken(), "invalid init type");
 
                 if (extDeclaration.isGlobalVariable()) {
                     GlobalVariable var = (GlobalVariable) extDeclaration;

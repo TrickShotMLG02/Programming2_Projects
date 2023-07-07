@@ -29,8 +29,15 @@ public class IndirectionExpression extends UnaryExpression {
             return pType.getPointerType();
         }
         else {
-            d.printError(getExpression().getToken(), "Not a pointer or not compete type", null);
+            d.printError(getExpression().getToken(), "Not a pointer or not compete type");
             return null;
         }
     }
+
+    @Override
+    public boolean isLValue() {
+        return true;
+    }
+
+    
 }

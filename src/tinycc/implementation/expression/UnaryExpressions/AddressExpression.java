@@ -5,6 +5,7 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.expression.UnaryExpression;
 import tinycc.implementation.expression.UnaryOperator;
+import tinycc.implementation.type.PointerType;
 import tinycc.implementation.type.Type;
 import tinycc.parser.Token;
 
@@ -19,9 +20,14 @@ public class AddressExpression extends UnaryExpression {
        // grab the type of the applicable expression
         Type applicableType = getExpression().checkType(d, s);
 
-        // type can be anything for address generation
-
-        // thus return pointer of resulting type of expression
-        return applicableType;
+        // check if type is complete
+        if (applicableType.isComplete()) {
+            // thus return pointer of resulting type of expression
+            return new PointerType(applicableType);
+        }
+        else {
+            d.printError(getToken(), "Type not complete", null);
+            return null;
+        }
     }
 }

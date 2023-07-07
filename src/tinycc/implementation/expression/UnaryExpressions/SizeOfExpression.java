@@ -5,7 +5,9 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.expression.UnaryExpression;
 import tinycc.implementation.expression.UnaryOperator;
+import tinycc.implementation.type.PointerType;
 import tinycc.implementation.type.Type;
+import tinycc.implementation.type.BaseTypes.Char;
 import tinycc.implementation.type.BaseTypes.Int;
 import tinycc.parser.Token;
 
@@ -20,14 +22,37 @@ public class SizeOfExpression extends UnaryExpression {
         // grab the type of the expression
         Type applicableType = getExpression().checkType(d, s);
 
-        // check if the type is a Object Type or // TODO: Stringliteral
-        if (applicableType.isObjectType()) {
+        // check if the type is a Object Type and complete
+        if (applicableType.isObjectType() && applicableType.isComplete()) {
+
+            // check if type is a pointer
+            if (applicableType.isPointerType()) {
+                // typecast expression to pointer and check its type
+                PointerType pType = (PointerType) applicableType;
+
+                // check if it is a pointer to char, print error
+                if (pType.getPointerType() instanceof Char) {
+                    d.printError(getToken(), "Type was string literal", null);
+                }
+            }
 
             // return integer type sinze sizeof is always int
             return new Int();
         }
-        else {
-            d.printError(getExpression().getToken(), "", null);
+        // check if it is a string literal (a pointer to a char)
+        else if (applicableType.isPointerType()) {
+            // typecast expression to pointer and check its type
+            PointerType pType = (PointerType) applicableType;
+
+            // check if it is a pointer to char, print error
+            if (pType.getPointerType() instanceof Char) {
+                return new Int();
+            }
+
+            d.printError(getToken(), "not a string literal", null);
+            return null;
+        } else {
+            d.printError(getExpression().getToken(), "will be null", null);
             return null;
         }
     }

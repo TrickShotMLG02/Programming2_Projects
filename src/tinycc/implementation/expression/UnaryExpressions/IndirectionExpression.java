@@ -21,7 +21,7 @@ public class IndirectionExpression extends UnaryExpression {
         Type applicableType = getExpression().checkType(d, s);
 
         // check if the type is a pointer
-        if (applicableType.isPointerType()) {
+        if (applicableType.isPointerType() && applicableType.isComplete()) {
             // extract the type to which the pointer points to
             PointerType pType = (PointerType) applicableType;
 
@@ -29,7 +29,7 @@ public class IndirectionExpression extends UnaryExpression {
             return pType.getPointerType();
         }
         else {
-            d.printError(getExpression().getToken(), "", null);
+            d.printError(getExpression().getToken(), "Not a pointer or not compete type", null);
             return null;
         }
     }

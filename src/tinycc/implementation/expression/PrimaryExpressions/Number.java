@@ -3,8 +3,8 @@ package tinycc.implementation.expression.PrimaryExpressions;
 import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.Scope;
 import tinycc.implementation.expression.PrimaryExpression;
-import tinycc.implementation.type.IntegerType;
 import tinycc.implementation.type.Type;
+import tinycc.implementation.type.BaseTypes.Int;
 import tinycc.parser.Token;
 
 public class Number extends PrimaryExpression {
@@ -20,7 +20,7 @@ public class Number extends PrimaryExpression {
 
     @Override
     public Type checkType(Diagnostic d, Scope s) {
-        return new IntegerType();
+        return new Int();
     }
 
     

@@ -36,7 +36,6 @@ public class ASTFactoryClass implements ASTFactory {
     public Statement createDeclarationStatement(Type type, Token name, Expression init) {
         // create variable declaration
         GlobalVariable variableDeclaration = new GlobalVariable(type, name, init);
-        declarations.add(variableDeclaration);
 
         // create statement and store declaration there
         return new Declaration(variableDeclaration, init);
@@ -109,8 +108,10 @@ public class ASTFactoryClass implements ASTFactory {
     public void createExternalDeclaration(Type type, Token name) {
 
         // it is a variable if it is of type scalar
-        if (type.isScalarType()) {
+        if (!type.isFunctionType()) {
             createDeclarationStatement(type, name, null);
+            GlobalVariable var = new GlobalVariable(type, name);
+            declarations.add(var);
         }
         else {
             FunctionDeclaration decl = new FunctionDeclaration(type, name);

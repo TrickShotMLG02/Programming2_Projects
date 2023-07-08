@@ -44,6 +44,19 @@ public class Declaration extends Statement{
                 }
             }
         }
+
+        
+        try {
+            // extract identifier name
+            String id = getExternalDeclaration().getToken().getText();
+
+            // create new declaration
+            Declaration decl = new Declaration(extDeclaration, init);
+
+            // add it to scope if it isn't already added
+            s.add(id, decl);
+        } catch (Exception e) {
+        }
     }
 
     public ExternalDeclaration getExternalDeclaration() {

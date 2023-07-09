@@ -5,7 +5,6 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.expression.BinaryExpression;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
-import tinycc.implementation.type.ScalarType;
 import tinycc.implementation.type.Type;
 import tinycc.parser.Token;
 
@@ -28,19 +27,29 @@ public class AssignExpression extends BinaryExpression {
             d.printError(getRight().getToken(), "Not a scalar type");
         }
 
-        if (getLeft().isLValue()) {
-            // check if integer type was assigned
-            if (typeRight.isIntegerType()) {
-                // return type of left expression, since we assign a value from right to var of left and thus the type of the left side is important
-                return typeLeft;
-            } else {
-                // no integer type was assigned, thus return scalar type
-                return new ScalarType();
-            }
+        // conditions from project description (page 6) assignments
+        boolean identical = typeLeft.equals(typeRight);
+        boolean intergerTypes = typeLeft.isIntegerType() && typeRight.isIntegerType();
+        boolean bothPointersMinOneVoid = (typeLeft.isPointerType() && typeRight.isPointerType()) && (typeLeft.isVoidPointer() || typeRight.isVoidPointer());
+        boolean leftPointerRightNullPointer = typeLeft.isPointerType() && typeRight.isNullPointer();
+
+        // left type must be lValue
+        if (!getLeft().isLValue()) {
+            d.printError(getToken(), "Left type not a L-Value");
         }
-        else {
-            d.printError(getLeft().getToken(), "Not L-Value");
-            return null;
+
+        // check if any condition is satisfied
+        if (!identical && !intergerTypes && !bothPointersMinOneVoid && !leftPointerRightNullPointer) {
+            d.printError(getToken(), "invalid assignment");
         }
+
+        // check if any condition is true -> return always left type
+        if (identical ||intergerTypes || bothPointersMinOneVoid || leftPointerRightNullPointer) {
+            return typeLeft;
+        }
+
+        // should not reach this code
+        d.printError(getToken(), "This should not be reached since it is covered from above statements");
+        return null;
     }
 }

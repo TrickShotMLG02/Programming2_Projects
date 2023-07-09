@@ -37,14 +37,14 @@ public class Declaration extends Statement{
             if (!initType.equals(extDeclType)) {
                 // print error, since init type and declaration type are not equal
                 d.printError(init.getToken(), "invalid init type");
-
-                if (extDeclaration.isGlobalVariable()) {
-                    GlobalVariable var = (GlobalVariable) extDeclaration;
-                    d.printError(var.getToken(), "invalid type");
-                }
             }
         }
 
+        // check if declaration is of type void which is not allowed
+        if (extDeclaration.isGlobalVariable() && extDeclType.isVoidType()) {
+            GlobalVariable var = (GlobalVariable) extDeclaration;
+            d.printError(var.getToken(), "declaration cannot be of type void");
+        }
         
         try {
             // extract identifier name

@@ -31,7 +31,7 @@ public class AssignExpression extends BinaryExpression {
         boolean identical = typeLeft.equals(typeRight);
         boolean intergerTypes = typeLeft.isIntegerType() && typeRight.isIntegerType();
         boolean bothPointersMinOneVoid = (typeLeft.isPointerType() && typeRight.isPointerType()) && (typeLeft.isVoidPointer() || typeRight.isVoidPointer());
-        boolean leftPointerRightNullPointer = typeLeft.isPointerType() && typeRight.isNullPointer();
+        boolean leftPointerRightNullPointer = typeLeft.isPointerType() && getRight().isNullPointer();
 
         // left type must be lValue
         if (!getLeft().isLValue()) {

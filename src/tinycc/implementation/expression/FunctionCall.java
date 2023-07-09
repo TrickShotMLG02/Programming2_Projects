@@ -61,7 +61,7 @@ public class FunctionCall extends Expression {
 
             // check if both types are different
             if (!argType.equals(calleeArg)) {
-                d.printError(arg.getToken(), "Invalid parameter type - expected: " + calleeArg + " but was " + argType);
+                d.printError(getToken(), "Invalid parameter type - expected: " + calleeArg + " but was " + argType);
             }
         }
 

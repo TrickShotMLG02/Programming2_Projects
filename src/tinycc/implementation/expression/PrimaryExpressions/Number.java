@@ -23,5 +23,8 @@ public class Number extends PrimaryExpression {
         return new Int();
     }
 
-    
+    @Override
+    public boolean isNullPointer() {
+        return getToken().getText().equals("0");
+    }
 }

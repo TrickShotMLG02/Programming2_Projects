@@ -27,4 +27,8 @@ public abstract class Expression {
 	public abstract Token getToken();
 
 	public abstract boolean isLValue();
+
+	public boolean isNullPointer() {
+		return false;
+	}
 }

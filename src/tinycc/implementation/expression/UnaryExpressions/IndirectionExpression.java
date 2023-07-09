@@ -29,7 +29,7 @@ public class IndirectionExpression extends UnaryExpression {
             return pType.getPointerType();
         }
         else {
-            d.printError(getExpression().getToken(), "Not a pointer or not compete type");
+            d.printError(getToken(), "Not a pointer or not compete type");
             return null;
         }
     }

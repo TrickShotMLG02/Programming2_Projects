@@ -52,7 +52,7 @@ public class SizeOfExpression extends UnaryExpression {
             d.printError(getToken(), "not a string literal");
             return null;
         } else {
-            d.printError(getExpression().getToken(), "will be null");
+            d.printError(getToken(), "Invalid type of expression");
             return null;
         }
     }

@@ -4,8 +4,17 @@ public class PointerType extends ScalarType {
 
     private Type pointsTo;
 
+    private boolean isVoidPointer = false;
+    private boolean isNullPointer = false;
+
     public PointerType(Type pointsTo) {
         this.pointsTo = pointsTo;
+
+        if (pointsTo.isVoidType()) {
+            isVoidPointer = true;
+        }
+
+        // TODO: check for nullpointer
     }
 
     /**
@@ -53,6 +62,16 @@ public class PointerType extends ScalarType {
     @Override
     public boolean isComplete() {
         return true;
+    }
+
+    @Override
+    public boolean isVoidPointer() {
+        return isVoidPointer;
+    }
+
+    @Override
+    public boolean isNullPointer() {
+        return isNullPointer;
     }
 
     @Override

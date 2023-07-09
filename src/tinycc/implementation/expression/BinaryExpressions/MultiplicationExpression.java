@@ -20,12 +20,8 @@ public class MultiplicationExpression extends BinaryExpression {
         Type typeLeft = getLeft().checkType(d, s);
         Type typeRight = getRight().checkType(d, s);
 
-        if (!typeLeft.isIntegerType()) {
-            d.printError(getLeft().getToken(), "");
-        }
-        
-        if (!typeRight.isIntegerType()) {
-            d.printError(getRight().getToken(), "");
+        if (!typeLeft.isIntegerType() && !typeRight.isIntegerType()) {
+            d.printError(getToken(), "invalid types");
         }
 
         return new Int();

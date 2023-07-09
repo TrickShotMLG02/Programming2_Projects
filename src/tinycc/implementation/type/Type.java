@@ -32,6 +32,14 @@ public abstract class Type {
 
 	public abstract boolean isComplete();
 
+	public boolean isVoidPointer() {
+		return false;
+	}
+
+	public boolean isNullPointer() {
+		return false;
+	}
+
 	@Override
 	public boolean equals(Object other) {
 		return other.getClass() == this.getClass();

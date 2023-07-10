@@ -6,7 +6,7 @@ public class Negation extends UnaryOperator{
 
     @Override
     public String toString() {
-        // TODO: Check if that is correct
+        // TODO: Bonus task 3b
         return "!";
     }
 }

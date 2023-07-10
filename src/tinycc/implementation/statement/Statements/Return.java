@@ -5,6 +5,7 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.statement.Statement;
+import tinycc.implementation.type.Type;
 
 public class Return extends Statement{
 
@@ -26,8 +27,26 @@ public class Return extends Statement{
     public void checkType(Diagnostic d, Scope s, ExternalDeclaration f) {
         
         // check type of expression if it exists
-        if (exp != null)
-            exp.checkType(d, s);
+        if (exp != null) {
+            // grab types for comparison
+            Type expType = exp.checkType(d, s);
+            Type funType = f.getType();
+
+            // check if types are not equal and type of exp is not compatible with function type
+            if (!expType.equals(funType) && !expType.isIntegerType() && !funType.isIntegerType()) {
+                d.printError(exp.getToken(), "invalid return type");
+            }
+
+        }
+        else {
+            // grab type of function
+            Type funType = f.getType();
+
+            // check if nothing is returned, even if function is not of type void
+            if (!funType.isVoidType()) {
+                d.printError(exp.getToken(), "There should be nothing to return");
+            }
+        }
     }
     
 }

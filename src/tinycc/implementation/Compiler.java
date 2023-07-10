@@ -8,6 +8,7 @@ import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.Function;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.FunctionDeclaration;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.GlobalVariable;
 import tinycc.implementation.statement.Statement;
+import tinycc.implementation.statement.Statements.Block;
 import tinycc.implementation.statement.Statements.Declaration;
 import tinycc.implementation.type.FunctionType;
 import tinycc.implementation.type.Type;
@@ -17,7 +18,9 @@ import tinycc.parser.Lexer;
 import tinycc.parser.Parser;
 import tinycc.parser.Token;
 import tinycc.logic.Formula;
+import tinycc.mipsasmgen.DataLabel;
 import tinycc.mipsasmgen.MipsAsmGen;
+import tinycc.mipsasmgen.TextLabel;
 
 /**
  * The main compiler class.
@@ -137,7 +140,7 @@ public class Compiler {
 				Statement functionBody = fun.getBody();
 
 				// checkType on function body in current function scope
-				functionBody.checkType(diagnostic, functionScope);
+				functionBody.checkType(diagnostic, functionScope, fun);
 			}
 			else if (decl.isFunctionDeclaration()) {
 				
@@ -156,7 +159,7 @@ public class Compiler {
 						Declaration scopeDec = s.lookup(fun.getToken().getText());
 
 						// check type of declaration
-						scopeDec.checkType(diagnostic, s);
+						scopeDec.checkType(diagnostic, s, fun);
 
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -173,13 +176,10 @@ public class Compiler {
 
 				try {
 					// check if variable was declared in scope
-					String t = var.getToken().getText();
 					Declaration scopeDec = s.lookup(var.getToken().getText());
 					
 					// check type of declaration
-					scopeDec.checkType(diagnostic, s);
-
-					// TODO: maybe check if type of declaration is equal to type from scope declaration
+					scopeDec.checkType(diagnostic, s, var);
 
 				} catch (IdUndeclared e) {
 					
@@ -193,7 +193,7 @@ public class Compiler {
 						Declaration scopeDec = s.lookup(var.getToken().getText());
 
 						// check type of declaration
-						scopeDec.checkType(diagnostic, s);
+						scopeDec.checkType(diagnostic, s, var);
 						
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -201,9 +201,6 @@ public class Compiler {
 				}
 			}
 		}
-		
-
-		//throw new UnsupportedOperationException("TODO: implement this");
 	}
 
 	/**
@@ -223,6 +220,53 @@ public class Compiler {
 	 *          class. Only necessary if mentioned in the project description.
 	 */
 	public void generateCode(final MipsAsmGen out) {
+		// grab all declarations (the current program)
+		List<ExternalDeclaration> delcarations = new ArrayList<>(astFactory.getExternalDeclarations());
+
+		// iterate over all declarations
+		for (ExternalDeclaration decl : delcarations) {
+			if (decl.isGlobalVariable()) {
+				// typecast declaration to global variable
+				GlobalVariable var = (GlobalVariable) decl;
+
+				// create datalabel
+				DataLabel dataLbl = out.makeDataLabel(var.getToken().getText());
+				out.emitWord(dataLbl, 0);
+			}
+			else if (decl.isFunctionDeclaration()) {
+				// typecast declaration to function declaration
+				FunctionDeclaration fun = (FunctionDeclaration) decl;
+
+				// create textlabel
+				TextLabel funLbl = out.makeTextLabel(fun.getToken().getText());
+				out.emitLabel(funLbl);
+			}
+			else if (decl.isFunction()) {
+				// typecast declaration to function
+				Function fun = (Function) decl;
+
+				// create textlabel
+				TextLabel funLbl = out.makeTextLabel(fun.getToken().getText());
+				out.emitLabel(funLbl);
+
+				// grab function body as Block, since all functions consist of a Block
+				Block body = (Block) fun.getBody();
+
+				// get list of statements (body)
+				List<Statement> bodyContents = body.getBody();
+
+				// iterate over all statements in function body
+				for (Statement stmnt : bodyContents) {
+
+					// generate code for current statement
+					// TODO: implement a scope for code generation, where registers are stored for respective variables
+					stmnt.generateCode(null, out);
+
+					// TODO: Bonus task
+				}
+			}
+		}
+
 		throw new UnsupportedOperationException("TODO: implement this");
 	}
 

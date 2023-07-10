@@ -90,7 +90,7 @@ public class ASTFactoryClass implements ASTFactory {
     @Override
     public Expression createConditionalExpression(Token token, Expression condition, Expression consequence,
             Expression alternative) {
-        // TODO Auto-generated method stub
+        // TODO: Bonus task
         throw new UnsupportedOperationException("Unimplemented method 'createConditionalExpression'");
     }
 

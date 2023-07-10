@@ -22,8 +22,15 @@ public class AddressExpression extends UnaryExpression {
 
         // check if type is complete
         if (applicableType.isComplete()) {
-            // thus return pointer of resulting type of expression
-            return new PointerType(applicableType);
+            // check if expression is LValue
+            if (getExpression().isLValue()) {
+                // thus return pointer of resulting type of expression
+                return new PointerType(applicableType);
+            }
+            else {
+                d.printError(getToken(), "Cannot take address of non LValue expression");
+                return null;
+            }
         }
         else {
             d.printError(getToken(), "Type not complete");

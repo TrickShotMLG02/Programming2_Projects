@@ -40,8 +40,8 @@ public class EqualsExpression extends BinaryExpression {
 
         // TODO: check void pointer and null pointer constant
 
-
-
-        return new Int();
+        // print error
+        d.printError(getToken(), "Invalid types");
+        return null;
     }
 }

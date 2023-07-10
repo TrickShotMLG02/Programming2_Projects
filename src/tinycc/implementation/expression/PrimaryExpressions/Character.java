@@ -5,6 +5,7 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.expression.PrimaryExpression;
 import tinycc.implementation.type.Type;
 import tinycc.implementation.type.BaseTypes.Char;
+import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.parser.Token;
 
 public class Character extends PrimaryExpression {
@@ -22,5 +23,8 @@ public class Character extends PrimaryExpression {
         return new Char();
     }
 
-    
+    @Override
+    public void generateCode(Scope s, MipsAsmGen gen) {
+        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+    }    
 }

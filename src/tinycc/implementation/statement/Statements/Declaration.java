@@ -7,6 +7,7 @@ import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.GlobalVaria
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.statement.Statement;
 import tinycc.implementation.type.Type;
+import tinycc.mipsasmgen.MipsAsmGen;
 
 public class Declaration extends Statement{
     ExternalDeclaration extDeclaration;
@@ -85,6 +86,11 @@ public class Declaration extends Statement{
         catch (Exception e) {
             // should have updated the existing value, since it throws an error that is was already declared previously
         }
+    }
+
+    @Override
+    public void generateCode(Scope s, MipsAsmGen gen) {
+        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
     }
 
     public ExternalDeclaration getExternalDeclaration() {

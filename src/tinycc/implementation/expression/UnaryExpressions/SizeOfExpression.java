@@ -9,6 +9,7 @@ import tinycc.implementation.type.PointerType;
 import tinycc.implementation.type.Type;
 import tinycc.implementation.type.BaseTypes.Char;
 import tinycc.implementation.type.BaseTypes.Int;
+import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.parser.Token;
 
 public class SizeOfExpression extends UnaryExpression {
@@ -55,5 +56,10 @@ public class SizeOfExpression extends UnaryExpression {
             d.printError(getToken(), "Invalid type of expression");
             return null;
         }
+    }
+
+    @Override
+    public void generateCode(Scope s, MipsAsmGen gen) {
+        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
     }
 }

@@ -3,6 +3,7 @@ package tinycc.implementation.expression;
 import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.Scope;
 import tinycc.implementation.type.Type;
+import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.parser.Token;
 
 public class UnaryExpression extends Expression {
@@ -33,6 +34,11 @@ public class UnaryExpression extends Expression {
     @Override
     public Type checkType(Diagnostic d, Scope s) {
         throw new UnsupportedOperationException("Unimplemented method 'checkType'");
+    }
+
+    @Override
+    public void generateCode(Scope s, MipsAsmGen gen) {
+        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
     }
 
     @Override

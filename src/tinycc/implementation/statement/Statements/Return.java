@@ -6,6 +6,7 @@ import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.statement.Statement;
 import tinycc.implementation.type.Type;
+import tinycc.mipsasmgen.MipsAsmGen;
 
 public class Return extends Statement{
 
@@ -49,4 +50,8 @@ public class Return extends Statement{
         }
     }
     
+    @Override
+    public void generateCode(Scope s, MipsAsmGen gen) {
+        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+    }
 }

@@ -5,6 +5,7 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.expression.PrimaryExpression;
 import tinycc.implementation.statement.Statements.Declaration;
 import tinycc.implementation.type.Type;
+import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.parser.Token;
 
 public class Identifier extends PrimaryExpression {
@@ -32,6 +33,11 @@ public class Identifier extends PrimaryExpression {
             d.printError(getToken(), "identifier not declared " + getToken().getText());
             return null;
         }
+    }
+
+    @Override
+    public void generateCode(Scope s, MipsAsmGen gen) {
+        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
     }
 
     @Override

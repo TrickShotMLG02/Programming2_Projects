@@ -3,6 +3,7 @@ package tinycc.implementation.statement;
 import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.Scope;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
+import tinycc.mipsasmgen.MipsAsmGen;
 
 /**
  * The main statement class (see project description)
@@ -22,4 +23,6 @@ public abstract class Statement {
 	public abstract String toString();
 
 	public abstract void checkType(Diagnostic d, Scope s, ExternalDeclaration f);
+
+	public abstract void generateCode(Scope s, MipsAsmGen gen);
 }

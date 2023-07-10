@@ -8,6 +8,7 @@ import tinycc.diagnostic.Locatable;
 import tinycc.implementation.Scope;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.statement.Statement;
+import tinycc.mipsasmgen.MipsAsmGen;
 
 public class Block extends Statement{
     
@@ -31,6 +32,11 @@ public class Block extends Statement{
         // in the statement list that constitutes the block's body
         for (Statement s : body)
             s.checkType(d, scope, f);
+    }
+
+    @Override
+    public void generateCode(Scope s, MipsAsmGen gen) {
+        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
     }
 
     public Locatable getLoc() {

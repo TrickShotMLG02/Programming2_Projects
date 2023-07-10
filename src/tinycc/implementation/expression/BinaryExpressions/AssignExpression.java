@@ -6,6 +6,7 @@ import tinycc.implementation.expression.BinaryExpression;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.type.Type;
+import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.parser.Token;
 
 public class AssignExpression extends BinaryExpression {
@@ -52,4 +53,9 @@ public class AssignExpression extends BinaryExpression {
         d.printError(getToken(), "This should not be reached since it is covered from above statements");
         return null;
     }
+
+    @Override
+    public void generateCode(Scope s, MipsAsmGen gen) {
+        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+    } 
 }

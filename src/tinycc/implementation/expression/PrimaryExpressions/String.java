@@ -6,6 +6,7 @@ import tinycc.implementation.expression.PrimaryExpression;
 import tinycc.implementation.type.PointerType;
 import tinycc.implementation.type.Type;
 import tinycc.implementation.type.BaseTypes.Char;
+import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.parser.Token;
 
 public class String extends PrimaryExpression {
@@ -22,5 +23,10 @@ public class String extends PrimaryExpression {
     @Override
     public Type checkType(Diagnostic d, Scope s) {
         return new PointerType(new Char());
+    }
+
+    @Override
+    public void generateCode(Scope s, MipsAsmGen gen) {
+        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
     }
 }

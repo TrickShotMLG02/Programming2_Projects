@@ -5,6 +5,7 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.expression.PrimaryExpression;
 import tinycc.implementation.type.Type;
 import tinycc.implementation.type.BaseTypes.Int;
+import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.parser.Token;
 
 public class Number extends PrimaryExpression {
@@ -26,5 +27,10 @@ public class Number extends PrimaryExpression {
     @Override
     public boolean isNullPointer() {
         return getToken().getText().equals("0");
+    }
+
+    @Override
+    public void generateCode(Scope s, MipsAsmGen gen) {
+        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
     }
 }

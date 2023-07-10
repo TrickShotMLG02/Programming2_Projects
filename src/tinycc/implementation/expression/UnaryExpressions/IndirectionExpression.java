@@ -7,6 +7,7 @@ import tinycc.implementation.expression.UnaryExpression;
 import tinycc.implementation.expression.UnaryOperator;
 import tinycc.implementation.type.PointerType;
 import tinycc.implementation.type.Type;
+import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.parser.Token;
 
 public class IndirectionExpression extends UnaryExpression {
@@ -40,9 +41,12 @@ public class IndirectionExpression extends UnaryExpression {
     }
 
     @Override
+    public void generateCode(Scope s, MipsAsmGen gen) {
+        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+    } 
+
+    @Override
     public boolean isLValue() {
         return true;
     }
-
-    
 }

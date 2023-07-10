@@ -8,6 +8,7 @@ import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.Scope;
 import tinycc.implementation.type.FunctionType;
 import tinycc.implementation.type.Type;
+import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.parser.Token;
 
 public class FunctionCall extends Expression {
@@ -66,6 +67,11 @@ public class FunctionCall extends Expression {
         }
 
         return calleeFunType.getReturnType();
+    }
+
+    @Override
+    public void generateCode(Scope s, MipsAsmGen gen) {
+        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
     }
 
     @Override

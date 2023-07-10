@@ -6,6 +6,7 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.statement.Statement;
+import tinycc.mipsasmgen.MipsAsmGen;
 
 public class ExpressionStatement extends Statement {
 
@@ -26,5 +27,9 @@ public class ExpressionStatement extends Statement {
     public void checkType(Diagnostic d, Scope s, ExternalDeclaration f) {
         expression.checkType(d, s);
     }
-    
+
+    @Override
+    public void generateCode(Scope s, MipsAsmGen gen) {
+        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+    }
 }

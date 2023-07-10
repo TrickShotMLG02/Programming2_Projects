@@ -26,7 +26,6 @@ public class BinaryExpression extends Expression {
 
     @Override
     public Type checkType(Diagnostic d, Scope s) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'checkType'");
     }
 

@@ -43,6 +43,7 @@ public class UnequalExpression extends BinaryExpression {
 
 
         // TODO: print error and return null
+        d.printError(getToken(), "Invalid types");
         return null;
     }
 }

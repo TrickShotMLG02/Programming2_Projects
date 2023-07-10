@@ -27,11 +27,11 @@ public class AndExpression extends BinaryExpression {
         Type typeRight = getRight().checkType(d, s);
 
         if (!typeLeft.isScalarType()) {
-            d.printError(getLeft().getToken(), "");
+            d.printError(getLeft().getToken(), "type left not a scalar type");
         }
         
         if (!typeRight.isScalarType()) {
-            d.printError(getRight().getToken(), "");
+            d.printError(getRight().getToken(), "type right not a scalar type");
         }
 
         return new Int();

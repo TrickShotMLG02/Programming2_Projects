@@ -22,13 +22,13 @@ public class AddExpression extends BinaryExpression {
         Type typeRight = getRight().checkType(d, s);
 
         if (!typeLeft.isIntegerType() && !typeLeft.isPointerType()) {
-            d.printError(getLeft().getToken(), "");
+            d.printError(getLeft().getToken(), "type left invalid");
         }
         if (!typeRight.isIntegerType() && !typeRight.isPointerType()) {
-            d.printError(getRight().getToken(), "");
+            d.printError(getRight().getToken(), "type right invalid");
         }
         if (typeLeft.isPointerType() && typeRight.isPointerType()) {
-            d.printError(getToken(), "");
+            d.printError(getToken(), "both of type pointer");
         }
         
         // check which rule applies

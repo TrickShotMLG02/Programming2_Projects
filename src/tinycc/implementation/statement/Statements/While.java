@@ -3,6 +3,7 @@ package tinycc.implementation.statement.Statements;
 import tinycc.diagnostic.Diagnostic;
 import tinycc.diagnostic.Locatable;
 import tinycc.implementation.Scope;
+import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.statement.Statement;
 
@@ -26,7 +27,7 @@ public class While extends Statement{
 
 
     @Override
-    public void checkType(Diagnostic d, Scope scope) {
+    public void checkType(Diagnostic d, Scope scope, ExternalDeclaration f) {
 
         // check that type of expression is integertype
         if (!condition.checkType(d, scope).isIntegerType()) {
@@ -34,7 +35,7 @@ public class While extends Statement{
             d.printError(loc, "invalid condition type");
         }
 
-        body.checkType(d, scope);
+        body.checkType(d, scope, f);
     }
     
 }

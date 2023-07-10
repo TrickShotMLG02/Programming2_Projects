@@ -6,6 +6,7 @@ import java.util.List;
 import tinycc.diagnostic.Diagnostic;
 import tinycc.diagnostic.Locatable;
 import tinycc.implementation.Scope;
+import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.statement.Statement;
 
 public class Block extends Statement{
@@ -24,12 +25,12 @@ public class Block extends Statement{
     }
 
     @Override
-    public void checkType(Diagnostic d, Scope parent) {
+    public void checkType(Diagnostic d, Scope parent, ExternalDeclaration f) {
         Scope scope = parent.newNestedScope();
         // local variables are added by declaration statements
         // in the statement list that constitutes the block's body
         for (Statement s : body)
-            s.checkType(d, scope);
+            s.checkType(d, scope, f);
     }
 
     public Locatable getLoc() {

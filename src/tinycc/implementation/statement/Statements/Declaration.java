@@ -24,7 +24,7 @@ public class Declaration extends Statement{
     }
 
     @Override
-    public void checkType(Diagnostic d, Scope s) {
+    public void checkType(Diagnostic d, Scope s, ExternalDeclaration f) {
         // check that expression type and type oof external declaration are equal
         Type initType = null;
         if (init != null) {

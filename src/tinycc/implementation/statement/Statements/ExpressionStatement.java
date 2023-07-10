@@ -3,6 +3,7 @@ package tinycc.implementation.statement.Statements;
 import tinycc.diagnostic.Diagnostic;
 import tinycc.diagnostic.Locatable;
 import tinycc.implementation.Scope;
+import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.statement.Statement;
 
@@ -22,7 +23,7 @@ public class ExpressionStatement extends Statement {
     }
 
     @Override
-    public void checkType(Diagnostic d, Scope s) {
+    public void checkType(Diagnostic d, Scope s, ExternalDeclaration f) {
         expression.checkType(d, s);
     }
     

@@ -3,6 +3,7 @@ package tinycc.implementation.statement.Statements;
 import tinycc.diagnostic.Diagnostic;
 import tinycc.diagnostic.Locatable;
 import tinycc.implementation.Scope;
+import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.statement.Statement;
 
@@ -29,7 +30,7 @@ public class If extends Statement{
     }
 
     @Override
-    public void checkType(Diagnostic d, Scope s) {
+    public void checkType(Diagnostic d, Scope s, ExternalDeclaration f) {
 
         // check that condition is integertype
         if (!condition.checkType(d, s).isIntegerType()) {
@@ -37,11 +38,11 @@ public class If extends Statement{
             d.printError(loc, "invalid condition");
         }
 
-        consequence.checkType(d, s);
+        consequence.checkType(d, s, f);
 
         // check if alternative exists
         if (alternative != null)
-            alternative.checkType(d, s);
+            alternative.checkType(d, s, f);
     }
     
 }

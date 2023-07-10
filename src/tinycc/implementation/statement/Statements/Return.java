@@ -2,6 +2,7 @@ package tinycc.implementation.statement.Statements;
 
 import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.Scope;
+import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.statement.Statement;
 
@@ -22,7 +23,7 @@ public class Return extends Statement{
     }
 
     @Override
-    public void checkType(Diagnostic d, Scope s) {
+    public void checkType(Diagnostic d, Scope s, ExternalDeclaration f) {
         
         // check type of expression if it exists
         if (exp != null)

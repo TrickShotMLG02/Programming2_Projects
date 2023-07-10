@@ -38,11 +38,17 @@ public class UnequalExpression extends BinaryExpression {
             return new Int();
         }
 
-        // TODO: check void pointer and null pointer constant
+        // check for one void pointer and a pointer
+        if (typeLeft.isVoidPointer() && typeRight.isPointerType() || typeLeft.isPointerType() && typeRight.isVoidPointer()) {
+            return new Int();
+        }
 
+        // check for one null pointer and a pointer
+        if (getLeft().isNullPointer() && typeRight.isPointerType() || typeLeft.isPointerType() && getRight().isNullPointer()) {
+            return new Int();
+        }
 
-
-        // TODO: print error and return null
+        // print error and return null
         d.printError(getToken(), "Invalid types");
         return null;
     }

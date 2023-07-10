@@ -10,8 +10,8 @@ import tinycc.implementation.statement.Statement;
 
 public class Block extends Statement{
     
-    Locatable loc;
-    List<Statement> body;
+    private Locatable loc;
+    private List<Statement> body;
 
     public Block(Locatable loc, List<Statement> statements) {
         this.loc = loc;
@@ -30,5 +30,13 @@ public class Block extends Statement{
         // in the statement list that constitutes the block's body
         for (Statement s : body)
             s.checkType(d, scope);
+    }
+
+    public Locatable getLoc() {
+        return loc;
+    }
+
+    public List<Statement> getBody() {
+        return body;
     }
 }

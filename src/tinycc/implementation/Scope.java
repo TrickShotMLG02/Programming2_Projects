@@ -44,6 +44,7 @@ public class Scope {
      */
     public void add(String id, Declaration d) throws IdAlreadyDeclared {
         if (table.containsKey(id)) {
+            // update already existing value
             table.put(id, d);
             throw new IdAlreadyDeclared(id);
         }

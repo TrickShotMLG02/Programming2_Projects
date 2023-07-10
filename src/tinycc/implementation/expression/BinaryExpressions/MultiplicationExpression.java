@@ -20,7 +20,7 @@ public class MultiplicationExpression extends BinaryExpression {
         Type typeLeft = getLeft().checkType(d, s);
         Type typeRight = getRight().checkType(d, s);
 
-        if (!typeLeft.isIntegerType() && !typeRight.isIntegerType()) {
+        if (!typeLeft.isIntegerType() || !typeRight.isIntegerType()) {
             d.printError(getToken(), "invalid types");
         }
 

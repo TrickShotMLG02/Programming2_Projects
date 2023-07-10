@@ -20,6 +20,11 @@ public class IndirectionExpression extends UnaryExpression {
         // grab the type of the expression
         Type applicableType = getExpression().checkType(d, s);
 
+        // check if it is a voidpointer
+        if (applicableType.isVoidPointer()) {
+            d.printError(getToken(), "Cannot dereference a void pointer");
+        }
+
         // check if the type is a pointer
         if (applicableType.isPointerType() && applicableType.isComplete()) {
             // extract the type to which the pointer points to

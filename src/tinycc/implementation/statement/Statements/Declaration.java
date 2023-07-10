@@ -38,6 +38,11 @@ public class Declaration extends Statement{
                 // print error, since init type and declaration type are not equal
                 d.printError(extDeclaration.getToken(), "invalid init type");
             }
+
+            // check if init type is a function type
+            if (initType.isFunctionType()) {
+                d.printError(init.getToken(), "Cannot initialize with function type");
+            }
         }
 
         // check if declaration is of type void which is not allowed
@@ -45,17 +50,40 @@ public class Declaration extends Statement{
             GlobalVariable var = (GlobalVariable) extDeclaration;
             d.printError(var.getToken(), "declaration cannot be of type void");
         }
-        
+
+
+        // create new declaration of current variable
+        Declaration decl = new Declaration(extDeclaration, init);
+
+        // extract identifier name
+        String id = getExternalDeclaration().getToken().getText();
+
+        // Declaration of variable in scope
+        Declaration scopeDecl = null;
+
         try {
-            // extract identifier name
-            String id = getExternalDeclaration().getToken().getText();
-
-            // create new declaration
-            Declaration decl = new Declaration(extDeclaration, init);
-
-            // add it to scope if it isn't already added
-            s.add(id, decl);
+            // check if it was already declared in any scope
+            // if so, store it in scopeDecl
+            scopeDecl = s.lookup(id);
         } catch (Exception e) {
+            // not previously defined
+        }
+
+        // check if it was already declared in a scope
+        if (scopeDecl != null) {
+
+            // check if previous declaration has different type as new declaration
+            if (scopeDecl.getExternalDeclaration().getType() != extDeclType) {
+                d.printError(extDeclaration.getToken(), "Previously declared with different type");
+            }
+        }
+
+        try {
+            // add new declaration to scope
+            s.add(id, decl);
+        }
+        catch (Exception e) {
+            // should have updated the existing value, since it throws an error that is was already declared previously
         }
     }
 

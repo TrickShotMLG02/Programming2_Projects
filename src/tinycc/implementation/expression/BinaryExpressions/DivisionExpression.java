@@ -10,6 +10,7 @@ import tinycc.implementation.type.Type;
 import tinycc.implementation.type.BaseTypes.Int;
 import tinycc.mipsasmgen.GPRegister;
 import tinycc.mipsasmgen.MipsAsmGen;
+import tinycc.mipsasmgen.SpecialInstruction;
 import tinycc.parser.Token;
 
 public class DivisionExpression extends BinaryExpression {
@@ -32,6 +33,20 @@ public class DivisionExpression extends BinaryExpression {
 
     @Override
     public GPRegister generateCode(CompilationScope s, MipsAsmGen gen) {
-        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+        // generate code of left expression and right expression
+        GPRegister left = getLeft().generateCode(s, gen);
+        GPRegister right = getRight().generateCode(s, gen);
+
+        // generate div instruction of left and right register
+        gen.emitInstruction(SpecialInstruction.DIV, left, right);
+
+        try {
+            // free right register
+            s.remove(right);
+        } catch (Exception e) {
+        }
+
+        // return register of left expr
+        return left;
     } 
 }

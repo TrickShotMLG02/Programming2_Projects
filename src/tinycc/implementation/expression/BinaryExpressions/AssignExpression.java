@@ -21,11 +21,11 @@ public class AssignExpression extends BinaryExpression {
         Type typeRight = getRight().checkType(d, s);
 
         if (!typeRight.isScalarType()) {
-            d.printError(getRight().getToken(), "Not a scalar type");
+            d.printError(getToken(), "Not a scalar type");
         }
 
         if (!typeLeft.isScalarType()) {
-            d.printError(getLeft().getToken(), "Not a scalar type");
+            d.printError(getToken(), "Not a scalar type");
         }
 
         // conditions from project description (page 6) assignments

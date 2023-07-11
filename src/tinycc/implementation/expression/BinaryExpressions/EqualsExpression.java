@@ -8,8 +8,11 @@ import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.type.Type;
 import tinycc.implementation.type.BaseTypes.Int;
+import tinycc.mipsasmgen.BranchInstruction;
 import tinycc.mipsasmgen.GPRegister;
+import tinycc.mipsasmgen.ImmediateInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
+import tinycc.mipsasmgen.TextLabel;
 import tinycc.parser.Token;
 
 public class EqualsExpression extends BinaryExpression {
@@ -58,6 +61,27 @@ public class EqualsExpression extends BinaryExpression {
 
     @Override
     public GPRegister generateCode(CompilationScope s, MipsAsmGen gen) {
-        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+        GPRegister leftReg = getLeft().generateCode(s, gen);
+        GPRegister rightReg = getRight().generateCode(s, gen);
+
+        // create labels for true
+        TextLabel lblTrue = gen.makeUniqueTextLabel();
+        gen.emitLabel(lblTrue);
+        gen.emitInstruction(ImmediateInstruction.ADDIU, leftReg, GPRegister.ZERO, 1);
+
+        // create label for false
+        TextLabel lblFalse = gen.makeUniqueTextLabel();
+        gen.emitLabel(lblFalse);
+        gen.emitInstruction(ImmediateInstruction.ADDIU, leftReg, GPRegister.ZERO, 0);
+
+        // check if left and right are equal
+        gen.emitInstruction(BranchInstruction.BEQ, leftReg, rightReg, lblTrue);
+
+        try {
+            s.remove(rightReg);
+        } catch (Exception e) {
+        }
+
+        return leftReg;
     } 
 }

@@ -7,6 +7,7 @@ import tinycc.implementation.expression.PrimaryExpression;
 import tinycc.implementation.type.Type;
 import tinycc.implementation.type.BaseTypes.Int;
 import tinycc.mipsasmgen.GPRegister;
+import tinycc.mipsasmgen.ImmediateInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.parser.Token;
 
@@ -33,6 +34,16 @@ public class Number extends PrimaryExpression {
 
     @Override
     public GPRegister generateCode(CompilationScope s, MipsAsmGen gen) {
-        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+        GPRegister tmp = s.getNextFreeTempRegister();
+
+        try {
+            s.add(tmp);
+
+            int num = Integer.parseInt(getToken().getText());
+            gen.emitInstruction(ImmediateInstruction.ADDIU, tmp, GPRegister.ZERO, num);
+        } catch (Exception e) {
+        }
+        
+        return tmp;
     }
 }

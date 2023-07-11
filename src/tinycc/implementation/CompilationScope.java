@@ -5,14 +5,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import tinycc.mipsasmgen.DataLabel;
 import tinycc.mipsasmgen.GPRegister;
 
 public class CompilationScope {
+    // lists of unused (available) registers for functions and temporaries
     private final List<GPRegister> unusedTempRegisters;
     private final List<GPRegister> unusedFunctionRegisters;
 
+    // storing global variables and their data labels
+    private final Map<String, DataLabel> dataLabels;
+
+    // storing local variables and their registers
     private final Map<String, GPRegister> table;
+
+    // parent scope
     private final CompilationScope parent;
+
+    // TODO: implement dataLabels
 
     // constructors
     /**
@@ -28,6 +38,7 @@ public class CompilationScope {
     private CompilationScope(CompilationScope parent) {
         this.parent = parent;
         this.table  = new HashMap<String, GPRegister>();
+        this.dataLabels = new HashMap<String, DataLabel>();
 
         unusedTempRegisters = populateUnusedTempRegisters();
         unusedFunctionRegisters = populateUnusedFunctionRegisters();

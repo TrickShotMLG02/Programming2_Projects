@@ -1,7 +1,10 @@
 package tinycc.implementation.TopLevelConstructs;
 
+import tinycc.implementation.CompilationScope;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.type.Type;
+import tinycc.mipsasmgen.GPRegister;
+import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.parser.Token;
 
 public abstract class ExternalDeclaration {
@@ -15,6 +18,8 @@ public abstract class ExternalDeclaration {
         this.name = name;
         this.init = init;
     }
+
+    public abstract GPRegister generateCode(CompilationScope s, MipsAsmGen gen);
 
     @Override
     public String toString() {

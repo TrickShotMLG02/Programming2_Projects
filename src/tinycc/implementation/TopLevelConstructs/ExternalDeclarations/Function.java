@@ -2,9 +2,12 @@ package tinycc.implementation.TopLevelConstructs.ExternalDeclarations;
 
 import java.util.List;
 
+import tinycc.implementation.CompilationScope;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.statement.Statement;
 import tinycc.implementation.type.Type;
+import tinycc.mipsasmgen.GPRegister;
+import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.parser.Token;
 
 public class Function extends ExternalDeclaration {
@@ -15,6 +18,11 @@ public class Function extends ExternalDeclaration {
         super(type, name, null);
         this.parameterNames = parameterNames;
         this.body = body;
+    }
+
+    @Override
+    public GPRegister generateCode(CompilationScope s, MipsAsmGen gen) {
+        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
     }
 
     @Override

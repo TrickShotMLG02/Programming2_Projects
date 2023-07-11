@@ -8,6 +8,7 @@ import tinycc.implementation.expression.Expression;
 import tinycc.implementation.statement.Statement;
 import tinycc.implementation.type.Type;
 import tinycc.mipsasmgen.GPRegister;
+import tinycc.mipsasmgen.ImmediateInstruction;
 import tinycc.mipsasmgen.JumpRegisterInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
 
@@ -56,16 +57,18 @@ public class Return extends Statement{
     @Override
     public void generateCode(CompilationScope s, MipsAsmGen gen) {
 
+        // TODO: maybe add register as used or so
+
         // check if there is a return value
         if (exp != null) {
-            // load return value into v0
-            // for that take into account, that return value could be an expression
-            // which needs to be assigned to a variable first
+            // grab register of expression code generation
+            GPRegister resReg = exp.generateCode(s, gen);
+
+            // copy value from old register to new one
+            gen.emitInstruction(ImmediateInstruction.ADDIU, GPRegister.V0, resReg, 0);
         }
 
         // jump to return address
         gen.emitInstruction(JumpRegisterInstruction.JR , GPRegister.RA);
-
-        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
     }
 }

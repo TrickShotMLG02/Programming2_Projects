@@ -273,7 +273,7 @@ public class Compiler {
 			}
 		}
 
-		throw new UnsupportedOperationException("TODO: implement this");
+		//throw new UnsupportedOperationException("TODO: implement this");
 	}
 
 	/**

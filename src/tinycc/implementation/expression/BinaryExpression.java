@@ -4,6 +4,7 @@ import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.CompilationScope;
 import tinycc.implementation.Scope;
 import tinycc.implementation.type.Type;
+import tinycc.mipsasmgen.GPRegister;
 import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.parser.Token;
 
@@ -32,7 +33,7 @@ public class BinaryExpression extends Expression {
     }
 
     @Override
-    public void generateCode(CompilationScope s, MipsAsmGen gen) {
+    public GPRegister generateCode(CompilationScope s, MipsAsmGen gen) {
         throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
     }
 

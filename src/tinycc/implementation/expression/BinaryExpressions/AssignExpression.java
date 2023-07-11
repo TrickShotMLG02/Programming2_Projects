@@ -7,7 +7,9 @@ import tinycc.implementation.expression.BinaryExpression;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.type.Type;
+import tinycc.mipsasmgen.GPRegister;
 import tinycc.mipsasmgen.MipsAsmGen;
+import tinycc.mipsasmgen.RegisterInstruction;
 import tinycc.parser.Token;
 
 public class AssignExpression extends BinaryExpression {
@@ -56,7 +58,19 @@ public class AssignExpression extends BinaryExpression {
     }
 
     @Override
-    public void generateCode(CompilationScope s, MipsAsmGen gen) {
+    public GPRegister generateCode(CompilationScope s, MipsAsmGen gen) {
+        // grab left expression and add/load to/from scope
+        //GPRegister left = getLeft().generateCode(s, gen);
+
+        // generate code of right expression
+        GPRegister right = getRight().generateCode(s, gen);
+
+        // generate sw instruction of right register into left register
+        
+
+        // return register of left expr
+        //return left;
+
         throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
     } 
 }

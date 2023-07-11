@@ -10,6 +10,7 @@ import tinycc.implementation.type.PointerType;
 import tinycc.implementation.type.Type;
 import tinycc.implementation.type.BaseTypes.Char;
 import tinycc.implementation.type.BaseTypes.Int;
+import tinycc.mipsasmgen.GPRegister;
 import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.parser.Token;
 
@@ -60,7 +61,7 @@ public class SizeOfExpression extends UnaryExpression {
     }
 
     @Override
-    public void generateCode(CompilationScope s, MipsAsmGen gen) {
+    public GPRegister generateCode(CompilationScope s, MipsAsmGen gen) {
         throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
     }
 }

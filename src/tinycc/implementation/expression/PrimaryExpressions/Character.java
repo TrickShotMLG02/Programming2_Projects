@@ -6,6 +6,7 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.expression.PrimaryExpression;
 import tinycc.implementation.type.Type;
 import tinycc.implementation.type.BaseTypes.Char;
+import tinycc.mipsasmgen.GPRegister;
 import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.parser.Token;
 
@@ -25,7 +26,7 @@ public class Character extends PrimaryExpression {
     }
 
     @Override
-    public void generateCode(CompilationScope s, MipsAsmGen gen) {
+    public GPRegister generateCode(CompilationScope s, MipsAsmGen gen) {
         throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
     }    
 }

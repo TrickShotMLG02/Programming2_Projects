@@ -19,6 +19,7 @@ import tinycc.parser.Parser;
 import tinycc.parser.Token;
 import tinycc.logic.Formula;
 import tinycc.mipsasmgen.DataLabel;
+import tinycc.mipsasmgen.GPRegister;
 import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.mipsasmgen.TextLabel;
 
@@ -223,6 +224,8 @@ public class Compiler {
 		// grab all declarations (the current program)
 		List<ExternalDeclaration> delcarations = new ArrayList<>(astFactory.getExternalDeclarations());
 
+		CompilationScope scope = new CompilationScope();
+
 		// iterate over all declarations
 		for (ExternalDeclaration decl : delcarations) {
 			if (decl.isGlobalVariable()) {
@@ -242,6 +245,10 @@ public class Compiler {
 				out.emitLabel(funLbl);
 			}
 			else if (decl.isFunction()) {
+
+				// create new scope for function
+				CompilationScope funScope = scope.newNestedScope();
+
 				// typecast declaration to function
 				Function fun = (Function) decl;
 
@@ -259,8 +266,7 @@ public class Compiler {
 				for (Statement stmnt : bodyContents) {
 
 					// generate code for current statement
-					// TODO: implement a scope for code generation, where registers are stored for respective variables
-					stmnt.generateCode(null, out);
+					stmnt.generateCode(funScope, out);
 
 					// TODO: Bonus task
 				}

@@ -4,6 +4,7 @@ import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.CompilationScope;
 import tinycc.implementation.Scope;
 import tinycc.implementation.type.Type;
+import tinycc.mipsasmgen.GPRegister;
 import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.parser.Token;
 
@@ -26,7 +27,7 @@ public abstract class Expression {
 
 	public abstract Type checkType(Diagnostic d, Scope s);
 
-	public abstract void generateCode(CompilationScope s, MipsAsmGen gen);
+	public abstract GPRegister generateCode(CompilationScope s, MipsAsmGen gen);
 
 	public abstract Token getToken();
 

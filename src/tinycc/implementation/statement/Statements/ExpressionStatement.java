@@ -31,6 +31,6 @@ public class ExpressionStatement extends Statement {
 
     @Override
     public void generateCode(CompilationScope s, MipsAsmGen gen) {
-        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+        expression.generateCode(s, gen);
     }
 }

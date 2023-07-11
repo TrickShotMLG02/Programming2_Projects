@@ -36,8 +36,13 @@ public class Block extends Statement{
     }
 
     @Override
-    public void generateCode(CompilationScope s, MipsAsmGen gen) {
-        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+    public void generateCode(CompilationScope parent, MipsAsmGen gen) {
+        // create new scope since block opens new scope
+        CompilationScope scope = parent.newNestedScope();
+
+        // generate code for everything in body with respect to new scope
+        for (Statement s : body)
+            s.generateCode(scope, gen);
     }
 
     public Locatable getLoc() {

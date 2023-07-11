@@ -2,6 +2,7 @@ package tinycc.implementation.statement.Statements;
 
 import tinycc.diagnostic.Diagnostic;
 import tinycc.diagnostic.Locatable;
+import tinycc.implementation.CompilationScope;
 import tinycc.implementation.Scope;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.expression.Expression;
@@ -41,7 +42,7 @@ public class While extends Statement{
 
 
     @Override
-    public void generateCode(Scope s, MipsAsmGen gen) {
+    public void generateCode(CompilationScope s, MipsAsmGen gen) {
         throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
     }
 }

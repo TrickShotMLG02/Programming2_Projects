@@ -1,6 +1,7 @@
 package tinycc.implementation.expression.PrimaryExpressions;
 
 import tinycc.diagnostic.Diagnostic;
+import tinycc.implementation.CompilationScope;
 import tinycc.implementation.Scope;
 import tinycc.implementation.expression.PrimaryExpression;
 import tinycc.implementation.type.Type;
@@ -30,7 +31,7 @@ public class Number extends PrimaryExpression {
     }
 
     @Override
-    public void generateCode(Scope s, MipsAsmGen gen) {
+    public void generateCode(CompilationScope s, MipsAsmGen gen) {
         throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
     }
 }

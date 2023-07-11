@@ -1,6 +1,7 @@
 package tinycc.implementation.statement;
 
 import tinycc.diagnostic.Diagnostic;
+import tinycc.implementation.CompilationScope;
 import tinycc.implementation.Scope;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.mipsasmgen.MipsAsmGen;
@@ -24,5 +25,5 @@ public abstract class Statement {
 
 	public abstract void checkType(Diagnostic d, Scope s, ExternalDeclaration f);
 
-	public abstract void generateCode(Scope s, MipsAsmGen gen);
+	public abstract void generateCode(CompilationScope s, MipsAsmGen gen);
 }

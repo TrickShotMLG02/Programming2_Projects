@@ -4,8 +4,11 @@ import tinycc.implementation.CompilationScope;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.type.Type;
+import tinycc.mipsasmgen.DataLabel;
 import tinycc.mipsasmgen.GPRegister;
+import tinycc.mipsasmgen.MemoryInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
+import tinycc.mipsasmgen.TextLabel;
 import tinycc.parser.Token;
 
 public class GlobalVariable extends ExternalDeclaration {
@@ -20,7 +23,28 @@ public class GlobalVariable extends ExternalDeclaration {
     
     @Override
     public GPRegister generateCode(CompilationScope s, MipsAsmGen gen) {
-        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+        
+        // TODO: Store the data label somewhere in the scope, since i have no register for it
+
+        // create label with name of variable and default value 0
+        DataLabel lbl = gen.makeDataLabel(getToken().getText());
+        gen.emitWord(lbl, 0);
+
+        // check if init expression exists
+        if (getInitExpression() != null) {
+            // create label for code of init expression
+            TextLabel initLbl = gen.makeUniqueTextLabel();
+            gen.emitLabel(initLbl);
+
+            // grab register containing init expression
+            GPRegister initReg = getInitExpression().generateCode(s, gen);
+
+            // store value as word to variable
+            gen.emitInstruction(MemoryInstruction.SW, initReg, lbl, 0, null);
+        }
+
+        // TODO: check return value
+        return null;
     }
 
     @Override

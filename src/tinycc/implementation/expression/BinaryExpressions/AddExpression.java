@@ -75,6 +75,12 @@ public class AddExpression extends BinaryExpression {
         // generate add instruction of left and right register
         gen.emitInstruction(RegisterInstruction.ADD, left, left, right);
 
+        try {
+            // free right register
+            s.remove(right);
+        } catch (Exception e) {
+        }
+
         // return register of left expr
         return left;
     } 

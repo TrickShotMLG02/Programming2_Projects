@@ -50,6 +50,12 @@ public class AndExpression extends BinaryExpression {
         // generate and instruction of left and right register
         gen.emitInstruction(RegisterInstruction.AND, left, left, right);
 
+        try {
+            // free right register
+            s.remove(right);
+        } catch (Exception e) {
+        }
+
         // return register of left expr
         return left;
     } 

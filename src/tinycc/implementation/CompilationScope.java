@@ -142,4 +142,8 @@ public class CompilationScope {
             super("Identifier " + id +  " not yet declared");
         }
     }
+
+    public CompilationScope getParent() {
+        return parent;
+    }
 }

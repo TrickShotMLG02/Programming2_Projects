@@ -10,7 +10,9 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.type.FunctionType;
 import tinycc.implementation.type.Type;
 import tinycc.mipsasmgen.GPRegister;
+import tinycc.mipsasmgen.JumpInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
+import tinycc.mipsasmgen.TextLabel;
 import tinycc.parser.Token;
 
 public class FunctionCall extends Expression {
@@ -73,7 +75,36 @@ public class FunctionCall extends Expression {
 
     @Override
     public GPRegister generateCode(CompilationScope s, MipsAsmGen gen) {
-        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+
+        // callee is of type identifier
+        String funName = callee.getToken().getText();
+        TextLabel funLabel = s.lookupFunctionLabel(funName);
+
+        // check that function exists
+        if (funLabel == null) {
+            throw new IllegalArgumentException("Function " + funName + " not defined");
+        }
+
+        // save all caller save registers and return address
+        s.saveCallerSaveRegisters();
+
+        // create new scope since every function call saves new caller registers
+        CompilationScope funCallScope = s.newNestedScope();
+
+        // assign parameters of function call to a0...a3 registers
+        for (Expression param : arguments) {
+            // TODO: EXTRACT PARAM NAME FROM SOMEWHERE
+            String paramName = "";
+            GPRegister paramReg = funCallScope.getNextFreeFunctionRegister(paramName);
+        }
+
+        // call function assembly code
+        gen.emitInstruction(JumpInstruction.JAL, funLabel);
+
+        // restore caller save registers
+        s.restoreCallerSaveRegisters();
+
+        throw new UnsupportedOperationException(callee.toString());
     }
 
     @Override

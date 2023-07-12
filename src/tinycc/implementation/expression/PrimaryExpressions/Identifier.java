@@ -45,13 +45,11 @@ public class Identifier extends PrimaryExpression {
         // name of identifier is name of variable (DataLabel)
         java.lang.String id = getToken().getText();
         Integer offset = s.lookupLocalDeclaration(id);
+        DataLabel globalVar = s.lookupDataLabel(id);
         GPRegister reg = s.lookupRegister(id);
-
-        DataLabel globalVar = null;
 
         if (offset == null) {
             // check if it is a global declaration
-            globalVar = s.lookupDataLabel(id);
             if (globalVar == null) {
                 if (reg == null) {
                     throw new IllegalArgumentException("identifier " + getToken().getText() + " not found");

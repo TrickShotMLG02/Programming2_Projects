@@ -121,10 +121,16 @@ public class CompilationScope {
 
     // functions to lookup stuff
     public GPRegister lookupRegister(String id) {
-        return table.get(id);
+        if (table.containsKey(id))
+            return table.get(id);
+        else
+            return parent.lookupRegister(id);
     }
     public DataLabel lookupDataLabel(String name) {
-        return dataLabels.get(name);
+        if (dataLabels.containsKey(name))
+            return dataLabels.get(name);
+        else
+            return parent.lookupDataLabel(name);
     }
 
     // functions for poulating lists

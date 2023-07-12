@@ -11,6 +11,7 @@ import tinycc.implementation.type.BaseTypes.Int;
 import tinycc.mipsasmgen.BranchInstruction;
 import tinycc.mipsasmgen.GPRegister;
 import tinycc.mipsasmgen.ImmediateInstruction;
+import tinycc.mipsasmgen.JumpInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.mipsasmgen.TextLabel;
 import tinycc.parser.Token;
@@ -64,24 +65,37 @@ public class UnequalExpression extends BinaryExpression {
         GPRegister leftReg = getLeft().generateCode(s, gen);
         GPRegister rightReg = getRight().generateCode(s, gen);
 
-        // create labels for true
-        TextLabel lblTrue = gen.makeUniqueTextLabel();
-        gen.emitLabel(lblTrue);
-        gen.emitInstruction(ImmediateInstruction.ADDIU, leftReg, GPRegister.ZERO, 1);
+        TextLabel lblTrue = gen.makeUniqueTextLabel("EXPRESSION_TRUE");
+        TextLabel lblFalse = gen.makeUniqueTextLabel("EXPRESSION_FALSE");
 
-        // create label for false
-        TextLabel lblFalse = gen.makeUniqueTextLabel();
-        gen.emitLabel(lblFalse);
-        gen.emitInstruction(ImmediateInstruction.ADDIU, leftReg, GPRegister.ZERO, 0);
+        TextLabel exprExit = gen.makeUniqueTextLabel("EXPRESSION_EXIT");
 
         // check if left and right are equal
-        gen.emitInstruction(BranchInstruction.BEQ, leftReg, rightReg, lblTrue);
+        gen.emitInstruction(BranchInstruction.BNE, leftReg, rightReg, lblTrue);
+        gen.emitInstruction(JumpInstruction.J, lblFalse);
+
+        GPRegister compResult = s.getNextFreeTempRegister();        
+
+        // create labels for true
+        gen.emitLabel(lblTrue);
+        gen.emitInstruction(ImmediateInstruction.ADDIU, compResult, GPRegister.ZERO, 1);
+        gen.emitInstruction(JumpInstruction.J, exprExit);
+
+        // create label for false
+        gen.emitLabel(lblFalse);
+        gen.emitInstruction(ImmediateInstruction.ADDIU, compResult, GPRegister.ZERO, 0);
+        gen.emitInstruction(JumpInstruction.J, exprExit);
+
+        gen.emitLabel(exprExit);
 
         try {
+            s.remove(leftReg);
             s.remove(rightReg);
         } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
 
-        return leftReg;
+        return compResult;
     } 
 }

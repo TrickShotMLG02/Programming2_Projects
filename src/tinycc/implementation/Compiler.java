@@ -261,6 +261,12 @@ public class Compiler {
 				// create textlabel
 				TextLabel funLbl = out.makeTextLabel(fun.getToken().getText());
 				out.emitLabel(funLbl);
+				try {
+					scope.addFunctionLabel(funLbl);
+				} catch (tinycc.implementation.CompilationScope.IdAlreadyDeclared e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 				// TODO: assign function parameters
 				for (Token param : fun.getParameterNames()) {

@@ -8,6 +8,9 @@ import tinycc.implementation.TopLevelConstructs.ExternalDeclarations.GlobalVaria
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.statement.Statement;
 import tinycc.implementation.type.Type;
+import tinycc.mipsasmgen.GPRegister;
+import tinycc.mipsasmgen.ImmediateInstruction;
+import tinycc.mipsasmgen.MemoryInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
 
 public class Declaration extends Statement{
@@ -91,7 +94,45 @@ public class Declaration extends Statement{
 
     @Override
     public void generateCode(CompilationScope s, MipsAsmGen gen) {
-        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+        // check if it is a variable -> it is a local declaration
+        //since it is stored inside a declaration
+        if (getExternalDeclaration().isGlobalVariable()) {
+            GlobalVariable var = (GlobalVariable) getExternalDeclaration();
+            String declarationName = var.getToken().getText();
+
+            try {
+                s.addLocalDeclaration(declarationName);
+                int offset = s.lookupLocalDeclaration(declarationName);
+
+                GPRegister val;
+                // check if init expression exists
+                if (var.getInitExpression() != null) {
+                    // generate code of the init expression and store its register
+                    val = var.getInitExpression().generateCode(s, gen);
+                }
+                else {
+                    // get new register to store result in
+                    val = s.getNextFreeTempRegister();
+
+                    // load immediate 0 into register val
+                    gen.emitInstruction(ImmediateInstruction.ADDI, val, GPRegister.ZERO, 0);
+                }
+                
+                // generate instruction with stack
+                gen.emitInstruction(MemoryInstruction.SW, val, null, offset, GPRegister.SP);
+                
+                // free val register again
+                s.remove(val);
+
+            } catch (Exception e) {
+            }
+        }
+        else if (getExternalDeclaration().isFunctionDeclaration()) {
+            throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+        }
+        else if (getExternalDeclaration().isFunction()) {
+            throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+        }
     }
 
     public ExternalDeclaration getExternalDeclaration() {

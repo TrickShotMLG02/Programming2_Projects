@@ -235,6 +235,12 @@ public class Compiler {
 				// create datalabel
 				DataLabel dataLbl = out.makeDataLabel(var.getToken().getText());
 				out.emitWord(dataLbl, 0);
+
+				try {
+					scope.addDataLabel(dataLbl);
+				} catch (tinycc.implementation.CompilationScope.IdAlreadyDeclared e) {
+					e.printStackTrace();
+				}
 			}
 			else if (decl.isFunctionDeclaration()) {
 				// typecast declaration to function declaration

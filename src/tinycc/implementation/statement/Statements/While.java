@@ -43,6 +43,12 @@ public class While extends Statement{
 
     @Override
     public void generateCode(CompilationScope s, MipsAsmGen gen) {
+
+        // create loop label
+        // create branch instruction to exit label, if condition false
+        // generate code for body
+        // add jump instruction to loop label
+        // add exit label for loop
         throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
     }
 }

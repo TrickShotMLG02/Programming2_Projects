@@ -73,6 +73,14 @@ public class CompilationScope {
     public void add(GPRegister reg) throws IdAlreadyDeclared {
         add(reg.name(), reg);
     }
+    public void add(DataLabel lbl) throws IdAlreadyDeclared {
+        if (!dataLabels.containsValue(lbl)) {
+            dataLabels.put(lbl.toString(), lbl);
+        }
+        else {
+            throw new IdAlreadyDeclared("data label already declared");
+        }
+    }
 
     // function to remove register from table
     public void remove(String id) throws IdUndeclared {
@@ -94,6 +102,14 @@ public class CompilationScope {
             throw new IdUndeclared("Register not in use");
         }
     }
+    public void remove(DataLabel lbl) throws IdUndeclared {
+        if (!dataLabels.containsValue(lbl)) {
+            dataLabels.remove(lbl.toString());
+        }
+        else {
+            throw new IdUndeclared("data label not declared yet");
+        }
+    }
 
     // function to get next free register
     public GPRegister getNextFreeTempRegister() {
@@ -101,6 +117,14 @@ public class CompilationScope {
     }
     public GPRegister getNextFreeFunctionRegister() {
         return unusedFunctionRegisters.get(0);
+    }
+
+    // functions to lookup stuff
+    public GPRegister lookupRegister(String id) {
+        return table.get(id);
+    }
+    public DataLabel lookupDataLabel(String name) {
+        return dataLabels.get(name);
     }
 
     // functions for poulating lists

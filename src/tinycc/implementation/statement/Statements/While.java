@@ -49,19 +49,23 @@ public class While extends Statement{
     public void generateCode(CompilationScope s, MipsAsmGen gen) {
 
         // create loop header label
-        TextLabel loopLabel = gen.makeUniqueTextLabel();
+        TextLabel loopLabel = gen.makeUniqueTextLabel("WHILE_LOOP_START");
         gen.emitLabel(loopLabel);
 
         // create loop exit label
-        TextLabel exitLabel = gen.makeUniqueTextLabel();
+        TextLabel exitLabel = gen.makeUniqueTextLabel("WHILE_LOOP_EXIT");
 
         // generate code for condition and save register
+        TextLabel loopConditionPrepLabel = gen.makeUniqueTextLabel("WHILE_LOOP_CONDITION_PREP");
+        gen.emitLabel(loopConditionPrepLabel);
         GPRegister conditionReg = condition.generateCode(s, gen);
 
         // create branch instruction to exit label, if condition false
         gen.emitInstruction(BranchInstruction.BEQ, conditionReg, GPRegister.ZERO, exitLabel);
 
         // generate code for body
+        TextLabel loopBody = gen.makeUniqueTextLabel("WHILE_LOOP_BODY");
+        gen.emitLabel(loopBody);
         body.generateCode(s, gen);
 
         // add jump instruction to loop header label

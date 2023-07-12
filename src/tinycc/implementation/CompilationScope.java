@@ -7,6 +7,7 @@ import java.util.Map;
 
 import tinycc.mipsasmgen.DataLabel;
 import tinycc.mipsasmgen.GPRegister;
+import tinycc.mipsasmgen.TextLabel;
 
 public class CompilationScope {
     // lists of unused (available) registers for functions and temporaries
@@ -15,6 +16,9 @@ public class CompilationScope {
 
     // storing global variables and their data labels
     private final Map<String, DataLabel> dataLabels;
+
+    //storing function names and their labels
+    private final Map<String, TextLabel> functionLabels;
 
     // storing offsets of local declarations for stack
     private final Map<String, Integer> localDeclarationOffsets;
@@ -42,6 +46,7 @@ public class CompilationScope {
         this.table  = new HashMap<String, GPRegister>();
         this.dataLabels = new HashMap<String, DataLabel>();
         this.localDeclarationOffsets = new HashMap<String, Integer>();
+        this.functionLabels = new HashMap<String, TextLabel>();
 
         if (parent != null)
             this.currentStackOffset = parent.currentStackOffset;
@@ -87,6 +92,14 @@ public class CompilationScope {
         }
         else {
             throw new IdAlreadyDeclared("data label already declared");
+        }
+    }
+    public void addFunctionLabel(TextLabel lbl) throws IdAlreadyDeclared {
+        if (!functionLabels.containsValue(lbl)) {
+            functionLabels.put(lbl.toString(), lbl);
+        }
+        else {
+            throw new IdAlreadyDeclared("function label already declared");
         }
     }
     public void addLocalDeclaration(String declarationName) throws IdAlreadyDeclared{
@@ -175,13 +188,19 @@ public class CompilationScope {
         else
             return parent != null ? parent.lookupDataLabel(name) : null;
     }
+    public TextLabel lookupFunctionLabel(String name) {
+        if (functionLabels.containsKey(name))
+            return functionLabels.get(name);
+        else
+            return parent != null ? parent.lookupFunctionLabel(name) : null;
+    }
     public Integer lookupLocalDeclaration(String declarationName) {
         if (localDeclarationOffsets.containsKey(declarationName))
             return localDeclarationOffsets.get(declarationName);
         else
             return parent != null ? parent.lookupLocalDeclaration(declarationName) : null;
     }
-    
+
     // functions for poulating lists
     private List<GPRegister> populateUnusedTempRegisters() {
         List<GPRegister> regs = new ArrayList<GPRegister>();

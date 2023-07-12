@@ -7,6 +7,7 @@ import tinycc.implementation.expression.PrimaryExpression;
 import tinycc.implementation.statement.Statements.Declaration;
 import tinycc.implementation.type.Type;
 import tinycc.mipsasmgen.GPRegister;
+import tinycc.mipsasmgen.MemoryInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.parser.Token;
 
@@ -39,7 +40,21 @@ public class Identifier extends PrimaryExpression {
 
     @Override
     public GPRegister generateCode(CompilationScope s, MipsAsmGen gen) {
-        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+
+        // name of identifier is name of variable (DataLabel)
+        java.lang.String id = getToken().getText();
+        Integer offset = s.lookupLocalDeclaration(id);
+
+        // check if identifier was found in scope
+        if (offset == null) {
+            throw new IllegalArgumentException("identifier " + id + " not defined");
+        }
+
+        // grab next free register and reserve it
+        GPRegister varReg = s.getNextFreeTempRegister();
+        // generate instruction and return register
+        gen.emitInstruction(MemoryInstruction.LW, varReg, null, offset, GPRegister.SP);
+        return varReg;
     }
 
     @Override

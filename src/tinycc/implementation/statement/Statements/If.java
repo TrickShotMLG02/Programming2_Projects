@@ -54,28 +54,6 @@ public class If extends Statement{
     @Override
     public void generateCode(CompilationScope s, MipsAsmGen gen) {
 
-        // BranchInstruction instruction = null;
-        // GPRegister conditionReg = condition.generateCode(s, gen);
-        // // get type of condition
-        // if (condition instanceof EqualsExpression)
-        //     instruction = BranchInstruction.BEQ;
-        // else if (condition instanceof UnequalExpression)
-        //     instruction = BranchInstruction.BNE;
-        // else if (condition instanceof GreaterExpression)
-        //     instruction = null;
-        // else if (condition instanceof GreaterEqualExpression)
-        //     instruction = null;
-        // else if (condition instanceof LessExpression)
-        //     instruction = null;
-        // else if (condition instanceof LessEqualExpression)
-        //     instruction = null;
-        // else if (condition instanceof OrExpression) {
-        //     // convert reg1 or reg2 into a branch expression
-        // }
-        // else if (condition instanceof AndExpression) {
-        //     // convert reg1 and reg2 into a branch expression
-        // }
-
         // generate code for condition and save the register
         GPRegister conditionReg = condition.generateCode(s, gen);
 

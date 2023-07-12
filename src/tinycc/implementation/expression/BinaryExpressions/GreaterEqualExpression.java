@@ -10,6 +10,7 @@ import tinycc.implementation.type.Type;
 import tinycc.implementation.type.BaseTypes.Int;
 import tinycc.mipsasmgen.GPRegister;
 import tinycc.mipsasmgen.MipsAsmGen;
+import tinycc.mipsasmgen.RegisterInstruction;
 import tinycc.parser.Token;
 
 public class GreaterEqualExpression extends BinaryExpression {
@@ -42,6 +43,18 @@ public class GreaterEqualExpression extends BinaryExpression {
 
     @Override
     public GPRegister generateCode(CompilationScope s, MipsAsmGen gen) {
-        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+        GPRegister leftReg = getLeft().generateCode(s, gen);
+        GPRegister rightReg = getRight().generateCode(s, gen);
+
+        // check if left is greater equal than right, result is stored in left reg
+        // thus use right less than left
+        gen.emitInstruction(RegisterInstruction.SLT, leftReg, rightReg, leftReg);
+
+        try {
+            s.remove(rightReg);
+        } catch (Exception e) {
+        }
+
+        return leftReg;
     } 
 }

@@ -86,8 +86,8 @@ public class If extends Statement{
         // generate code of consequence branch under that label
         consequence.generateCode(s, gen);
 
-        // create branch instruction to check if condition is not equal to 0 (equal to 1)
-        gen.emitInstruction(BranchInstruction.BNE, conditionReg, consequenceLabel);
+        // create branch instruction to check if condition is not equal to 0 (thus equal to 1)
+        gen.emitInstruction(BranchInstruction.BNE, conditionReg, GPRegister.ZERO, consequenceLabel);
 
         // check if alternative exists
         if (alternative != null) {

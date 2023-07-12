@@ -7,7 +7,11 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.statement.Statement;
+import tinycc.mipsasmgen.BranchInstruction;
+import tinycc.mipsasmgen.GPRegister;
+import tinycc.mipsasmgen.JumpInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
+import tinycc.mipsasmgen.TextLabel;
 
 public class While extends Statement{
 
@@ -44,11 +48,26 @@ public class While extends Statement{
     @Override
     public void generateCode(CompilationScope s, MipsAsmGen gen) {
 
-        // create loop label
+        // create loop header label
+        TextLabel loopLabel = gen.makeUniqueTextLabel();
+        gen.emitLabel(loopLabel);
+
+        // create loop exit label
+        TextLabel exitLabel = gen.makeUniqueTextLabel();
+
+        // generate code for condition and save register
+        GPRegister conditionReg = condition.generateCode(s, gen);
+
         // create branch instruction to exit label, if condition false
+        gen.emitInstruction(BranchInstruction.BEQ, conditionReg, GPRegister.ZERO, exitLabel);
+
         // generate code for body
-        // add jump instruction to loop label
+        body.generateCode(s, gen);
+
+        // add jump instruction to loop header label
+        gen.emitInstruction(JumpInstruction.J, loopLabel);
+
         // add exit label for loop
-        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+        gen.emitLabel(exitLabel);
     }
 }

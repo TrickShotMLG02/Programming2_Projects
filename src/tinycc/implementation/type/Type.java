@@ -36,6 +36,10 @@ public abstract class Type {
 		return false;
 	}
 
+	public int getSize() {
+        return -1;
+    }
+
 	@Override
 	public boolean equals(Object other) {
 		return other.getClass() == this.getClass();

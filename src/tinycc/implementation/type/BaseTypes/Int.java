@@ -39,4 +39,8 @@ public class Int extends IntegerType {
         return true;
     }
     
+    @Override
+    public int getSize() {
+        return 4;
+    }
 }

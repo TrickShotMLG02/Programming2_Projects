@@ -38,5 +38,9 @@ public class Char extends IntegerType {
     public boolean isComplete() {
         return true;
     }
-    
+
+    @Override
+    public int getSize() {
+        return 2;
+    }
 }

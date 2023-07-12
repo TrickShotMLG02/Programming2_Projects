@@ -262,6 +262,12 @@ public class Compiler {
 				TextLabel funLbl = out.makeTextLabel(fun.getToken().getText());
 				out.emitLabel(funLbl);
 
+				// TODO: assign function parameters
+				for (Token param : fun.getParameterNames()) {
+					String paramName = param.getText();
+					GPRegister paramReg = scope.getNextFreeFunctionRegister(paramName);
+				}
+
 				// grab function body as Block, since all functions consist of a Block
 				Block body = (Block) fun.getBody();
 

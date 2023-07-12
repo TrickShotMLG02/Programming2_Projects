@@ -69,13 +69,15 @@ public class AssignExpression extends BinaryExpression {
         // left expression can be an identifier, thus look it up and extract stack offset
         String id = getLeft().getToken().getText();
         Integer offset = s.lookupLocalDeclaration(id);
-        DataLabel globalVar = null;
+        DataLabel globalVar = s.lookupDataLabel(id);
+        GPRegister reg = s.lookupRegister(id);
 
         if (offset == null) {
             // check if it is a global declaration
-            globalVar = s.lookupDataLabel(id);
             if (globalVar == null) {
-                throw new IllegalArgumentException("identifier " + getLeft().getToken().getText() + " not found in scope");
+                if (reg == null) {
+                    throw new IllegalArgumentException("identifier " + getToken().getText() + " not found");
+                }
             }
         }
         
@@ -90,14 +92,25 @@ public class AssignExpression extends BinaryExpression {
             // store value from right register into global datalabel
             gen.emitInstruction(MemoryInstruction.SW, right, globalVar, 0, null);
         }
+        else if (reg != null) {
+            // free right since it is not needed
+            try {
+                s.remove(right);
+            } catch (Exception e) {
+            }
+
+            // return reg
+            return reg;
+        }
         else {
             throw new IllegalArgumentException("Should not reach that");
         }
         
 
         try {
-            // free register
+            // free registers
             s.remove(right);
+            s.remove(reg);
         } catch (Exception e) {
             e.printStackTrace();
         }

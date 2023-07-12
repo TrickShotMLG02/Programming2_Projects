@@ -37,11 +37,8 @@ public class Number extends PrimaryExpression {
         // get next free register and reserve it
         GPRegister tmp = s.getNextFreeTempRegister();
 
-        try {
-            int num = Integer.parseInt(getToken().getText());
-            gen.emitInstruction(ImmediateInstruction.ADDIU, tmp, GPRegister.ZERO, num);
-        } catch (Exception e) {
-        }
+        int num = Integer.parseInt(getToken().getText());
+        gen.emitInstruction(ImmediateInstruction.ADDIU, tmp, GPRegister.ZERO, num);
         
         return tmp;
     }

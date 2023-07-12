@@ -242,6 +242,23 @@ public class CompilationScope {
         }
     }
 
+    // TODO: IMPLEMENT SAVE/RESTORE FUNCTIONS
+    public void saveCallerSaveRegisters() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public void saveCalleeSaveRegisters() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public void restoreCallerSaveRegisters() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public void restoreCalleeSaveRegisters() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
     /*
     * Exceptions for Scopes
     */

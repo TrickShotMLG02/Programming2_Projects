@@ -8,8 +8,8 @@ import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.type.Type;
 import tinycc.mipsasmgen.GPRegister;
+import tinycc.mipsasmgen.MemoryInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
-import tinycc.mipsasmgen.RegisterInstruction;
 import tinycc.parser.Token;
 
 public class AssignExpression extends BinaryExpression {
@@ -59,18 +59,31 @@ public class AssignExpression extends BinaryExpression {
 
     @Override
     public GPRegister generateCode(CompilationScope s, MipsAsmGen gen) {
-        // grab left expression and add/load to/from scope
-        //GPRegister left = getLeft().generateCode(s, gen);
+        // TODO: fix me, since there is no case distinction for expressions or not
+        // TODO: for that, store type from checkSemantics insode the expressions or something like that
+        // since i want to be able to determine, if i have to generate the code for the right side
+        // or if i can lookup an identifier
+        // or if i have a variable
 
-        // generate code of right expression
-        GPRegister right = getRight().generateCode(s, gen);
+        // left expression can be an identifier, thus look it up and extract stack offset
+        Integer offset = s.lookupLocalDeclaration(getLeft().getToken().getText());
 
-        // generate sw instruction of right register into left register
+        if (offset == null)
+            throw new IllegalArgumentException("identifier " + getLeft().getToken().getText() + " not found in scope");
         
+        // grab right expression and add/load to/from scope
+        GPRegister right = getLeft().generateCode(s, gen);
 
-        // return register of left expr
-        //return left;
+        // generate sw instruction of right register into stack
+        gen.emitInstruction(MemoryInstruction.SW, right, null, offset, GPRegister.SP);
 
-        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+        try {
+            // free register
+            s.remove(right);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     } 
 }

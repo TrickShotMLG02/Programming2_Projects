@@ -16,6 +16,10 @@ public class CompilationScope {
     // storing global variables and their data labels
     private final Map<String, DataLabel> dataLabels;
 
+    // storing offsets of local declarations for stack
+    private final Map<String, Integer> localDeclarationOffsets;
+    private int currentStackOffset;
+
     // storing local variables and their registers
     private final Map<String, GPRegister> table;
 
@@ -39,7 +43,13 @@ public class CompilationScope {
         this.parent = parent;
         this.table  = new HashMap<String, GPRegister>();
         this.dataLabels = new HashMap<String, DataLabel>();
+        this.localDeclarationOffsets = new HashMap<String, Integer>();
 
+        if (parent != null)
+            this.currentStackOffset = parent.currentStackOffset;
+        else
+            this.currentStackOffset = 0;
+        
         unusedTempRegisters = populateUnusedTempRegisters();
         unusedFunctionRegisters = populateUnusedFunctionRegisters();
     }
@@ -60,7 +70,7 @@ public class CompilationScope {
     }
 
     // function to add register to table
-    public void add(String id, GPRegister reg) throws IdAlreadyDeclared {
+    public void addRegister(String id, GPRegister reg) throws IdAlreadyDeclared {
         if (!isUsed(id) && !isUsed(reg)) {
             unusedTempRegisters.remove(reg);
             unusedFunctionRegisters.remove(reg);
@@ -70,10 +80,10 @@ public class CompilationScope {
             throw new IdAlreadyDeclared("register " + reg.name()+ " for variable " + id + " already declared");
         }
     }
-    public void add(GPRegister reg) throws IdAlreadyDeclared {
-        add(reg.name(), reg);
+    public void addRegister(GPRegister reg) throws IdAlreadyDeclared {
+        addRegister(reg.name(), reg);
     }
-    public void add(DataLabel lbl) throws IdAlreadyDeclared {
+    public void addDataLabel(DataLabel lbl) throws IdAlreadyDeclared {
         if (!dataLabels.containsValue(lbl)) {
             dataLabels.put(lbl.toString(), lbl);
         }
@@ -81,14 +91,25 @@ public class CompilationScope {
             throw new IdAlreadyDeclared("data label already declared");
         }
     }
-
+    public void addLocalDeclaration(String declarationName) throws IdAlreadyDeclared{
+        if (localDeclarationOffsets.containsKey(declarationName)) {
+            throw new IdAlreadyDeclared(declarationName + "already declared");
+        }
+        localDeclarationOffsets.put(declarationName, currentStackOffset);
+        this.currentStackOffset += 4;
+    }
     // function to remove register from table
     public void remove(String id) throws IdUndeclared {
+        // check if it is a register
         if (isUsed(id)) {
             // set register for id as unused
             freeRegister(table.get(id));
             // remove register for id from table
             table.remove(id);
+        }
+        // else check if it is a local declaration
+        else if (localDeclarationOffsets.containsKey(id)) {
+            localDeclarationOffsets.remove(id);
         }
     }
     public void remove(GPRegister reg) throws IdUndeclared {
@@ -111,12 +132,35 @@ public class CompilationScope {
         }
     }
 
-    // function to get next free register
+    /**
+     * Function to get the next free temporary register
+     * @return  the already added temporary register
+     */
     public GPRegister getNextFreeTempRegister() {
-        return unusedTempRegisters.get(0);
+        GPRegister freeReg = unusedTempRegisters.get(0);
+
+        try {
+            addRegister(freeReg);
+        } catch (IdAlreadyDeclared e) {
+            e.printStackTrace();
+        }
+
+        return freeReg;
     }
+    /**
+     * Function to get the next free function register
+     * @return  the already added function register
+     */
     public GPRegister getNextFreeFunctionRegister() {
-        return unusedFunctionRegisters.get(0);
+        GPRegister freeReg = unusedFunctionRegisters.get(0);
+
+        try {
+            addRegister(freeReg);
+        } catch (IdAlreadyDeclared e) {
+            e.printStackTrace();
+        }
+
+        return freeReg;
     }
 
     // functions to lookup stuff
@@ -124,15 +168,21 @@ public class CompilationScope {
         if (table.containsKey(id))
             return table.get(id);
         else
-            return parent.lookupRegister(id);
+            return parent != null ? parent.lookupRegister(id) : null;
     }
     public DataLabel lookupDataLabel(String name) {
         if (dataLabels.containsKey(name))
             return dataLabels.get(name);
         else
-            return parent.lookupDataLabel(name);
+            return parent != null ? parent.lookupDataLabel(name) : null;
     }
-
+    public Integer lookupLocalDeclaration(String declarationName) {
+        if (localDeclarationOffsets.containsKey(declarationName))
+            return localDeclarationOffsets.get(declarationName);
+        else
+            return parent != null ? parent.lookupLocalDeclaration(declarationName) : null;
+    }
+    
     // functions for poulating lists
     private List<GPRegister> populateUnusedTempRegisters() {
         List<GPRegister> regs = new ArrayList<GPRegister>();
@@ -186,5 +236,9 @@ public class CompilationScope {
 
     public CompilationScope getParent() {
         return parent;
+    }
+
+    public int getStackOffset() {
+        return currentStackOffset;
     }
 }

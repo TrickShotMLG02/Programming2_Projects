@@ -72,7 +72,7 @@ public class AssignExpression extends BinaryExpression {
             throw new IllegalArgumentException("identifier " + getLeft().getToken().getText() + " not found in scope");
         
         // grab right expression and add/load to/from scope
-        GPRegister right = getLeft().generateCode(s, gen);
+        GPRegister right = getRight().generateCode(s, gen);
 
         // generate sw instruction of right register into stack
         gen.emitInstruction(MemoryInstruction.SW, right, null, offset, GPRegister.SP);

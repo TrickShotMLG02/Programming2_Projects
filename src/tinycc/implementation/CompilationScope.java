@@ -26,8 +26,6 @@ public class CompilationScope {
     // parent scope
     private final CompilationScope parent;
 
-    // TODO: implement dataLabels
-
     // constructors
     /**
      * Create a new Scope with no parent (the first scope)
@@ -98,6 +96,7 @@ public class CompilationScope {
         localDeclarationOffsets.put(declarationName, currentStackOffset);
         this.currentStackOffset += 4;
     }
+    
     // function to remove register from table
     public void remove(String id) throws IdUndeclared {
         // check if it is a register

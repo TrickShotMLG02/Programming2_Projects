@@ -150,11 +150,11 @@ public class CompilationScope {
      * Function to get the next free function register
      * @return  the already added function register
      */
-    public GPRegister getNextFreeFunctionRegister() {
+    public GPRegister getNextFreeFunctionRegister(String paramName) {
         GPRegister freeReg = unusedFunctionRegisters.get(0);
 
         try {
-            addRegister(freeReg);
+            addRegister(paramName, freeReg);
         } catch (IdAlreadyDeclared e) {
             e.printStackTrace();
         }

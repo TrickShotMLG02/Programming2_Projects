@@ -34,11 +34,10 @@ public class Number extends PrimaryExpression {
 
     @Override
     public GPRegister generateCode(CompilationScope s, MipsAsmGen gen) {
+        // get next free register and reserve it
         GPRegister tmp = s.getNextFreeTempRegister();
 
         try {
-            s.add(tmp);
-
             int num = Integer.parseInt(getToken().getText());
             gen.emitInstruction(ImmediateInstruction.ADDIU, tmp, GPRegister.ZERO, num);
         } catch (Exception e) {

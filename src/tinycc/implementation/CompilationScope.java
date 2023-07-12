@@ -212,11 +212,15 @@ public class CompilationScope {
 
     // function to free register
     private void freeRegister(GPRegister reg) {
+        // TODO: might cause errors when list is too short
+        // get number of register
+        int pos = Integer.parseInt(reg.name().substring(1));
+
         if (populateUnusedFunctionRegisters().contains(reg)) {
-            unusedFunctionRegisters.add(reg);
+            unusedFunctionRegisters.add(pos, reg);
         }
         else if (populateUnusedTempRegisters().contains(reg)) {
-            unusedTempRegisters.add(reg);
+            unusedTempRegisters.add(pos, reg);
         }
     }
 

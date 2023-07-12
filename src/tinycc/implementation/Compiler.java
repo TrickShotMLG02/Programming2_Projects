@@ -265,7 +265,7 @@ public class Compiler {
 				// TODO: assign function parameters
 				for (Token param : fun.getParameterNames()) {
 					String paramName = param.getText();
-					GPRegister paramReg = scope.getNextFreeFunctionRegister(paramName);
+					GPRegister paramReg = funScope.getNextFreeFunctionRegister(paramName);
 				}
 
 				// grab function body as Block, since all functions consist of a Block

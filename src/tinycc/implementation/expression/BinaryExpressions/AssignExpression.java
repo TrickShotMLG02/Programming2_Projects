@@ -7,6 +7,7 @@ import tinycc.implementation.expression.BinaryExpression;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.type.Type;
+import tinycc.mipsasmgen.DataLabel;
 import tinycc.mipsasmgen.GPRegister;
 import tinycc.mipsasmgen.MemoryInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
@@ -66,16 +67,33 @@ public class AssignExpression extends BinaryExpression {
         // or if i have a variable
 
         // left expression can be an identifier, thus look it up and extract stack offset
-        Integer offset = s.lookupLocalDeclaration(getLeft().getToken().getText());
+        String id = getLeft().getToken().getText();
+        Integer offset = s.lookupLocalDeclaration(id);
+        DataLabel globalVar = null;
 
-        if (offset == null)
-            throw new IllegalArgumentException("identifier " + getLeft().getToken().getText() + " not found in scope");
+        if (offset == null) {
+            // check if it is a global declaration
+            globalVar = s.lookupDataLabel(id);
+            if (globalVar == null) {
+                throw new IllegalArgumentException("identifier " + getLeft().getToken().getText() + " not found in scope");
+            }
+        }
         
         // grab right expression and add/load to/from scope
         GPRegister right = getRight().generateCode(s, gen);
 
-        // generate sw instruction of right register into stack
-        gen.emitInstruction(MemoryInstruction.SW, right, null, offset, GPRegister.SP);
+        if (offset != null) {
+            // generate sw instruction of right register into stack
+            gen.emitInstruction(MemoryInstruction.SW, right, null, offset, GPRegister.SP);
+        }
+        else if (globalVar != null) {
+            // store value from right register into global datalabel
+            gen.emitInstruction(MemoryInstruction.SW, right, globalVar, 0, null);
+        }
+        else {
+            throw new IllegalArgumentException("Should not reach that");
+        }
+        
 
         try {
             // free register

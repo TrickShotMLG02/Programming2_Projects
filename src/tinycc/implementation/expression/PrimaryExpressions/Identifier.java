@@ -6,6 +6,7 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.expression.PrimaryExpression;
 import tinycc.implementation.statement.Statements.Declaration;
 import tinycc.implementation.type.Type;
+import tinycc.mipsasmgen.DataLabel;
 import tinycc.mipsasmgen.GPRegister;
 import tinycc.mipsasmgen.MemoryInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
@@ -44,16 +45,31 @@ public class Identifier extends PrimaryExpression {
         // name of identifier is name of variable (DataLabel)
         java.lang.String id = getToken().getText();
         Integer offset = s.lookupLocalDeclaration(id);
+        DataLabel globalVar = null;
 
-        // check if identifier was found in scope
         if (offset == null) {
-            throw new IllegalArgumentException("identifier " + id + " not defined");
+            // check if it is a global declaration
+            globalVar = s.lookupDataLabel(id);
+            if (globalVar == null) {
+                throw new IllegalArgumentException("identifier " + getToken().getText() + " not found");
+            }
         }
 
         // grab next free register and reserve it
         GPRegister varReg = s.getNextFreeTempRegister();
-        // generate instruction and return register
-        gen.emitInstruction(MemoryInstruction.LW, varReg, null, offset, GPRegister.SP);
+
+        if (offset != null) {
+            // generate instruction and return register
+            gen.emitInstruction(MemoryInstruction.LW, varReg, null, offset, GPRegister.SP);
+        }
+        else if (globalVar != null) {
+            // store value from right register into addr register
+            gen.emitInstruction(MemoryInstruction.LW, varReg, globalVar, 0, null);
+        }
+        else {
+            throw new IllegalArgumentException("Should not reach that");
+        }
+
         return varReg;
     }
 

@@ -26,21 +26,29 @@ public class GlobalVariable extends ExternalDeclaration {
         
         // TODO: Store the data label somewhere in the scope, since i have no register for it
 
-        // create label with name of variable and default value 0
-        DataLabel lbl = gen.makeDataLabel(getToken().getText());
-        gen.emitWord(lbl, 0);
+        try {
+            // create label with name of variable
+            DataLabel lbl = gen.makeDataLabel(getToken().getText());
+            // add data label to scope
+            s.addDataLabel(lbl);
+            // emit data label with default value 0
+            gen.emitWord(lbl, 0);
 
-        // check if init expression exists
-        if (getInitExpression() != null) {
-            // create label for code of init expression
-            TextLabel initLbl = gen.makeUniqueTextLabel();
-            gen.emitLabel(initLbl);
+            // check if init expression exists
+            if (getInitExpression() != null) {
+                // create label for code of init expression
+                TextLabel initLbl = gen.makeUniqueTextLabel();
+                gen.emitLabel(initLbl);
 
-            // grab register containing init expression
-            GPRegister initReg = getInitExpression().generateCode(s, gen);
+                // grab register containing init expression
+                GPRegister initReg = getInitExpression().generateCode(s, gen);
 
-            // store value as word to variable
-            gen.emitInstruction(MemoryInstruction.SW, initReg, lbl, 0, null);
+                // store value as word to variable
+                gen.emitInstruction(MemoryInstruction.SW, initReg, lbl, 0, null);
+        }
+        } catch (Exception e) {
+            // label already declared
+            e.printStackTrace();
         }
 
         // TODO: check return value

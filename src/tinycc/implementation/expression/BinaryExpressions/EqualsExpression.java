@@ -28,11 +28,11 @@ public class EqualsExpression extends BinaryExpression {
         Type typeRight = getRight().checkType(d, s);
 
         if (!typeLeft.isIntegerType() && !typeLeft.isPointerType()) {
-            d.printError(getLeft().getToken(), "type left invalid");
+            d.printError(getToken(), "Equal - type left invalid: " + typeLeft + ", " + typeRight);
         }
         
         if (!typeRight.isIntegerType() && !typeRight.isPointerType()) {
-            d.printError(getRight().getToken(), "type right invalid");
+            d.printError(getToken(), "Equal - type right invalid: " + typeLeft + ", " + typeRight);
         }
 
         // check if both types are integer types

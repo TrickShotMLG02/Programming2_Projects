@@ -24,10 +24,10 @@ public class GreaterExpression extends BinaryExpression {
         Type typeRight = getRight().checkType(d, s);
 
          if (!typeLeft.isIntegerType() && !typeLeft.isPointerType()) {
-            d.printError(getLeft().getToken(), "type left invalid");
+            d.printError(getToken(), "Greater - type left invalid: " + typeLeft + ", " + typeRight);
         }
         if (!typeRight.isIntegerType() && !typeRight.isPointerType()) {
-            d.printError(getRight().getToken(), "type right invalid");
+            d.printError(getToken(), "Greater - type right invalid: " + typeLeft + ", " + typeRight);
         }
 
         // check for type equality (pointer, pointer or int, int)

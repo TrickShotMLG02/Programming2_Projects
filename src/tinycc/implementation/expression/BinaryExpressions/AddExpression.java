@@ -26,10 +26,10 @@ public class AddExpression extends BinaryExpression {
         Type typeRight = getRight().checkType(d, s);
 
         if (!typeLeft.isIntegerType() && !typeLeft.isPointerType()) {
-            d.printError(getLeft().getToken(), "type left invalid");
+            d.printError(getToken(), "Add - type left invalid" + typeLeft + ", " + typeRight);
         }
         if (!typeRight.isIntegerType() && !typeRight.isPointerType()) {
-            d.printError(getRight().getToken(), "type right invalid");
+            d.printError(getToken(), "Add - type right invalid" + typeLeft + ", " + typeRight);
         }
         if (typeLeft.isPointerType() && typeRight.isPointerType()) {
             d.printError(getToken(), "both of type pointer");

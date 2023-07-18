@@ -26,10 +26,10 @@ public class SubtractExpression extends BinaryExpression{
         Type typeRight = getRight().checkType(d, s);
 
         if (!typeLeft.isIntegerType() && !typeLeft.isPointerType()) {
-            d.printError(getLeft().getToken(), "type left invalid");
+            d.printError(getToken(), "Subtract - type left invalid: " + typeLeft + ", " + typeRight);
         }
         if (!typeRight.isIntegerType() && !typeRight.isPointerType()) {
-            d.printError(getRight().getToken(), "type right invalid");
+            d.printError(getToken(), "Subtract - type right invalid: " + typeLeft + ", " + typeRight);
         }
         
         // check which rule applies

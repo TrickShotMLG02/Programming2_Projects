@@ -257,7 +257,7 @@ public class CompilationScope {
         gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, -currentStackOffset);
 
         // move stack pointer down by amount of registers to save * 4
-        // gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, -15 * 4);
+        gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, -60);
 
         // save all registers which are caller save (a0 - a3, v0 - v1, t0 - t9, ra)
 
@@ -282,9 +282,6 @@ public class CompilationScope {
             gen.emitInstruction(MemoryInstruction.SW, saveReg, null, 4 * localOffset, GPRegister.SP);
             localOffset += 1;
         }
-
-        // move stackpointer down by (amount of registers saved * 4)
-        gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, -4 * localOffset);
     }
 
     public void saveCalleeSaveRegisters() {
@@ -296,24 +293,24 @@ public class CompilationScope {
 
         int localOffset = 0;
 
-        // restore return address (ra)
-        for (int i = 0; i >= 0; i--) {
-            GPRegister loadReg = GPRegister.valueOf("RA");
-            gen.emitInstruction(MemoryInstruction.LW, loadReg, null, 4 * localOffset, GPRegister.SP);
-            localOffset += 1;
-        }
-
-        // restore all function parameter registers (a0 - a3)
-        for (int i = 3; i >= 0; i--) {
-            GPRegister loadReg = GPRegister.valueOf("A" + i);
-            gen.emitInstruction(MemoryInstruction.LW, loadReg, null, 4 * localOffset, GPRegister.SP);
+         // restore all function parameter registers (a0 - a3)
+        for (int i = 0; i < 4; i++) {
+            GPRegister saveReg = GPRegister.valueOf("A" + i);
+            gen.emitInstruction(MemoryInstruction.LW, saveReg, null, 4 * localOffset, GPRegister.SP);
             localOffset += 1;
         }
 
         // restore all temporary registers (t0 - t9)
-        for (int i = 9; i >= 0; i--) {
-            GPRegister loadReg = GPRegister.valueOf("T" + i);
-            gen.emitInstruction(MemoryInstruction.LW, loadReg, null, 4 * localOffset, GPRegister.SP);
+        for (int i = 0; i < 10; i++) {
+            GPRegister saveReg = GPRegister.valueOf("T" + i);
+            gen.emitInstruction(MemoryInstruction.LW, saveReg, null, 4 * localOffset, GPRegister.SP);
+            localOffset += 1;
+        }
+
+        // restore return address (ra)
+        for (int i = 0; i < 1; i++) {
+            GPRegister saveReg = GPRegister.valueOf("RA");
+            gen.emitInstruction(MemoryInstruction.LW, saveReg, null, 4 * localOffset, GPRegister.SP);
             localOffset += 1;
         }
 

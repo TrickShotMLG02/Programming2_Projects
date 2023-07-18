@@ -8,13 +8,9 @@ import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.type.Type;
 import tinycc.implementation.type.BaseTypes.Int;
-import tinycc.mipsasmgen.BranchInstruction;
 import tinycc.mipsasmgen.GPRegister;
-import tinycc.mipsasmgen.ImmediateInstruction;
-import tinycc.mipsasmgen.JumpInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.mipsasmgen.RegisterInstruction;
-import tinycc.mipsasmgen.TextLabel;
 import tinycc.parser.Token;
 
 public class LessExpression extends BinaryExpression {

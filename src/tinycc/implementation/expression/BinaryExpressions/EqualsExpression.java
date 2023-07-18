@@ -65,7 +65,7 @@ public class EqualsExpression extends BinaryExpression {
         GPRegister leftReg = getLeft().generateCode(s, gen);
         GPRegister rightReg = getRight().generateCode(s, gen);
 
-        GPRegister tmpCheckReg = s.getNextFreeTempRegister();
+        GPRegister compResult = s.getNextFreeTempRegister();
 
         // create labels for true and false and exit
         TextLabel lblTrue = gen.makeUniqueTextLabel("_EQUALS_TRUE");
@@ -76,23 +76,25 @@ public class EqualsExpression extends BinaryExpression {
         gen.emitInstruction(BranchInstruction.BEQ, leftReg, rightReg, lblTrue);
         gen.emitInstruction(JumpInstruction.J, lblFalse);
 
+        // create code for true
         gen.emitLabel(lblTrue);
-        gen.emitInstruction(ImmediateInstruction.ADDIU, tmpCheckReg, GPRegister.ZERO, 1);
+        gen.emitInstruction(ImmediateInstruction.ADDIU, compResult, GPRegister.ZERO, 1);
         gen.emitInstruction(JumpInstruction.J, lblExit);
 
-        // create label for false
+        // create code for false
         gen.emitLabel(lblFalse);
-        gen.emitInstruction(ImmediateInstruction.ADDIU, tmpCheckReg, GPRegister.ZERO, 0);
+        gen.emitInstruction(ImmediateInstruction.ADDIU, compResult, GPRegister.ZERO, 0);
         gen.emitInstruction(JumpInstruction.J, lblExit);
 
         // emit label for exit
         gen.emitLabel(lblExit);
 
         try {
+            s.remove(leftReg);
             s.remove(rightReg);
         } catch (Exception e) {
         }
 
-        return tmpCheckReg;
+        return compResult;
     } 
 }

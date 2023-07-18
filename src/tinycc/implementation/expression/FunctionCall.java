@@ -7,11 +7,14 @@ import java.util.List;
 import tinycc.diagnostic.Diagnostic;
 import tinycc.implementation.CompilationScope;
 import tinycc.implementation.Scope;
+import tinycc.implementation.expression.PrimaryExpressions.Identifier;
 import tinycc.implementation.type.FunctionType;
 import tinycc.implementation.type.Type;
 import tinycc.mipsasmgen.GPRegister;
+import tinycc.mipsasmgen.ImmediateInstruction;
 import tinycc.mipsasmgen.JumpInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
+import tinycc.mipsasmgen.RegisterInstruction;
 import tinycc.mipsasmgen.TextLabel;
 import tinycc.parser.Token;
 
@@ -92,10 +95,39 @@ public class FunctionCall extends Expression {
         CompilationScope funCallScope = s.newNestedScope();
 
         // assign parameters of function call to a0...a3 registers
+        int currParamIndex = 0;
         for (Expression param : arguments) {
-            // TODO: EXTRACT PARAM NAME FROM SOMEWHERE
-            String paramName = "";
-            GPRegister paramReg = funCallScope.getNextFreeFunctionRegister(paramName);
+
+            // check if param is an identifier
+            // or if it is a number
+
+            if (param instanceof Identifier) {
+                // grab name of the identifier passed
+                String paramName = param.getToken().getText();
+
+                // get the register containing the value of the identifier passed to the function
+                GPRegister paramReg = s.lookupRegister(paramName);
+
+                // TODO: grab the name of the corresponding function parameter from declaration
+                GPRegister paramDeclReg = funCallScope.getNextFreeFunctionRegister(paramName);
+
+                gen.emitInstruction(RegisterInstruction.ADD, paramDeclReg, GPRegister.ZERO, paramReg);
+            }
+            else if (param instanceof tinycc.implementation.expression.PrimaryExpressions.Number) {
+                // grab the value of the number which is passed
+                String paramName = param.getToken().getText();
+                int paramVal = Integer.parseInt(paramName);
+                
+                // get nextFreeFunctionRegister for storing that value in
+                // TODO: get the name of the corresponding function parameter from declaration
+                GPRegister paramDeclReg = funCallScope.getNextFreeFunctionRegister("A" + currParamIndex);
+                
+                // generate instruction to load the value into the register
+                gen.emitInstruction(ImmediateInstruction.ADDI, paramDeclReg, GPRegister.ZERO, paramVal);
+            }
+
+            // increment current register
+            currParamIndex += 1;
         }
 
         // call function assembly code
@@ -104,7 +136,7 @@ public class FunctionCall extends Expression {
         // restore caller save registers
         s.restoreCallerSaveRegisters();
 
-        throw new UnsupportedOperationException(callee.toString());
+        return GPRegister.V0;
     }
 
     @Override

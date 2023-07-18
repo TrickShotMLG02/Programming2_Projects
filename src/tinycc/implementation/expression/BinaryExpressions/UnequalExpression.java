@@ -88,12 +88,6 @@ public class UnequalExpression extends BinaryExpression {
         // emit label for exit
         gen.emitLabel(lblExit);
 
-        try {
-            s.remove(leftReg);
-            s.remove(rightReg);
-        } catch (Exception e) {
-        }
-
         return compResult;
     } 
 }

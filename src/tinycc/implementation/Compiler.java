@@ -224,7 +224,7 @@ public class Compiler {
 		// grab all declarations (the current program)
 		List<ExternalDeclaration> delcarations = new ArrayList<>(astFactory.getExternalDeclarations());
 
-		CompilationScope scope = new CompilationScope();
+		CompilationScope scope = new CompilationScope(out);
 
 		// iterate over all declarations
 		for (ExternalDeclaration decl : delcarations) {

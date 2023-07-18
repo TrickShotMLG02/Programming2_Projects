@@ -8,9 +8,13 @@ import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.type.Type;
 import tinycc.implementation.type.BaseTypes.Int;
+import tinycc.mipsasmgen.BranchInstruction;
 import tinycc.mipsasmgen.GPRegister;
+import tinycc.mipsasmgen.ImmediateInstruction;
+import tinycc.mipsasmgen.JumpInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.mipsasmgen.RegisterInstruction;
+import tinycc.mipsasmgen.TextLabel;
 import tinycc.parser.Token;
 
 public class LessExpression extends BinaryExpression {
@@ -46,14 +50,11 @@ public class LessExpression extends BinaryExpression {
         GPRegister leftReg = getLeft().generateCode(s, gen);
         GPRegister rightReg = getRight().generateCode(s, gen);
 
-        // check if left is less than right, result is stored in left reg
-        gen.emitInstruction(RegisterInstruction.SLT, leftReg, leftReg, rightReg);
+        GPRegister compResult = s.getNextFreeTempRegister();
 
-        try {
-            s.remove(rightReg);
-        } catch (Exception e) {
-        }
+        // check if left is smaller than right
+        gen.emitInstruction(RegisterInstruction.SLT, compResult, leftReg, rightReg);
 
-        return leftReg;
-    } 
+        return compResult;
+    }
 }

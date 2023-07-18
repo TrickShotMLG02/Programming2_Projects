@@ -40,21 +40,17 @@ public class GreaterEqualExpression extends BinaryExpression {
         d.printError(getToken(), "will be null");
         return null;
     }
-
+    
     @Override
     public GPRegister generateCode(CompilationScope s, MipsAsmGen gen) {
         GPRegister leftReg = getLeft().generateCode(s, gen);
         GPRegister rightReg = getRight().generateCode(s, gen);
 
-        // check if left is greater equal than right, result is stored in left reg
-        // thus use right less than left
-        gen.emitInstruction(RegisterInstruction.SLT, leftReg, rightReg, leftReg);
+        GPRegister compResult = s.getNextFreeTempRegister();
 
-        try {
-            s.remove(rightReg);
-        } catch (Exception e) {
-        }
+        // check if right is smaller than left, since then left is greater/equal to right
+        gen.emitInstruction(RegisterInstruction.SLT, compResult, rightReg, leftReg);
 
-        return leftReg;
-    } 
+        return compResult;
+    }
 }

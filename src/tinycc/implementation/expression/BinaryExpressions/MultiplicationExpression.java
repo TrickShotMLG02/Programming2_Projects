@@ -25,7 +25,7 @@ public class MultiplicationExpression extends BinaryExpression {
         Type typeRight = getRight().checkType(d, s);
 
         if (!typeLeft.isIntegerType() || !typeRight.isIntegerType()) {
-            d.printError(getToken(), "invalid types");
+            d.printError(getToken(), "Multiplication: invalid types: " + typeLeft + ", " + typeRight);
         }
 
         return new Int();

@@ -56,7 +56,7 @@ public class UnequalExpression extends BinaryExpression {
         }
 
         // print error and return null
-        d.printError(getToken(), "Invalid types");
+        d.printError(getToken(), "Unequal - Invalid types: " + typeLeft + ", " + typeRight);
         return null;
     }
 

@@ -56,7 +56,7 @@ public class EqualsExpression extends BinaryExpression {
         }
 
         // print error
-        d.printError(getToken(), "Invalid types");
+        d.printError(getToken(), "Equal - Invalid types: " + typeLeft + ", " + typeRight);
         return null;
     }
 

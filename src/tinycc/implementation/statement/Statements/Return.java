@@ -68,6 +68,9 @@ public class Return extends Statement{
             gen.emitInstruction(ImmediateInstruction.ADDIU, GPRegister.V0, resReg, 0);
         }
 
+        // restore callee save registers
+        s.restoreCalleeSaveRegisters();
+
         // jump to return address
         gen.emitInstruction(JumpRegisterInstruction.JR , GPRegister.RA);
     }

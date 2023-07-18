@@ -11,6 +11,7 @@ import tinycc.implementation.type.BaseTypes.Int;
 import tinycc.mipsasmgen.BranchInstruction;
 import tinycc.mipsasmgen.GPRegister;
 import tinycc.mipsasmgen.ImmediateInstruction;
+import tinycc.mipsasmgen.JumpInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.mipsasmgen.TextLabel;
 import tinycc.parser.Token;
@@ -64,24 +65,34 @@ public class EqualsExpression extends BinaryExpression {
         GPRegister leftReg = getLeft().generateCode(s, gen);
         GPRegister rightReg = getRight().generateCode(s, gen);
 
-        // create labels for true
-        TextLabel lblTrue = gen.makeUniqueTextLabel();
-        gen.emitLabel(lblTrue);
-        gen.emitInstruction(ImmediateInstruction.ADDIU, leftReg, GPRegister.ZERO, 1);
+        GPRegister tmpCheckReg = s.getNextFreeTempRegister();
 
-        // create label for false
-        TextLabel lblFalse = gen.makeUniqueTextLabel();
-        gen.emitLabel(lblFalse);
-        gen.emitInstruction(ImmediateInstruction.ADDIU, leftReg, GPRegister.ZERO, 0);
+        // create labels for true and false and exit
+        TextLabel lblTrue = gen.makeUniqueTextLabel("_EQUALS_TRUE");
+        TextLabel lblFalse = gen.makeUniqueTextLabel("_EQUALS_FALSE");
+        TextLabel lblExit = gen.makeUniqueTextLabel("_EQUALS_EXIT");
 
         // check if left and right are equal
         gen.emitInstruction(BranchInstruction.BEQ, leftReg, rightReg, lblTrue);
+        gen.emitInstruction(JumpInstruction.J, lblFalse);
+
+        gen.emitLabel(lblTrue);
+        gen.emitInstruction(ImmediateInstruction.ADDIU, tmpCheckReg, GPRegister.ZERO, 1);
+        gen.emitInstruction(JumpInstruction.J, lblExit);
+
+        // create label for false
+        gen.emitLabel(lblFalse);
+        gen.emitInstruction(ImmediateInstruction.ADDIU, tmpCheckReg, GPRegister.ZERO, 0);
+        gen.emitInstruction(JumpInstruction.J, lblExit);
+
+        // emit label for exit
+        gen.emitLabel(lblExit);
 
         try {
             s.remove(rightReg);
         } catch (Exception e) {
         }
 
-        return leftReg;
+        return tmpCheckReg;
     } 
 }

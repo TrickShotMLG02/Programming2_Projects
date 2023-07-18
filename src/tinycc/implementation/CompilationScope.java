@@ -7,6 +7,9 @@ import java.util.Map;
 
 import tinycc.mipsasmgen.DataLabel;
 import tinycc.mipsasmgen.GPRegister;
+import tinycc.mipsasmgen.ImmediateInstruction;
+import tinycc.mipsasmgen.MemoryInstruction;
+import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.mipsasmgen.TextLabel;
 
 public class CompilationScope {
@@ -30,26 +33,31 @@ public class CompilationScope {
     // parent scope
     private final CompilationScope parent;
 
+    // MipsGenerator used for code generation in save/restore functions
+    private MipsAsmGen gen;
+
     // constructors
     /**
      * Create a new Scope with no parent (the first scope)
      */
-    public CompilationScope() {
-        this(null);
+    public CompilationScope(MipsAsmGen gen) {
+        this(null, gen);
     }
     /**
      * Only for internal use of newNestedScope and Scope
      * @param parent
      */
-    private CompilationScope(CompilationScope parent) {
+    private CompilationScope(CompilationScope parent, MipsAsmGen gen) {
         this.parent = parent;
         this.table  = new HashMap<String, GPRegister>();
         this.dataLabels = new HashMap<String, DataLabel>();
         this.localDeclarationOffsets = new HashMap<String, Integer>();
         this.functionLabels = new HashMap<String, TextLabel>();
+        this.gen = gen;
 
         if (parent != null)
-            this.currentStackOffset = parent.currentStackOffset;
+            //this.currentStackOffset = parent.currentStackOffset;
+            this.currentStackOffset = 0;
         else
             this.currentStackOffset = 0;
         
@@ -61,7 +69,7 @@ public class CompilationScope {
      * @return a new nested scope
      */
     public CompilationScope newNestedScope() {
-        return new CompilationScope(this);
+        return new CompilationScope(this, gen);
     }
 
     // functions to check if register (opt. for variable name) is already in use
@@ -122,6 +130,7 @@ public class CompilationScope {
         // else check if it is a local declaration
         else if (localDeclarationOffsets.containsKey(id)) {
             localDeclarationOffsets.remove(id);
+            currentStackOffset -= 4;
         }
     }
     public void remove(GPRegister reg) throws IdUndeclared {
@@ -244,7 +253,38 @@ public class CompilationScope {
 
     // TODO: IMPLEMENT SAVE/RESTORE FUNCTIONS
     public void saveCallerSaveRegisters() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        // move stack pointer down by current offset
+        gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, -currentStackOffset);
+
+        // move stack pointer down by amount of registers to save * 4
+        // gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, -15 * 4);
+
+        // save all registers which are caller save (a0 - a3, v0 - v1, t0 - t9, ra)
+
+        int localOffset = 0;
+        // save all function parameter registers (a0 - a3)
+        for (int i = 0; i < 4; i++) {
+            GPRegister saveReg = GPRegister.valueOf("A" + i);
+            gen.emitInstruction(MemoryInstruction.SW, saveReg, null, 4 * localOffset, GPRegister.SP);
+            localOffset += 1;
+        }
+
+        // save all temporary registers (t0 - t9)
+        for (int i = 0; i < 10; i++) {
+            GPRegister saveReg = GPRegister.valueOf("T" + i);
+            gen.emitInstruction(MemoryInstruction.SW, saveReg, null, 4 * localOffset, GPRegister.SP);
+            localOffset += 1;
+        }
+
+        // save return address (ra)
+        for (int i = 0; i < 1; i++) {
+            GPRegister saveReg = GPRegister.valueOf("RA");
+            gen.emitInstruction(MemoryInstruction.SW, saveReg, null, 4 * localOffset, GPRegister.SP);
+            localOffset += 1;
+        }
+
+        // move stackpointer down by (amount of registers saved * 4)
+        gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, -4 * localOffset);
     }
 
     public void saveCalleeSaveRegisters() {
@@ -252,7 +292,36 @@ public class CompilationScope {
     }
 
     public void restoreCallerSaveRegisters() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        // restore all registers which are caller save
+
+        int localOffset = 0;
+
+        // restore return address (ra)
+        for (int i = 0; i >= 0; i--) {
+            GPRegister loadReg = GPRegister.valueOf("RA");
+            gen.emitInstruction(MemoryInstruction.LW, loadReg, null, 4 * localOffset, GPRegister.SP);
+            localOffset += 1;
+        }
+
+        // restore all function parameter registers (a0 - a3)
+        for (int i = 3; i >= 0; i--) {
+            GPRegister loadReg = GPRegister.valueOf("A" + i);
+            gen.emitInstruction(MemoryInstruction.LW, loadReg, null, 4 * localOffset, GPRegister.SP);
+            localOffset += 1;
+        }
+
+        // restore all temporary registers (t0 - t9)
+        for (int i = 9; i >= 0; i--) {
+            GPRegister loadReg = GPRegister.valueOf("T" + i);
+            gen.emitInstruction(MemoryInstruction.LW, loadReg, null, 4 * localOffset, GPRegister.SP);
+            localOffset += 1;
+        }
+
+        // move stackpinter up by (amount of registers restored * 4)
+        gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, 4 * localOffset);
+
+        // move stack pointer up by current offset
+        gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, currentStackOffset);
     }
 
     public void restoreCalleeSaveRegisters() {

@@ -282,6 +282,8 @@ public class CompilationScope {
             gen.emitInstruction(MemoryInstruction.SW, saveReg, null, 4 * localOffset, GPRegister.SP);
             localOffset += 1;
         }
+        
+        currentStackOffset += localOffset;
     }
 
     public void saveCalleeSaveRegisters() {
@@ -319,6 +321,8 @@ public class CompilationScope {
 
         // move stack pointer up by current offset
         gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, currentStackOffset);
+
+        currentStackOffset -= localOffset;
     }
 
     public void restoreCalleeSaveRegisters() {

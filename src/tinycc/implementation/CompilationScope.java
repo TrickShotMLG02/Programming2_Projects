@@ -319,10 +319,11 @@ public class CompilationScope {
         // move stackpinter up by (amount of registers restored * 4)
         gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, 4 * localOffset);
 
+        // remove local offset from stack
+        currentStackOffset -= localOffset;
+
         // move stack pointer up by current offset
         gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, currentStackOffset);
-
-        currentStackOffset -= localOffset;
     }
 
     public void restoreCalleeSaveRegisters() {

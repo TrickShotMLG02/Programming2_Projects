@@ -272,6 +272,8 @@ public class Compiler {
 				for (Token param : fun.getParameterNames()) {
 					String paramName = param.getText();
 					GPRegister paramReg = funScope.getNextFreeFunctionRegister(paramName);
+					if (paramReg == null)
+						throw new IllegalArgumentException("No free function register left");
 				}
 
 				// grab function body as Block, since all functions consist of a Block

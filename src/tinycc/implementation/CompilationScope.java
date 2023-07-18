@@ -251,10 +251,9 @@ public class CompilationScope {
         }
     }
 
-    // TODO: IMPLEMENT SAVE/RESTORE FUNCTIONS
     public void saveCallerSaveRegisters() {
         // move stack pointer down by current offset
-        gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, -currentStackOffset);
+        // gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, -currentStackOffset);
 
         // move stack pointer down by amount of registers to save * 4
         gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, -60);
@@ -265,29 +264,57 @@ public class CompilationScope {
         // save all function parameter registers (a0 - a3)
         for (int i = 0; i < 4; i++) {
             GPRegister saveReg = GPRegister.valueOf("A" + i);
-            gen.emitInstruction(MemoryInstruction.SW, saveReg, null, 4 * localOffset, GPRegister.SP);
-            localOffset += 1;
+            gen.emitInstruction(MemoryInstruction.SW, saveReg, null, localOffset, GPRegister.SP);
+            localOffset += 4;
         }
 
         // save all temporary registers (t0 - t9)
         for (int i = 0; i < 10; i++) {
             GPRegister saveReg = GPRegister.valueOf("T" + i);
-            gen.emitInstruction(MemoryInstruction.SW, saveReg, null, 4 * localOffset, GPRegister.SP);
-            localOffset += 1;
+            gen.emitInstruction(MemoryInstruction.SW, saveReg, null, localOffset, GPRegister.SP);
+            localOffset += 4;
         }
 
         // save return address (ra)
-        for (int i = 0; i < 1; i++) {
+        {
             GPRegister saveReg = GPRegister.valueOf("RA");
-            gen.emitInstruction(MemoryInstruction.SW, saveReg, null, 4 * localOffset, GPRegister.SP);
-            localOffset += 1;
+            gen.emitInstruction(MemoryInstruction.SW, saveReg, null, localOffset, GPRegister.SP);
+            localOffset += 4;
         }
         
         currentStackOffset += localOffset;
     }
 
     public void saveCalleeSaveRegisters() {
-        throw new UnsupportedOperationException("Not yet implemented");
+
+        // move stack pointer down by amount of registers to save * 4
+        gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, -40);
+
+        // save all registers which are callee save (s0 - s7, sp, fp)
+
+        int localOffset = 0;
+        // save all temporary registers (s0 - s7)
+        for (int i = 0; i < 8; i++) {
+            GPRegister saveReg = GPRegister.valueOf("S" + i);
+            gen.emitInstruction(MemoryInstruction.SW, saveReg, null, localOffset, GPRegister.SP);
+            localOffset += 4;
+        }
+
+        // save stack pointer register (SP)
+        {
+            GPRegister saveReg = GPRegister.valueOf("SP");
+            gen.emitInstruction(MemoryInstruction.SW, saveReg, null, localOffset, GPRegister.SP);
+            localOffset += 4;
+        }
+
+        // save frame pointer register (FP)
+        {
+            GPRegister saveReg = GPRegister.valueOf("FP");
+            gen.emitInstruction(MemoryInstruction.SW, saveReg, null, localOffset, GPRegister.SP);
+            localOffset += 4;
+        }
+
+        currentStackOffset += localOffset;
     }
 
     public void restoreCallerSaveRegisters() {
@@ -298,36 +325,65 @@ public class CompilationScope {
          // restore all function parameter registers (a0 - a3)
         for (int i = 0; i < 4; i++) {
             GPRegister saveReg = GPRegister.valueOf("A" + i);
-            gen.emitInstruction(MemoryInstruction.LW, saveReg, null, 4 * localOffset, GPRegister.SP);
-            localOffset += 1;
+            gen.emitInstruction(MemoryInstruction.LW, saveReg, null, localOffset, GPRegister.SP);
+            localOffset += 4;
         }
 
         // restore all temporary registers (t0 - t9)
         for (int i = 0; i < 10; i++) {
             GPRegister saveReg = GPRegister.valueOf("T" + i);
-            gen.emitInstruction(MemoryInstruction.LW, saveReg, null, 4 * localOffset, GPRegister.SP);
-            localOffset += 1;
+            gen.emitInstruction(MemoryInstruction.LW, saveReg, null, localOffset, GPRegister.SP);
+            localOffset += 4;
         }
 
         // restore return address (ra)
-        for (int i = 0; i < 1; i++) {
+        {
             GPRegister saveReg = GPRegister.valueOf("RA");
-            gen.emitInstruction(MemoryInstruction.LW, saveReg, null, 4 * localOffset, GPRegister.SP);
-            localOffset += 1;
+            gen.emitInstruction(MemoryInstruction.LW, saveReg, null, localOffset, GPRegister.SP);
+            localOffset += 4;
         }
 
         // move stackpinter up by (amount of registers restored * 4)
-        gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, 4 * localOffset);
+        gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, localOffset);
 
         // remove local offset from stack
         currentStackOffset -= localOffset;
 
         // move stack pointer up by current offset
-        gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, currentStackOffset);
+        // gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, currentStackOffset);
     }
 
     public void restoreCalleeSaveRegisters() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        // restore all registers which are callee save (s0 - s7, sp, fp)
+
+        int localOffset = 0;
+
+        // save all temporary registers (s0 - s7)
+        for (int i = 0; i < 8; i++) {
+            GPRegister loadReg = GPRegister.valueOf("S" + i);
+            gen.emitInstruction(MemoryInstruction.LW, loadReg, null, localOffset, GPRegister.SP);
+            localOffset += 4;
+        }
+
+        // save stack pointer register (SP)
+        {
+            GPRegister loadReg = GPRegister.valueOf("SP");
+            gen.emitInstruction(MemoryInstruction.LW, loadReg, null, localOffset, GPRegister.SP);
+            localOffset += 4;
+        }
+
+        // save frame pointer register (FP)
+        {
+            GPRegister loadReg = GPRegister.valueOf("FP");
+            gen.emitInstruction(MemoryInstruction.LW, loadReg, null, localOffset, GPRegister.SP);
+            localOffset += 4;
+        }
+
+        // move stackpinter up by (amount of registers restored * 4)
+        gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, localOffset);
+
+        // remove local offset from stack
+        currentStackOffset -= localOffset;
     }
 
     /*

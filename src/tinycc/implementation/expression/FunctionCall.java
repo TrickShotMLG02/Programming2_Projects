@@ -100,7 +100,7 @@ public class FunctionCall extends Expression {
 
             // check if param is an identifier
             // or if it is a number
-
+            // or if it is a general expression
             if (param instanceof Identifier) {
                 // grab name of the identifier passed
                 String paramName = param.getToken().getText();
@@ -124,6 +124,23 @@ public class FunctionCall extends Expression {
                 
                 // generate instruction to load the value into the register
                 gen.emitInstruction(ImmediateInstruction.ADDI, paramDeclReg, GPRegister.ZERO, paramVal);
+            }
+            else if (param instanceof Expression) {
+                // generate the code for the expression and grab the resulting register
+                GPRegister paramReg = param.generateCode(funCallScope, gen);
+
+                // get next function parameter register
+                GPRegister paramDeclReg = funCallScope.getNextFreeFunctionRegister("A" + currParamIndex);
+
+                // move expression register value to param register
+                gen.emitInstruction(RegisterInstruction.ADD, paramDeclReg, GPRegister.ZERO, paramReg);
+
+                // free paramReg
+                try {
+                    s.remove(paramReg);
+                } catch (Exception e) {
+                }
+
             }
 
             // increment current register

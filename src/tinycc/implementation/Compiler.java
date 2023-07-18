@@ -276,6 +276,9 @@ public class Compiler {
 						throw new IllegalArgumentException("No free function register left");
 				}
 
+				// save callee save registers after entering the function
+				funScope.saveCalleeSaveRegisters();
+
 				// grab function body as Block, since all functions consist of a Block
 				Block body = (Block) fun.getBody();
 
@@ -290,6 +293,10 @@ public class Compiler {
 
 					// TODO: Bonus task
 				}
+
+				// restore the callee save registers befor returning from the function
+				// This is done inside the return statement directly, since it has to be done
+				// after moving the value to V0 and before emitting the jal instruction
 			}
 		}
 

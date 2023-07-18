@@ -57,20 +57,30 @@ public class If extends Statement{
         // generate code for condition and save the register
         GPRegister conditionReg = condition.generateCode(s, gen);
 
+        TextLabel conditionLabel = gen.makeUniqueTextLabel("_IF_CONDITION_EVALUATION");
+        TextLabel consequenceLabel = gen.makeUniqueTextLabel("_IF_CONDITION_TRUE");
+        TextLabel alternativeLabel = null;
+
+        gen.emitLabel(conditionLabel);
+        // create branch instruction to check if condition is not equal to 0 (thus equal to 1)
+        gen.emitInstruction(BranchInstruction.BNE, conditionReg, GPRegister.ZERO, consequenceLabel);
+
+        if (alternative != null) {
+            alternativeLabel = gen.makeUniqueTextLabel("_IF_CONDITION_FALSE");
+            gen.emitInstruction(JumpInstruction.J, alternativeLabel);
+        }
+
         // create new label for consequence code
-        TextLabel consequenceLabel = gen.makeUniqueTextLabel();
         gen.emitLabel(consequenceLabel);
 
         // generate code of consequence branch under that label
         consequence.generateCode(s, gen);
 
-        // create branch instruction to check if condition is not equal to 0 (thus equal to 1)
-        gen.emitInstruction(BranchInstruction.BNE, conditionReg, GPRegister.ZERO, consequenceLabel);
+        
 
         // check if alternative exists
         if (alternative != null) {
             // create new label for alternative code
-            TextLabel alternativeLabel = gen.makeUniqueTextLabel();
             gen.emitLabel(alternativeLabel);
             
             // generate code of alternative branch under that label

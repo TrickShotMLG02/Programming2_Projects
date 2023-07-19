@@ -11,6 +11,7 @@ import tinycc.mipsasmgen.DataLabel;
 import tinycc.mipsasmgen.GPRegister;
 import tinycc.mipsasmgen.MemoryInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
+import tinycc.mipsasmgen.RegisterInstruction;
 import tinycc.parser.Token;
 
 public class AssignExpression extends BinaryExpression {
@@ -65,6 +66,7 @@ public class AssignExpression extends BinaryExpression {
         // since i want to be able to determine, if i have to generate the code for the right side
         // or if i can lookup an identifier
         // or if i have a variable
+        // if it is a unary operator which is LValue (ie. Indirection)
 
         // left expression can be an identifier, thus look it up and extract stack offset
         String id = getLeft().getToken().getText();
@@ -76,7 +78,9 @@ public class AssignExpression extends BinaryExpression {
             // check if it is a global declaration
             if (globalVar == null) {
                 if (reg == null) {
-                    throw new IllegalArgumentException("identifier " + getToken().getText() + " not found");
+                    if (!getLeft().isLValue()) {
+                        throw new IllegalArgumentException("identifier " + getRight().getToken().getText() + " not found");
+                    }
                 }
             }
         }
@@ -101,6 +105,13 @@ public class AssignExpression extends BinaryExpression {
 
             // return reg
             return reg;
+        }
+        else if (getLeft().isLValue()) {
+            // check if left side is lvalue
+            // if so, generate code of left side
+            // and assign right side to it
+            GPRegister left = getLeft().generateCode(s, gen);
+            gen.emitInstruction(RegisterInstruction.ADD, left, right, GPRegister.ZERO);
         }
         else {
             throw new IllegalArgumentException("Should not reach that");

@@ -38,7 +38,7 @@ public class While extends Statement{
         // check that type of expression is integertype
         if (!condition.checkType(d, scope).isIntegerType()) {
             // print error message since condition has invalid type
-            d.printError(loc, "While - invalid condition type: " + condition);
+            d.printError(loc, "While - invalid condition type");
         }
 
         body.checkType(d, scope, f);

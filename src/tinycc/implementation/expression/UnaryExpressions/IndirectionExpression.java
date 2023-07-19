@@ -44,7 +44,6 @@ public class IndirectionExpression extends UnaryExpression {
 
     @Override
     public GPRegister generateCode(CompilationScope s, MipsAsmGen gen) {
-        // follow the pointer to where it points and return 
         throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
     } 
 

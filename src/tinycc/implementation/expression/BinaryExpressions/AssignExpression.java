@@ -78,8 +78,6 @@ public class AssignExpression extends BinaryExpression {
             // check if it is a global declaration
             if (globalVar == null) {
                 if (reg == null) {
-                    // TODO: maybe check if the type is complete
-                    // but should still work i guess
                     if (!getLeft().isLValue()) {
                         throw new IllegalArgumentException("identifier " + getRight().getToken().getText() + " not found");
                     }

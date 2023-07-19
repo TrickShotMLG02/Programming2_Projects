@@ -39,8 +39,7 @@ public class Declaration extends Statement{
         Type extDeclType = extDeclaration.getType();
 
         if (init != null) {
-            // throw error, if types not equal, and we dont assign a void pointer to an other pointer
-            if (!initType.equals(extDeclType) && !extDeclType.isVoidPointer() && !initType.isPointerType()) {
+            if (!initType.equals(extDeclType)) {
                 // print error, since init type and declaration type are not equal
                 d.printError(extDeclaration.getToken(), "invalid init type");
             }

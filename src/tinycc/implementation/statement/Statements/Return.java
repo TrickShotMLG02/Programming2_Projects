@@ -37,11 +37,11 @@ public class Return extends Statement{
         // check type of expression if it exists
         if (exp != null) {
             // grab types for comparison
-            Type expType = exp.checkType(d, s);
+            Type returnExpType = exp.checkType(d, s);
             Type funType = f.getType();
 
             // check if types are not equal and type of exp is not compatible with function type
-            if (!expType.equals(funType) && !expType.isIntegerType() && !funType.isIntegerType()) {
+            if (!returnExpType.equals(funType) || (!returnExpType.isIntegerType() && !funType.isIntegerType())) {
                 d.printError(exp.getToken(), "invalid return type");
             }
 

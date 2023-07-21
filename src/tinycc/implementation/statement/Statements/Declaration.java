@@ -43,7 +43,7 @@ public class Declaration extends Statement{
             if (initType.isPointerType() && extDeclType.isPointerType()) {
                 // check if they are equal or init is void pointer
                 if (!initType.equals(extDeclType) && !initType.isVoidPointer()) {
-                    d.printError(extDeclaration.getToken(), "pointer assignment invalid");
+                    d.printError(extDeclaration.getToken(), "pointer assignment invalid " + extDeclType + " expected, but was " + initType);
                 }
             }
             // check if 

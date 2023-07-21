@@ -1,6 +1,7 @@
 package tinycc.implementation.statement.Statements;
 
 import tinycc.diagnostic.Diagnostic;
+import tinycc.diagnostic.Locatable;
 import tinycc.implementation.CompilationScope;
 import tinycc.implementation.Scope;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
@@ -14,9 +15,11 @@ import tinycc.mipsasmgen.MipsAsmGen;
 
 public class Return extends Statement{
 
+    Locatable loc;
     Expression exp;
 
-    public Return(Expression expression) {
+    public Return(Locatable loc, Expression expression) {
+        this.loc = loc;
         this.exp = expression;
     }
 
@@ -49,7 +52,7 @@ public class Return extends Statement{
 
             // check if nothing is returned, even if function is not of type void
             if (!funType.isVoidType()) {
-                d.printError(exp.getToken(), "There should be nothing to return");
+                d.printError(loc, "There should be nothing to return");
             }
         }
     }

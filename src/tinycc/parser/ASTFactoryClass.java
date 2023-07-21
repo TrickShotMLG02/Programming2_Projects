@@ -54,7 +54,7 @@ public class ASTFactoryClass implements ASTFactory {
 
     @Override
     public Statement createReturnStatement(Locatable loc, Expression expression) {
-        return new Return(expression);
+        return new Return(loc, expression);
     }
 
     @Override

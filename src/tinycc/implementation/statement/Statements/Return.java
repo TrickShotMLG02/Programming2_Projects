@@ -7,6 +7,7 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.TopLevelConstructs.ExternalDeclaration;
 import tinycc.implementation.expression.Expression;
 import tinycc.implementation.statement.Statement;
+import tinycc.implementation.type.FunctionType;
 import tinycc.implementation.type.Type;
 import tinycc.mipsasmgen.GPRegister;
 import tinycc.mipsasmgen.ImmediateInstruction;
@@ -38,13 +39,13 @@ public class Return extends Statement{
         if (exp != null) {
             // grab types for comparison
             Type returnExpType = exp.checkType(d, s);
-            Type funType = f.getType();
+            FunctionType funType = (FunctionType)f.getType();
+            Type returnType = funType.getReturnType();
 
             // check if types are not equal and type of exp is not compatible with function type
-            if (!returnExpType.equals(funType) && (!returnExpType.isIntegerType() && !funType.isIntegerType())) {
-                d.printError(exp.getToken(), "invalid return type - " + returnExpType + " instead of " + funType);
+            if (!returnExpType.equals(returnType) && (!returnExpType.isIntegerType() && !returnType.isIntegerType())) {
+                d.printError(exp.getToken(), "invalid return type - " + returnExpType + " instead of " + returnType);
             }
-
         }
         else {
             // grab type of function

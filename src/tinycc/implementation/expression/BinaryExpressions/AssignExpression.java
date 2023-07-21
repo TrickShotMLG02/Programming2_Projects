@@ -76,7 +76,7 @@ public class AssignExpression extends BinaryExpression {
             // check if it is a global declaration
             if (globalVar == null) {
                 if (reg == null) {
-                    throw new IllegalArgumentException("identifier " + getToken().getText() + " not found");
+                    throw new IllegalArgumentException("identifier " + id + " not found");
                 }
             }
         }

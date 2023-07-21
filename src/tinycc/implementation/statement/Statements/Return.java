@@ -41,8 +41,8 @@ public class Return extends Statement{
             Type funType = f.getType();
 
             // check if types are not equal and type of exp is not compatible with function type
-            if (!returnExpType.equals(funType) || (!returnExpType.isIntegerType() && !funType.isIntegerType())) {
-                d.printError(exp.getToken(), "invalid return type");
+            if (!returnExpType.equals(funType) && (!returnExpType.isIntegerType() && !funType.isIntegerType())) {
+                d.printError(exp.getToken(), "invalid return type" + returnExpType + funType);
             }
 
         }

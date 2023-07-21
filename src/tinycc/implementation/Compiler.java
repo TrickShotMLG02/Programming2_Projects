@@ -92,6 +92,16 @@ public class Compiler {
 				// typecast declaration to function
 				Function fun = (Function) decl;
 
+				try {
+					Declaration existingDecl = s.lookup(fun.getToken().getText());
+					// get type of existing function
+					
+					// check type of existingDecl to validate that it hasnt been declared previously
+					existingDecl.checkType(diagnostic, s, fun);
+				} catch (Exception e) {
+					
+				}
+
 				// create new scope for function
 				Scope functionScope = s.newNestedScope();
 

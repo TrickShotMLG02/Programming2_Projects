@@ -42,7 +42,7 @@ public class Return extends Statement{
 
             // check if types are not equal and type of exp is not compatible with function type
             if (!returnExpType.equals(funType) && (!returnExpType.isIntegerType() && !funType.isIntegerType())) {
-                d.printError(exp.getToken(), "invalid return type" + returnExpType + funType);
+                d.printError(exp.getToken(), "invalid return type - " + returnExpType + " instead of " + funType);
             }
 
         }

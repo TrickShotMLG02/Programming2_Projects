@@ -407,4 +407,9 @@ public class CompilationScope {
     public int getStackOffset() {
         return currentStackOffset;
     }
+
+    public void adjustStackOffset(int offset) {
+        //gen.emitInstruction(ImmediateInstruction.ADDI, GPRegister.SP, GPRegister.SP, -offset);
+        currentStackOffset -= offset;
+    }
 }

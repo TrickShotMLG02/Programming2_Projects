@@ -80,7 +80,10 @@ public class AssignExpression extends BinaryExpression {
             GPRegister indirReg = indir.generateCode(s, gen);
 
             // return the register
-            return indirReg;
+            //return indirReg;
+
+            // store indirReg in reg since we still need to generate the code for the right expression
+            reg = indirReg;
         }
 
         else if (offset == null) {

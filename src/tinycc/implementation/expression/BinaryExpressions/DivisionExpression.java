@@ -27,8 +27,8 @@ public class DivisionExpression extends BinaryExpression {
         if (!typeLeft.isIntegerType() || !typeRight.isIntegerType()) {
             d.printError(getToken(), "Division - invalid types: " + typeLeft + ", " + typeRight);
         }
-
-        return new Int();
+        this.type = new Int();
+        return this.type;
     }
 
     @Override

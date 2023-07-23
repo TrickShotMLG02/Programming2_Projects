@@ -37,8 +37,9 @@ public class AndExpression extends BinaryExpression {
         if (!typeRight.isScalarType()) {
             d.printError(getRight().getToken(), "type right not a scalar type");
         }
-
-        return new Int();
+        
+        this.type = new Int();
+        return this.type;
     }
 
     @Override

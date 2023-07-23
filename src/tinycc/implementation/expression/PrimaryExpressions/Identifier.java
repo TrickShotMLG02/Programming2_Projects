@@ -31,7 +31,8 @@ public class Identifier extends PrimaryExpression {
             Declaration decl = s.lookup(getToken().getText());
 
             // return the type of the declaration
-            return decl.getExternalDeclaration().getType();
+            this.type = decl.getExternalDeclaration().getType();
+            return this.type;
         } catch (Exception e) {
             // identifier not declared
             d.printError(getToken(), "identifier not declared " + getToken().getText());

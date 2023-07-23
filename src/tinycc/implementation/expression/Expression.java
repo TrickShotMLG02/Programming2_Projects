@@ -16,6 +16,8 @@ import tinycc.parser.Token;
  */
 public abstract class Expression {
 
+	protected Type type;
+
 	/**
 	 * Creates a string representation of this expression.
 	 *
@@ -35,5 +37,9 @@ public abstract class Expression {
 
 	public boolean isNullPointer() {
 		return false;
+	}
+
+	public Type getType() {
+		return this.type;
 	}
 }

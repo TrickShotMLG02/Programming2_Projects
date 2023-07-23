@@ -37,27 +37,25 @@ public class EqualsExpression extends BinaryExpression {
 
         // check if both types are integer types
         if (typeLeft.isIntegerType() && typeRight.isIntegerType()) {
-            return new Int();
+            this.type = new Int();
         }
 
         // check if pointers types and they are equal
-        if (typeLeft.isPointerType() && typeRight.isPointerType() && typeLeft.equals(typeRight)) {
-            return new Int();
+        else if (typeLeft.isPointerType() && typeRight.isPointerType() && typeLeft.equals(typeRight)) {
+            this.type = new Int();
         }
 
         // check for one void pointer and a pointer
-        if (typeLeft.isVoidPointer() && typeRight.isPointerType() || typeLeft.isPointerType() && typeRight.isVoidPointer()) {
-            return new Int();
+        else if (typeLeft.isVoidPointer() && typeRight.isPointerType() || typeLeft.isPointerType() && typeRight.isVoidPointer()) {
+            this.type = new Int();
         }
 
         // check for one null pointer and a pointer
-        if (getLeft().isNullPointer() && typeRight.isPointerType() || typeLeft.isPointerType() && getRight().isNullPointer()) {
-            return new Int();
+        else if (getLeft().isNullPointer() && typeRight.isPointerType() || typeLeft.isPointerType() && getRight().isNullPointer()) {
+            this.type = new Int();
         }
 
-        // print error
-        d.printError(getToken(), "Equal - Invalid types: " + typeLeft + ", " + typeRight);
-        return null;
+        return this.type;
     }
 
     @Override

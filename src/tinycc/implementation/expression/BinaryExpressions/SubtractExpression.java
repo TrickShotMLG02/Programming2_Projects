@@ -34,31 +34,28 @@ public class SubtractExpression extends BinaryExpression{
         
         // check which rule applies
         if (typeLeft.isIntegerType() && typeRight.isIntegerType()) {
-            return new Int();
+            this.type = new Int();
         }
 
-        if (typeLeft.isPointerType() && typeRight.isIntegerType()) {
+        else if (typeLeft.isPointerType() && typeRight.isIntegerType()) {
             // return new pointer
-            return new PointerType(getLeft().checkType(d, s));
+            this.type = new PointerType(getLeft().checkType(d, s));
         }
 
-        if (typeLeft.isPointerType() && typeRight.isPointerType()) {
+        else if (typeLeft.isPointerType() && typeRight.isPointerType()) {
             PointerType pTypeLeft = (PointerType) typeLeft;
             PointerType pTypeRight = (PointerType) typeRight;
             
             // check if pointer types are identical and they point to complete type
             if (pTypeLeft.equals(pTypeRight) && pTypeLeft.isComplete()) {
-                return new Int();
+                this.type = new Int();
             }
 
             // otherwise print error since types not identical
             d.printError(getToken(), "Pointers not complete or not equal");
         }
 
-        // shouldn't reach this case
-        // print error here
-        d.printError(getToken(), "will be null");
-        return null;     
+        return this.type;     
     }
 
     @Override

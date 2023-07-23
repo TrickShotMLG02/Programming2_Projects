@@ -37,33 +37,30 @@ public class AddExpression extends BinaryExpression {
         
         // check which rule applies
         if (typeLeft.isIntegerType() && typeRight.isIntegerType()) {
-            return new Int();
+            this.type = new Int();
         }
 
-        if (typeLeft.isIntegerType() && typeRight.isPointerType()) {
+        else if (typeLeft.isIntegerType() && typeRight.isPointerType()) {
             if (typeRight.isComplete()) {
                 // return new pointer
-                return new PointerType(getRight().checkType(d, s));
+                this.type = new PointerType(getRight().checkType(d, s));
             }
             else {
                 d.printError(getRight().getToken(), "Not complete pointer type");
             }
         }
 
-        if (typeLeft.isPointerType() && typeRight.isIntegerType()) {
+        else if (typeLeft.isPointerType() && typeRight.isIntegerType()) {
             if (typeLeft.isComplete()) {
                 // return new pointer
-                return new PointerType(getRight().checkType(d, s));
+                this.type = new PointerType(getRight().checkType(d, s));
             }
             else {
                 d.printError(getLeft().getToken(), "Not complete pointer type");
             }
         }
 
-        // shouldn't reach this case
-        // print error here
-        d.printError(getToken(), "will be null");
-        return null;     
+        return this.type;    
     }
 
     @Override

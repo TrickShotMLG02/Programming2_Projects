@@ -22,7 +22,8 @@ public class Character extends PrimaryExpression {
 
     @Override
     public Type checkType(Diagnostic d, Scope s) {
-        return new Char();
+        this.type = new Char();
+        return this.type;
     }
 
     @Override

@@ -24,7 +24,8 @@ public class Number extends PrimaryExpression {
 
     @Override
     public Type checkType(Diagnostic d, Scope s) {
-        return new Int();
+        this.type = new Int();
+        return this.type;
     }
 
     @Override

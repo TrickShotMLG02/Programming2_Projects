@@ -43,7 +43,8 @@ public class SizeOfExpression extends UnaryExpression {
             }
 
             // return integer type sinze sizeof is always int
-            return new Int();
+            this.type = new Int();
+            return this.type;
         }
         // check if it is a string literal (a pointer to a char)
         else if (applicableType.isPointerType()) {
@@ -52,7 +53,8 @@ public class SizeOfExpression extends UnaryExpression {
 
             // check if it is a pointer to char, print error
             if (pType.getPointerType() instanceof Char) {
-                return new Int();
+                this.type = new Int();
+                return this.type;
             }
 
             d.printError(getToken(), "not a string literal");

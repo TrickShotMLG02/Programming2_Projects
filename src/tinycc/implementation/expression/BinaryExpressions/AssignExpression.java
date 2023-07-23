@@ -50,12 +50,10 @@ public class AssignExpression extends BinaryExpression {
 
         // check if any condition is true -> return always left type
         if (identical ||intergerTypes || bothPointersMinOneVoid || leftPointerRightNullPointer) {
-            return typeLeft;
+            this.type = typeLeft;
         }
 
-        // should not reach this code
-        d.printError(getToken(), "This should not be reached since it is covered from above statements");
-        return null;
+        return this.type;
     }
 
     @Override

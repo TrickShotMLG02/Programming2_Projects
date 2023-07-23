@@ -37,12 +37,10 @@ public class LessEqualExpression extends BinaryExpression {
 
         // check for type equality (pointer, pointer or int, int)
         if (typeLeft.equals(typeRight)) {
-            return new Int();
+            this.type = new Int();
         }
 
-        // otherwise print error since types not identical
-        d.printError(getToken(), "will be null");
-        return null;
+        return this.type;
     }
 
     @Override

@@ -34,7 +34,8 @@ public class IndirectionExpression extends UnaryExpression {
             PointerType pType = (PointerType) applicableType;
 
             // return the type
-            return pType.getPointerType();
+            this.type = pType.getPointerType();
+            return this.type;
         }
         else {
             d.printError(getToken(), "Not a pointer or not compete type");

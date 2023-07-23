@@ -28,7 +28,8 @@ public class AddressExpression extends UnaryExpression {
             // check if expression is LValue
             if (getExpression().isLValue()) {
                 // thus return pointer of resulting type of expression
-                return new PointerType(applicableType);
+                this.type = new PointerType(applicableType);
+                return this.type;
             }
             else {
                 d.printError(getToken(), "Cannot take address of non LValue expression");

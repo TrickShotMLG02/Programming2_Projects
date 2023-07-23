@@ -28,7 +28,8 @@ public class MultiplicationExpression extends BinaryExpression {
             d.printError(getToken(), "Multiplication: invalid types: " + typeLeft + ", " + typeRight);
         }
 
-        return new Int();
+        this.type = new Int();
+        return this.type;
     }
 
     @Override

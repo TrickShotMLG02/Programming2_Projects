@@ -24,7 +24,8 @@ public class String extends PrimaryExpression {
 
     @Override
     public Type checkType(Diagnostic d, Scope s) {
-        return new PointerType(new Char());
+        this.type = new PointerType(new Char());
+        return this.type;
     }
 
     @Override

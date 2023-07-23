@@ -86,6 +86,12 @@ public class AssignExpression extends BinaryExpression {
             // assign right register to left one
             gen.emitInstruction(RegisterInstruction.ADD, indirReg, GPRegister.ZERO, right);
 
+            // adjust stack offset, since we store a word (4 bytes)
+            s.adjustStackOffset(4);
+            
+            // store register in stack
+            gen.emitInstruction(MemoryInstruction.SW, indirReg, null, s.getStackOffset(), GPRegister.SP);
+
             // free right register
             try {
                 s.remove(right);

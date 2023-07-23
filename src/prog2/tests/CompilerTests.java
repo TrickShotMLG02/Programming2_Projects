@@ -41,7 +41,7 @@ public class CompilerTests {
 
 	/* set these to true, if you need some help while debugging */
 	public static final boolean PRINT_C_CODE = false;
-	public static final boolean PRINT_ASM_CODE = false;
+	public static final boolean PRINT_ASM_CODE = true;
 	public static final boolean PRINT_VC = false;
 
 	protected FatalDiagnostic diagnostic;

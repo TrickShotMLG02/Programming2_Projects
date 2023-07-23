@@ -13,6 +13,7 @@ import tinycc.mipsasmgen.DataLabel;
 import tinycc.mipsasmgen.GPRegister;
 import tinycc.mipsasmgen.MemoryInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
+import tinycc.mipsasmgen.RegisterInstruction;
 import tinycc.parser.Token;
 
 public class AssignExpression extends BinaryExpression {
@@ -79,11 +80,20 @@ public class AssignExpression extends BinaryExpression {
             // get register of the indirApplicationExp
             GPRegister indirReg = indir.generateCode(s, gen);
 
-            // return the register
-            //return indirReg;
+            // generate code for right expression
+            GPRegister right = getRight().generateCode(s, gen);
 
-            // store indirReg in reg since we still need to generate the code for the right expression
-            reg = indirReg;
+            // assign right register to left one
+            gen.emitInstruction(RegisterInstruction.ADD, indirReg, GPRegister.ZERO, right);
+
+            // free right register
+            try {
+                s.remove(right);
+            } catch (Exception e) {
+            }
+
+            // return the register
+            return indirReg;
         }
 
         else if (offset == null) {

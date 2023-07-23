@@ -247,7 +247,8 @@ public class Compiler {
 
 				// create textlabel
 				TextLabel funLbl = out.makeTextLabel(fun.getToken().getText());
-				out.emitLabel(funLbl);
+				// TODO: check if i really dont have to emit label on function declaration
+				// out.emitLabel(funLbl);
 			}
 			else if (decl.isFunction()) {
 

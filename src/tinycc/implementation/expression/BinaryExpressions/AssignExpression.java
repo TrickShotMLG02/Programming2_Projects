@@ -6,6 +6,8 @@ import tinycc.implementation.Scope;
 import tinycc.implementation.expression.BinaryExpression;
 import tinycc.implementation.expression.BinaryOperator;
 import tinycc.implementation.expression.Expression;
+import tinycc.implementation.expression.PrimaryExpressions.Identifier;
+import tinycc.implementation.expression.UnaryExpressions.IndirectionExpression;
 import tinycc.implementation.type.Type;
 import tinycc.mipsasmgen.DataLabel;
 import tinycc.mipsasmgen.GPRegister;
@@ -63,18 +65,29 @@ public class AssignExpression extends BinaryExpression {
         // since i want to be able to determine, if i have to generate the code for the right side
         // or if i can lookup an identifier
         // or if i have a variable
-
         // left expression can be an identifier, thus look it up and extract stack offset
         String id = getLeft().getToken().getText();
         Integer offset = s.lookupLocalDeclaration(id);
         DataLabel globalVar = s.lookupDataLabel(id);
         GPRegister reg = s.lookupRegister(id);
 
-        if (offset == null) {
+        // TODO: check if left is not an identifier
+        if (getLeft().isLValue() && getLeft().getClass() != Identifier.class) {
+            // we know it must be a pointer (indirection) since it is no identifier and L-Value
+            IndirectionExpression indir = (IndirectionExpression) getLeft();
+
+            // get register of the indirApplicationExp
+            GPRegister indirReg = indir.generateCode(s, gen);
+
+            // return the register
+            return indirReg;
+        }
+
+        else if (offset == null) {
             // check if it is a global declaration
             if (globalVar == null) {
                 if (reg == null) {
-                    throw new IllegalArgumentException("identifier " + id + " not found");
+                    throw new IllegalArgumentException("identifier " + id + " not found in " + getLeft().getClass());
                 }
             }
         }

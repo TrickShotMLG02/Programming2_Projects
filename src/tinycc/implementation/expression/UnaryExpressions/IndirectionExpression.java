@@ -9,6 +9,7 @@ import tinycc.implementation.expression.UnaryOperator;
 import tinycc.implementation.type.PointerType;
 import tinycc.implementation.type.Type;
 import tinycc.mipsasmgen.GPRegister;
+import tinycc.mipsasmgen.MemoryInstruction;
 import tinycc.mipsasmgen.MipsAsmGen;
 import tinycc.parser.Token;
 
@@ -45,7 +46,20 @@ public class IndirectionExpression extends UnaryExpression {
 
     @Override
     public GPRegister generateCode(CompilationScope s, MipsAsmGen gen) {
-        throw new UnsupportedOperationException("Unimplemented method 'generateCode'");
+        // get offset of declaration
+        Integer offset = s.lookupLocalDeclaration(getExpression().getToken().getText());
+
+        // set offset to 0 if not found in stack
+        offset = offset == null ? 0 : offset;
+
+        // get next free register
+        GPRegister reg = s.getNextFreeTempRegister();
+
+        // emit instruction to load from stack pointer
+        gen.emitInstruction(MemoryInstruction.LW, reg, null, offset, GPRegister.SP);
+
+        // return the reg
+        return reg;
     } 
 
     @Override

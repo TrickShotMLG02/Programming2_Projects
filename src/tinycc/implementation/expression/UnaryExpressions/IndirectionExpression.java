@@ -49,11 +49,11 @@ public class IndirectionExpression extends UnaryExpression {
         // get offset of declaration
         Integer offset = s.lookupLocalDeclaration(getExpression().getToken().getText());
 
-        // set offset to 0 if not found in stack
-        offset = offset == null ? 0 : offset;
+        // set offset to currentStackOffset if not found in stack
+        offset = offset == null ? s.getStackOffset() : offset;
 
-        // get next free register
-        GPRegister reg = s.getNextFreeTempRegister();
+        // get register of the expression
+        GPRegister reg = getExpression().generateCode(s, gen);
 
         // emit instruction to load from stack pointer
         gen.emitInstruction(MemoryInstruction.LW, reg, null, offset, GPRegister.SP);

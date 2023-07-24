@@ -13,6 +13,8 @@ import tinycc.implementation.expression.Expression;
 import tinycc.implementation.expression.FunctionCall;
 import tinycc.implementation.statement.Statement;
 import tinycc.implementation.statement.Statements.Block;
+import tinycc.implementation.statement.Statements.Break;
+import tinycc.implementation.statement.Statements.Continue;
 import tinycc.implementation.statement.Statements.Declaration;
 import tinycc.implementation.statement.Statements.ExpressionStatement;
 import tinycc.implementation.statement.Statements.If;
@@ -127,5 +129,15 @@ public class ASTFactoryClass implements ASTFactory {
     
     public List<ExternalDeclaration> getExternalDeclarations() {
         return declarations;
+    }
+
+    @Override
+    public Statement createBreakStatement(Locatable loc) {
+        return new Break(loc);
+    }
+
+    @Override
+    public Statement createContinueStatement(Locatable loc) {
+        return new Continue(loc);
     }
 }

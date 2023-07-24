@@ -29,7 +29,7 @@ public class AssignExpression extends BinaryExpression {
 
         // TODO: JUST FOR DEBUGGING
         if (typeRight == null) {
-            throw new IllegalStateException(getRight().getClass() + " - " + getRight());
+            throw new IllegalStateException(getLeft().getClass() + " - " + getLeft() + "  <->  " + getRight().getClass() + " - " + getRight());
         }
 
         if (!typeRight.isScalarType()) {

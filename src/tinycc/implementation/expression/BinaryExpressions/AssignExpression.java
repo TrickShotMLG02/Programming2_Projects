@@ -27,6 +27,11 @@ public class AssignExpression extends BinaryExpression {
         Type typeLeft = getLeft().checkType(d, s);
         Type typeRight = getRight().checkType(d, s);
 
+        // TODO: JUST FOR DEBUGGING
+        if (typeRight == null) {
+            throw new IllegalStateException(getRight().getClass() + " - " + getRight());
+        }
+
         if (!typeRight.isScalarType()) {
             d.printError(getToken(), "Not a scalar type");
         }

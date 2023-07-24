@@ -73,7 +73,8 @@ public class FunctionCall extends Expression {
             }
         }
 
-        return calleeFunType.getReturnType();
+        this.type = calleeFunType.getReturnType();
+        return this.type;
     }
 
     @Override

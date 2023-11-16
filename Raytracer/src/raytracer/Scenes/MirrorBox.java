@@ -25,7 +25,6 @@ import raytracer.core.Shader;
 import raytracer.core.def.Accelerator;
 import raytracer.core.def.BVH;
 import raytracer.core.def.PointLightSource;
-import raytracer.core.def.SimpleAccelerator;
 import raytracer.core.def.StandardObj;
 import raytracer.core.def.StandardScene;
 import raytracer.geom.GeomFactory;
@@ -33,17 +32,10 @@ import raytracer.geom.Primitive;
 import raytracer.math.Color;
 import raytracer.math.Point;
 import raytracer.math.Vec3;
-import raytracer.shade.Mirror;
 import raytracer.shade.ShaderFactory;
 import raytracer.shade.SingleColor;
 
-/*
- * File provided by Marcel Ulrich
- */
-public class CornellBoxMirror {
-
-    private static final boolean usePhong = true;
-    private static final boolean useAcceleration = true;
+public class MirrorBox {
 
     private static class MyPanel extends JPanel {
 
@@ -183,7 +175,6 @@ public class CornellBoxMirror {
             }
         });
 
-        // final Color ambient = Color.WHITE.scale(0.05f);
         final Color ambient = Color.WHITE.scale(0.05f);
 
         final Camera cam = new PerspectiveCamera(
@@ -191,24 +182,14 @@ public class CornellBoxMirror {
                 new Point(0, 5, 0),
                 new Vec3(0, 5, 0),
                 5, 10, 10);
-
-        final Accelerator accel;
-        if (useAcceleration)
-            accel = new BVH();
-        else
-            accel = new SimpleAccelerator();
+        final Accelerator accel = new BVH();
 
         // Floor
         {
             final Primitive plane = GeomFactory.createPlane(Vec3.Y, Point.ORIGIN);
-            final Shader white = new SingleColor(Color.WHITE);
-            final Shader shader = ShaderFactory.createPhong(white, ambient, 0.4f, 1.0f, 15);
-
-            Obj floor;
-            if (usePhong)
-                floor = new StandardObj(plane, shader);
-            else
-                floor = new StandardObj(plane, white);
+            final Shader magenta = new SingleColor(Color.MAGENTA);
+            final Shader shader = ShaderFactory.createPhong(magenta, ambient, 0.4f, 1.0f, 1);
+            final Obj floor = new StandardObj(plane, shader);
             accel.add(floor);
         }
 
@@ -216,13 +197,8 @@ public class CornellBoxMirror {
         {
             final Primitive plane = GeomFactory.createPlane(Vec3.X, new Point(-5, 0, 0));
             final Shader blue = new SingleColor(Color.BLUE);
-            final Shader shader = ShaderFactory.createPhong(blue, ambient, 0.7f, 1.0f, 15);
-            Obj leftWall;
-            if (usePhong)
-                leftWall = new StandardObj(plane, shader);
-            else
-                leftWall = new StandardObj(plane, blue);
-
+            final Shader shader = ShaderFactory.createPhong(blue, ambient, 0.4f, 1.0f, 15);
+            final Obj leftWall = new StandardObj(plane, shader);
             accel.add(leftWall);
         }
 
@@ -231,96 +207,83 @@ public class CornellBoxMirror {
             final Primitive plane = GeomFactory.createPlane(Vec3.X.neg(), new Point(5, 0, 0));
             final Shader red = new SingleColor(Color.RED);
             final Shader shader = ShaderFactory.createPhong(red, ambient, 0.8f, 0.4f, 1);
-
-            Obj rightWall;
-            if (usePhong)
-                rightWall = new StandardObj(plane, shader);
-            else
-                rightWall = new StandardObj(plane, red);
+            final Obj rightWall = new StandardObj(plane, shader);
             accel.add(rightWall);
         }
 
         // Back wall
         {
             final Primitive plane = GeomFactory.createPlane(Vec3.Z.neg(), new Point(0, 0, 5));
-            final Shader green = new SingleColor(Color.GREEN);
-            final Shader shader = ShaderFactory.createPhong(green, ambient, 0.5f, 0.0f, 1);
-
-            Obj backWall;
-
-            if (usePhong)
-                backWall = new StandardObj(plane, shader);
-            else
-                backWall = new StandardObj(plane, green);
+            final Shader white = new SingleColor(Color.WHITE);
+            final Shader shader = ShaderFactory.createPhong(white, ambient, 1f, 0.0f, 100000);
+            final Obj backWall = new StandardObj(plane, shader);
             accel.add(backWall);
+        }
+
+        {
+            // Mirror sphere
+            final Primitive prim2 = GeomFactory.createSphere(new Point(0, 1, 0), 0.75f);
+            final Shader shader = ShaderFactory.createReflection(1.5f, 40);
+            final Obj sphere = new StandardObj(prim2, shader);
+            accel.add(sphere);
         }
 
         // Ceiling wall
         {
             final Primitive plane = GeomFactory.createPlane(Vec3.Y.neg(), new Point(0, 10, 0));
             final Shader white = new SingleColor(Color.WHITE);
-            final Shader shader = ShaderFactory.createPhong(white, ambient, 0.4f, 1.0f, 15);
-
-            Obj ceiling;
-            if (usePhong)
-                ceiling = new StandardObj(plane, shader);
-            else
-                ceiling = new StandardObj(plane, white);
+            final Shader shader = ShaderFactory.createPhong(white, ambient, 0.8f, 1.0f, 15);
+            final Obj ceiling = new StandardObj(plane, shader);
             accel.add(ceiling);
         }
 
-        // mirror cube
+        // yellow cube
         {
-            final Shader shader = ShaderFactory.createReflection(1.5f, 40);
-            // final Shader shader = ShaderFactory.createPhong(yellow, ambient, 1.0f, 0.2f,
-            // 5);
-
-            if (usePhong)
-                createCube(
-                        new Point(1, 0, 0),
-                        new Vec3(3, 3, 3),
-                        shader, accel);
-            else
-                createCube(
-                        new Point(1, 0, 0),
-                        new Vec3(3, 3, 3),
-                        shader, accel);
+            final Shader yellow = new SingleColor(Color.YELLOW);
+            final Shader shader = ShaderFactory.createPhong(yellow, ambient, 1.0f, 5f, 5);
+            createCube(
+                    new Point(1, 0, 0),
+                    new Vec3(3, 3, 3),
+                    shader, accel);
         }
 
-        // white cube
+        // cyan cube
         {
-            final Shader white = new SingleColor(Color.WHITE);
-            final Shader shader = ShaderFactory.createPhong(white, ambient, 1.0f, 5.2f, 5);
-
-            if (usePhong)
-                createCube(
-                        new Point(-2.0f, 0, 2),
-                        new Vec3(3, 6, 3),
-                        shader, accel,
-                        new Vec3(0, (float) (-45 * Math.PI / 180), 0));
-            else
-                createCube(
-                        new Point(-2.0f, 0, 2),
-                        new Vec3(3, 6, 3),
-                        white, accel,
-                        new Vec3(0, (float) (-45 * Math.PI / 180), 0));
+            final Shader cyan = new SingleColor(Color.CYAN);
+            final Shader shader = ShaderFactory.createPhong(cyan, ambient, 1.0f, 5.2f, 1000);
+            createCube(
+                    new Point(-1.2f, 0, 3.7f),
+                    new Vec3(3, 6, 3),
+                    shader, accel,
+                    new Vec3(0, (float) (-45 * Math.PI / 180), 0));
         }
 
         final List<LightSource> lights = new ArrayList<LightSource>();
 
         // light pane => grid of lights
         {
-            int resolution = 12;
-            float dimension = 8.0f;
+            int resolution = 4;
+            float dimension = 2.0f;
             float height = 9.5f;
             float intensity = 1.5f;
+            Vec3 vector = new Vec3(0, 0, -3);
+            Vec3 vectorx = new Vec3(3, 0, 0);
             for (int i = 0; i < resolution; i++) {
                 for (int j = 0; j < resolution; j++) {
                     float x = -dimension / 2 + dimension * i / resolution;
                     float z = -dimension / 2 + dimension * j / resolution;
                     Point p = new Point(x, height, z);
-                    LightSource ls = new PointLightSource(p, Color.WHITE.scale(intensity / resolution / resolution));
+                    LightSource ls = new PointLightSource(p.add(vectorx),
+                            Color.CYAN.scale(intensity * 2 / resolution / resolution * 0.25f));
+
+                    LightSource ls2 = new PointLightSource(p.sub(vectorx),
+                            Color.MAGENTA.scale(intensity * 2 / resolution / resolution * 0.25f));
+
+                    LightSource ls3 = new PointLightSource(p,
+                            Color.WHITE.scale(intensity / resolution / resolution * 0.4f));
                     lights.add(ls);
+                    lights.add(ls2);
+                    lights.add(ls3);
                 }
             }
         }
@@ -328,7 +291,7 @@ public class CornellBoxMirror {
         final Scene scene = new StandardScene(cam, lights, accel);
         final Renderer r = new Renderer(scene, xRes, yRes, 2);
 
-        final Executor exe = Executors.newFixedThreadPool(12);
+        final Executor exe = Executors.newFixedThreadPool(2);
         final CompletionService<Renderer.Work> ecs = new ExecutorCompletionService<Renderer.Work>(exe);
         int num = 0;
         for (int x = 0; x < xRes; x += packet) {

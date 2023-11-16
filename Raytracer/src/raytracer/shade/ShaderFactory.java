@@ -62,4 +62,8 @@ public final class ShaderFactory {
             final float shininess) {
         return new Phong(inner, ambient, diffuse, specular, shininess);
     }
+
+    public static Shader createReflection(final float specular, final float shininess) {
+        return new Mirror(specular, shininess);
+    }
 }

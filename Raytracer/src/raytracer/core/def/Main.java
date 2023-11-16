@@ -114,7 +114,8 @@ public class Main {
 				final Primitive prim = GeomFactory.createSphere(new Point(1, 1.3f, 0), 1);
 				final Shader red = new SingleColor(Color.RED);
 				final Shader shader = implementedPhong ? ShaderFactory.createPhong(red, ambient, 0.4f, 1.0f, 15) : red;
-				final Obj sphere = new StandardObj(prim, shader);
+				final Shader mirror = ShaderFactory.createReflection(1.5f, 80);
+				final Obj sphere = new StandardObj(prim, mirror);
 				accel.add(sphere);
 			}
 		}
